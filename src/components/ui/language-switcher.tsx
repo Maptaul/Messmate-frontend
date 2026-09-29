@@ -12,7 +12,11 @@ const LANGUAGE_NAME: Record<Locale, string> = { en: "English", bn: "বাংল
  * "EN · বাং". Always links to the prefixed URL (`/en/...` or `/bn/...`); the
  * proxy stores the choice in a cookie and drops the `/en` prefix again.
  */
-export default function LanguageSwitcher({ className }: { className?: string }) {
+export default function LanguageSwitcher({
+  className,
+}: {
+  className?: string;
+}) {
   const current = useLocale();
   const t = useT();
 

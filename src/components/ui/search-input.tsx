@@ -39,7 +39,7 @@ export default function SearchInput({
         onChange={(event) => setDraft(event.target.value)}
         placeholder={placeholder ?? t("common.searchPlaceholder")}
         aria-label={label ?? t("common.search")}
-        className="pr-8 pl-8"
+        className="pr-8 pl-8 [&::-webkit-search-cancel-button]:appearance-none"
       />
       {draft && (
         <Button

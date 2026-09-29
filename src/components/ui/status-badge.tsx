@@ -2,8 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { useT } from "@/i18n/i18n-provider";
-import { humanize } from "@/utils/format.util";
 import { cn } from "@/lib/utils";
+import { humanize } from "@/utils/format.util";
 
 type Tone = "green" | "amber" | "red" | "blue" | "violet" | "gray";
 
