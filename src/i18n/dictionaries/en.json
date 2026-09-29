@@ -274,5 +274,11 @@
     "photoRemoved": "Profile photo removed",
     "redirectingStripe": "Opening Stripe checkout…",
     "redirectingBkash": "Opening bKash…"
+  },
+  "messSwitcher": {
+    "label": "Switch mess",
+    "current": "Current mess",
+    "create": "Create a mess",
+    "noMess": "No mess yet"
   }
 }

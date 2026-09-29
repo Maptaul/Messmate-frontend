@@ -274,5 +274,11 @@
     "photoRemoved": "প্রোফাইল ছবি সরানো হয়েছে",
     "redirectingStripe": "Stripe চেকআউট খোলা হচ্ছে…",
     "redirectingBkash": "বিকাশ খোলা হচ্ছে…"
+  },
+  "messSwitcher": {
+    "label": "মেস বদলান",
+    "current": "বর্তমান মেস",
+    "create": "মেস তৈরি করুন",
+    "noMess": "এখনো কোনো মেস নেই"
   }
 }
