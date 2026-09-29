@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    # The build reads these at compile time (next.config.ts rewrites, proxy.ts
+    # token check). Throwaway CI values — the build never calls the API.
+    env:
+      BACKEND_URL: http://localhost:5000
+      JWT_ACCESS_SECRET: ci-access-secret
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec tsc --noEmit
+
+      - run: pnpm lint
+
+      - run: pnpm build
