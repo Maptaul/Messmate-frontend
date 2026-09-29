@@ -16,3 +16,23 @@ export async function alternates(
     ),
   };
 }
+
+/** Title, description, canonical + language links and Open Graph for a public page. */
+export async function pageMetadata({
+  title,
+  description,
+  path,
+}: {
+  title: string;
+  description: string;
+  path: string;
+}): Promise<Metadata> {
+  const locale = await getLocale();
+
+  return {
+    title,
+    description,
+    alternates: await alternates(path),
+    openGraph: { title, description, url: localePath(locale, path) },
+  };
+}
