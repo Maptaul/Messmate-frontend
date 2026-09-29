@@ -1,34 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MessMate — Smart Mess & Shared Housing Management Platform (Frontend)
 
-## Getting Started
+The web app for MessMate. Residents of a shared mess plan their meals, the manager
+keeps the ledger (meals, groceries, bills, deposits, bazar duty), closing the month
+turns all of it into one bill per member, and members pay by card (Stripe) or bKash.
+English by default, Bangla at `/bn`, light and dark.
 
-First, run the development server:
+**Live API:** <https://messmatebackend.vercel.app> ·
+**Backend repo:** <https://github.com/Maptaul/Messmate-Backend> ·
+**API reference:** [docs/API.md](https://github.com/Maptaul/Messmate-Backend/blob/main/docs/API.md)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Demo accounts
+
+One click on `/login` signs in as any of them. They hold demo data only.
+
+| Role         | Email                  | Password                |
+| ------------ | ---------------------- | ----------------------- |
+| Admin        | `admin@messmate.app`   | `Admin@messmate12345`   |
+| Mess manager | `manager@messmate.app` | `Manager@messmate12345` |
+| Member       | `member@messmate.app`  | `Member@messmate12345`  |
+
+---
+
+## Tech Stack
+
+| Tech                                          | Purpose                                              |
+| --------------------------------------------- | ---------------------------------------------------- |
+| Next.js 16 (App Router, Turbopack)            | Server components, `proxy.ts`, route-level loading   |
+| React 19.2 + React Compiler                   | UI                                                   |
+| TypeScript (strict)                           | Type safety                                          |
+| Tailwind CSS v4 + shadcn/ui (base-nova)       | Design system on Base UI primitives                  |
+| TanStack Query v5                             | Server state, caching, optimistic updates            |
+| TanStack Form v1 + Zod v4                     | Forms with real-time validation                      |
+| ofetch                                        | API client                                           |
+| jose                                          | Verifies the access token in `proxy.ts`              |
+| Zustand                                       | Client state (create-mess wizard draft)              |
+| Recharts (shadcn charts)                      | Dashboard charts                                     |
+| sonner                                        | Toasts                                               |
+| next-themes                                   | Light / dark mode                                    |
+| `@react-oauth/google`                         | Google sign-in                                       |
+| Roboto + Anek Bangla (`next/font`)            | English and Bangla type                              |
+| Biome, `node:test`                            | Lint + format, unit tests                            |
+
+---
+
+## What each role gets
+
+| Role             | Pages                                                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Admin**        | `/admin` platform overview with charts, `/admin/users` (search, filters, role change, optimistic block/unblock), `/admin/messes`, `/admin/audit-logs` |
+| **Mess manager** | `/manager` month at a glance, meal register, headcount, expenses with receipt upload, deposits, bazar duty, billing months with settlement preview and close, bills with cash payments, members, activity log, mess settings, a four-step create-mess wizard |
+| **Member**       | `/dashboard` today, meal plan (optimistic, locks at the 11 PM cutoff), the mess ledger, bills with Stripe or bKash, payment history, activity |
+| **Everyone**     | `/profile` (photo upload with progress), `/finance` personal income and spending with charts                                         |
+| **Public**       | Home, features, about us, FAQ, contact, login (three demo accounts + Google), register with email OTP, forgot password               |
+
+A manager also eats and pays like a member, so the manager sidebar carries the
+member pages too.
+
+---
+
+## How it fits together
+
+- **Same-origin API.** `next.config.ts` rewrites `/api/v1/*` to `BACKEND_URL`, so the
+  auth cookies the API sets belong to this app and `proxy.ts` can read them.
+- **Route protection.** `src/proxy.ts` verifies the access token, sends each role to
+  its own area (`/admin`, `/manager`, `/dashboard`), renews an expired token with the
+  refresh token, and keeps the language prefix.
+- **Server prefetch.** Each page prefetches the queries its first render needs on the
+  server and hands them to the client through `HydrationBoundary`; the client reads the
+  same query keys with `useSuspenseQuery`.
+- **URL state.** Filters, search, dates and pages live in the query string, so any view
+  can be bookmarked or shared.
+- **Bilingual.** Every route sits under `app/[lang]`. English has no prefix, Bangla is
+  `/bn/...`; a `NEXT_LOCALE` cookie remembers the choice. Strings live in
+  `src/i18n/dictionaries/en.json` and `bn.json`.
+- **Payments.** Card payments open Stripe Checkout; `/payment/success` confirms the
+  session with the API on the server before showing a result. bKash returns to the same
+  page with its own status.
+
+```text
+src/
+├── app/[lang]/
+│   ├── (public)/(marketing)/        home, features, about-us, faq, contact
+│   ├── (public)/(authentication)/   login, register, register/verify-account, forgot-password
+│   └── (dashboard)/                 admin/, manager/, dashboard/, (account)/  — one layout per role
+├── api/            one function per endpoint
+├── hooks/          TanStack Query hooks (useX / useSuspenseX, mutations invalidate)
+├── components/
+│   ├── dashboard/  dashboard shell, sidebar, mess switcher, user menu
+│   ├── form/       every form, built on a shared useAppForm
+│   ├── layout/     public header and footer
+│   ├── modules/    one folder per feature: *-list, *-table, *-table-loading, *-actions, dialogs
+│   └── ui/         shadcn components and shared ones (data table, stat card, pagination…)
+├── routes/         sidebar links per role
+├── lib/            API clients, session, active mess / month
+├── validation/     Zod schemas that mirror the API's rules
+├── i18n/           dictionaries and helpers
+└── proxy.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setup
 
-## Learn More
+```bash
+# 1. Install
+pnpm install
 
-To learn more about Next.js, take a look at the following resources:
+# 2. Configure
+cp .env.example .env.local   # then fill in the values below
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 3. Run
+pnpm dev                     # http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable                       | Value                                                                        |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| `BACKEND_URL`                  | `https://messmatebackend.vercel.app` (or `http://localhost:5000` for a local API) |
+| `JWT_ACCESS_SECRET`            | the API's `JWT_ACCESS_SECRET` — used only on the server, by `proxy.ts`        |
+| `NEXT_PUBLIC_APP_URL`          | this app's origin, e.g. `http://localhost:3000`                              |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | the API's Google OAuth client id; the Google button hides when it is empty   |
+| `NEXT_PUBLIC_CONTACT_EMAIL`    | the inbox the contact page writes to                                         |
 
-## Deploy on Vercel
+### Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Command                  | Does                                |
+| ------------------------ | ----------------------------------- |
+| `pnpm dev`               | Dev server                          |
+| `pnpm build`             | Production build                    |
+| `pnpm start`             | Serve the production build          |
+| `pnpm lint`              | Biome check                         |
+| `pnpm format`            | Biome format                        |
+| `pnpm test`              | Unit tests (`tests/*.test.ts`)      |
+| `pnpm exec tsc --noEmit` | Typecheck                           |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+CI (`.github/workflows/ci.yml`) runs install, typecheck, lint, tests and a build on
+every push.
+
+---
+
+## Deployment (Vercel)
+
+Import the repository in Vercel and set the five variables above, with
+`NEXT_PUBLIC_APP_URL` set to the deployed origin. Then, on the API:
+
+| API variable         | Value                                   | Why                                     |
+| -------------------- | --------------------------------------- | --------------------------------------- |
+| `FRONTEND_URL`       | this app's origin                       | Stripe returns the payer to `/payment/success` or `/payment/cancel` |
+| `PAYMENT_RESULT_URL` | this app's origin + `/payment/success`  | bKash returns the payer here with `?status=` |
+| `STRIPE_SECRET_KEY`  | a Stripe test key (`sk_test_…`)         | card payments                           |
+
+Finally add this origin to the Google OAuth client's authorised JavaScript origins.

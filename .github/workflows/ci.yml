@@ -12,7 +12,7 @@ jobs:
     # The build reads these at compile time (next.config.ts rewrites, proxy.ts
     # token check). Throwaway CI values — the build never calls the API.
     env:
-      BACKEND_URL: http://localhost:5000
+      BACKEND_URL: https://messmatebackend.vercel.app
       JWT_ACCESS_SECRET: ci-access-secret
       NEXT_PUBLIC_APP_URL: http://localhost:3000
 
