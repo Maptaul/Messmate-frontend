@@ -8,6 +8,7 @@ import {
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { getActiveMess } from "@/lib/activeMess";
 import type { UserRole } from "@/types";
+import ActivityBell from "./activity-bell";
 import { DashboardSidebar } from "./dashboard-sidebar";
 import MessSwitcher from "./mess-switcher";
 import UserMenu from "./user-menu";
@@ -33,6 +34,9 @@ export default async function DashboardShell({
             activeMessId={activeMessId}
           />
           <div className="ml-auto flex items-center gap-1">
+            {role !== "ADMIN" && activeMessId && (
+              <ActivityBell role={role} messId={activeMessId} />
+            )}
             <LanguageSwitcher />
             <ThemeToggle />
             <UserMenu />
