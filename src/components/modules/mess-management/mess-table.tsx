@@ -1,10 +1,11 @@
 "use client";
 
 import { Building2Icon } from "lucide-react";
+import Link from "next/link";
 import DataTable, { type Column } from "@/components/ui/data-table";
 import TablePagination from "@/components/ui/table-pagination";
 import { useSuspenseAllMesses } from "@/hooks";
-import { useLocale, useT } from "@/i18n/i18n-provider";
+import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { Mess, MessListParams } from "@/types";
 import { formatBDT, formatDate, formatNumber } from "@/utils";
 import MessActions from "./mess-actions";
@@ -16,6 +17,7 @@ interface Props extends MessListParams {
 export default function MessTable({ handlePageChange, ...params }: Props) {
   const t = useT();
   const locale = useLocale();
+  const href = useLocalePath();
 
   const { data } = useSuspenseAllMesses(params);
 
@@ -28,7 +30,12 @@ export default function MessTable({ handlePageChange, ...params }: Props) {
       header: t("admin.messes.mess"),
       cell: (mess) => (
         <div className="min-w-0">
-          <p className="truncate font-medium">{mess.name}</p>
+          <Link
+            href={href(`/admin/messes/${mess.id}`)}
+            className="block truncate font-medium underline-offset-4 hover:underline"
+          >
+            {mess.name}
+          </Link>
           <p className="truncate text-xs text-muted-foreground">
             {mess.address}
           </p>
