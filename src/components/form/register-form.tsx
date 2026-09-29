@@ -3,24 +3,22 @@
 import { UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { toast } from "sonner";
 import { applyServerErrors, useAppForm } from "@/components/form";
 import { FieldGroup } from "@/components/ui/field";
-import { useRegister } from "@/hooks";
+import { useRegistration } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
-import { getErrorMessage } from "@/lib/errors";
 import { usePendingRegistration } from "@/stores/pending-registration.store";
 import type { RegistrationPayload } from "@/types";
-import { registerSchema } from "@/validation";
-import { FormAlert } from "./form-alert";
+import { getErrorMessage } from "@/utils";
+import { registrationSchema } from "@/validation";
 
-export function RegisterForm() {
+export default function RegisterForm() {
   const router = useRouter();
   const t = useT();
   const href = useLocalePath();
-  const { mutateAsync: createAccount } = useRegister();
+  const { mutate: registration, isPending } = useRegistration();
   const setPending = usePendingRegistration((state) => state.setPayload);
-  const [formError, setFormError] = useState<string | null>(null);
 
   const form = useAppForm({
     defaultValues: {
@@ -31,26 +29,30 @@ export function RegisterForm() {
       password: "",
       confirmPassword: "",
     },
-    validators: { onChange: registerSchema },
-    onSubmit: async ({ value }) => {
-      setFormError(null);
+    validators: { onChange: registrationSchema },
+    onSubmit: ({ value }) => {
       const {
         confirmPassword: _,
         phone,
         ...rest
-      } = registerSchema.parse(value);
-      const payload: RegistrationPayload = { ...rest, ...(phone ? { phone } : {}) };
+      } = registrationSchema.parse(value);
+      const payload: RegistrationPayload = {
+        ...rest,
+        ...(phone ? { phone } : {}),
+      };
 
-      try {
-        await createAccount(payload);
-        setPending(payload);
-        router.push(
-          `${href("/verify-email")}?email=${encodeURIComponent(payload.email)}`,
-        );
-      } catch (error) {
-        setFormError(getErrorMessage(error));
-        applyServerErrors(form, error);
-      }
+      registration(payload, {
+        onSuccess: () => {
+          setPending(payload);
+          router.push(
+            `${href("/register/verify-account")}?email=${encodeURIComponent(payload.email)}`,
+          );
+        },
+        onError: (err) => {
+          toast.error(t.dynamic(getErrorMessage(err)));
+          applyServerErrors(form, err);
+        },
+      });
     },
   });
 
@@ -64,8 +66,6 @@ export function RegisterForm() {
           {t("auth.register.subtitle")}
         </p>
       </div>
-
-      <FormAlert message={formError} />
 
       <form
         noValidate
@@ -143,6 +143,7 @@ export function RegisterForm() {
           </form.AppField>
           <form.AppForm>
             <form.SubmitButton
+              isPending={isPending}
               size="lg"
               className="w-full"
               pendingLabel={t("auth.register.submitting")}

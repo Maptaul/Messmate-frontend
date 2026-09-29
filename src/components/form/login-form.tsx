@@ -17,6 +17,7 @@ import type { AuthTokens, LoginPayload, UserRole } from "@/types";
 import {
   getErrorMessage,
   homeAfterLogin,
+  nameFromToken,
   ROLE_LABEL_KEY,
 } from "@/utils";
 import { loginSchema } from "@/validation";
@@ -71,7 +72,9 @@ export default function LoginForm({
   const { mutate: login, isPending: loginPending } = useLogin();
 
   const onLoggedIn = (tokens: AuthTokens) => {
-    toast.success(t("toast.loggedIn", { name: tokens.user.name }));
+    toast.success(
+      t("toast.loggedIn", { name: nameFromToken(tokens.accessToken) }),
+    );
     queryClient.removeQueries({ queryKey: ["user"] });
     router.replace(homeAfterLogin(tokens.accessToken, locale, redirect));
     router.refresh();

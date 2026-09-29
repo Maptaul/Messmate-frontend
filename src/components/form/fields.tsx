@@ -318,15 +318,20 @@ export function OtpField({
 export function SubmitButton({
   children,
   pendingLabel,
+  isPending,
   ...props
-}: Omit<ComponentProps<typeof Button>, "type"> & { pendingLabel?: string }) {
+}: Omit<ComponentProps<typeof Button>, "type"> & {
+  pendingLabel?: string;
+  /** Extra busy state from outside the form, e.g. a demo-login mutation. */
+  isPending?: boolean;
+}) {
   const form = useFormContext();
 
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(isSubmitting) => (
-        <Button type="submit" disabled={isSubmitting} {...props}>
-          {isSubmitting ? (
+        <Button type="submit" disabled={isSubmitting || isPending} {...props}>
+          {isSubmitting || isPending ? (
             <>
               <Spinner />
               {pendingLabel ?? children}

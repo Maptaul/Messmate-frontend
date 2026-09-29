@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Logo from "@/assets/svg/Logo";
+import VerifyAccountForm from "@/components/form/verify-account-form";
 import AuthAside from "@/components/modules/auth/auth-aside";
 import LanguageSwitcher from "@/components/ui/language-switcher";
 import ThemeToggle from "@/components/ui/theme-toggle";
-import VerifyAccountForm from "@/components/form/verify-account-form";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 

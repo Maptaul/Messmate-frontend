@@ -9,12 +9,11 @@ import { applyServerErrors, useAppForm } from "@/components/form";
 import { FieldGroup } from "@/components/ui/field";
 import { useForgotPassword, useResetPassword } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
-import { getErrorMessage } from "@/lib/errors";
+import { getErrorMessage } from "@/utils";
 import { forgotPasswordSchema, resetPasswordSchema } from "@/validation";
-import { FormAlert } from "./form-alert";
 
 /** Step 1 asks for the email; step 2 takes the emailed code and a new password. */
-export function ForgotPasswordForm() {
+export default function ForgotPasswordForm() {
   const t = useT();
   const href = useLocalePath();
   const [email, setEmail] = useState<string | null>(null);
@@ -56,22 +55,23 @@ export function ForgotPasswordForm() {
 
 function EmailStep({ onSent }: { onSent: (email: string) => void }) {
   const t = useT();
-  const { mutateAsync: sendCode } = useForgotPassword();
-  const [formError, setFormError] = useState<string | null>(null);
+  const { mutate: forgotPassword, isPending } = useForgotPassword();
 
   const form = useAppForm({
     defaultValues: { email: "" },
     validators: { onChange: forgotPasswordSchema },
-    onSubmit: async ({ value }) => {
-      setFormError(null);
+    onSubmit: ({ value }) => {
       const email = value.email.trim();
-      try {
-        await sendCode(email);
-        onSent(email);
-      } catch (error) {
-        setFormError(getErrorMessage(error));
-        applyServerErrors(form, error);
-      }
+      forgotPassword(email, {
+        onSuccess: () => {
+          toast.success(t("toast.codeSent", { email }));
+          onSent(email);
+        },
+        onError: (err) => {
+          toast.error(t.dynamic(getErrorMessage(err)));
+          applyServerErrors(form, err);
+        },
+      });
     },
   });
 
@@ -84,7 +84,6 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
       }}
     >
       <FieldGroup>
-        <FormAlert message={formError} />
         <form.AppField name="email">
           {(field) => (
             <field.TextField
@@ -96,6 +95,7 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
         </form.AppField>
         <form.AppForm>
           <form.SubmitButton
+            isPending={isPending}
             size="lg"
             className="w-full"
             pendingLabel={t("auth.forgot.sending")}
@@ -112,22 +112,25 @@ function ResetStep({ email, onBack }: { email: string; onBack: () => void }) {
   const router = useRouter();
   const t = useT();
   const href = useLocalePath();
-  const { mutateAsync: reset } = useResetPassword();
-  const [formError, setFormError] = useState<string | null>(null);
+  const { mutate: resetPassword, isPending } = useResetPassword();
 
   const form = useAppForm({
     defaultValues: { otp: "", newPassword: "", confirmPassword: "" },
     validators: { onChange: resetPasswordSchema },
-    onSubmit: async ({ value }) => {
-      setFormError(null);
-      try {
-        await reset({ email, otp: value.otp, newPassword: value.newPassword });
-        toast.success(t("auth.forgot.changed"));
-        router.push(`${href("/login")}?email=${encodeURIComponent(email)}`);
-      } catch (error) {
-        setFormError(getErrorMessage(error));
-        applyServerErrors(form, error);
-      }
+    onSubmit: ({ value }) => {
+      resetPassword(
+        { email, otp: value.otp, newPassword: value.newPassword },
+        {
+          onSuccess: () => {
+            toast.success(t("auth.forgot.changed"));
+            router.push(`${href("/login")}?email=${encodeURIComponent(email)}`);
+          },
+          onError: (err) => {
+            toast.error(t.dynamic(getErrorMessage(err)));
+            applyServerErrors(form, err);
+          },
+        },
+      );
     },
   });
 
@@ -140,7 +143,6 @@ function ResetStep({ email, onBack }: { email: string; onBack: () => void }) {
       }}
     >
       <FieldGroup>
-        <FormAlert message={formError} />
         <form.AppField name="otp">
           {(field) => <field.OtpField label={t("auth.forgot.code")} />}
         </form.AppField>
@@ -163,6 +165,7 @@ function ResetStep({ email, onBack }: { email: string; onBack: () => void }) {
         </form.AppField>
         <form.AppForm>
           <form.SubmitButton
+            isPending={isPending}
             size="lg"
             className="w-full"
             pendingLabel={t("auth.forgot.saving")}

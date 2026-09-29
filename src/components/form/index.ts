@@ -2,7 +2,7 @@ import {
   type AnyFieldLikeMetaBase,
   createFormHook,
 } from "@tanstack/react-form";
-import { getFieldErrors } from "@/lib/errors";
+import { getFieldErrors } from "@/utils";
 import {
   OtpField,
   PasswordField,

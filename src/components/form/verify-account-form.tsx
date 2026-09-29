@@ -8,27 +8,23 @@ import { toast } from "sonner";
 import { applyServerErrors, useAppForm } from "@/components/form";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
-import { useRegister, useVerifyEmail } from "@/hooks";
+import { useRegistration, useVerifyAccount } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
-import { homeAfterLogin } from "@/lib/auth-redirect";
-import { getErrorMessage } from "@/lib/errors";
-import { formatNumber } from "@/lib/format";
 import { usePendingRegistration } from "@/stores/pending-registration.store";
-import { verifyEmailSchema } from "@/validation";
-import { FormAlert } from "./form-alert";
+import { formatNumber, getErrorMessage, homeAfterLogin } from "@/utils";
+import { verifyAccountSchema } from "@/validation";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 
-export function VerifyEmailForm({ email }: { email: string }) {
+export default function VerifyAccountForm({ email }: { email: string }) {
   const router = useRouter();
   const t = useT();
   const locale = useLocale();
   const href = useLocalePath();
-  const { mutateAsync: verify } = useVerifyEmail();
-  const { mutate: resend, isPending: isResending } = useRegister();
+  const { mutate: verify, isPending } = useVerifyAccount();
+  const { mutate: resend, isPending: isResending } = useRegistration();
   const pending = usePendingRegistration((state) => state.payload);
   const clearPending = usePendingRegistration((state) => state.setPayload);
-  const [formError, setFormError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
 
   useEffect(() => {
@@ -39,19 +35,23 @@ export function VerifyEmailForm({ email }: { email: string }) {
 
   const form = useAppForm({
     defaultValues: { otp: "" },
-    validators: { onChange: verifyEmailSchema },
-    onSubmit: async ({ value }) => {
-      setFormError(null);
-      try {
-        const { data } = await verify({ email, otp: value.otp });
-        clearPending(null);
-        toast.success(t("auth.verify.welcome"));
-        router.replace(homeAfterLogin(data.accessToken, locale));
-        router.refresh();
-      } catch (error) {
-        setFormError(getErrorMessage(error));
-        applyServerErrors(form, error);
-      }
+    validators: { onChange: verifyAccountSchema },
+    onSubmit: ({ value }) => {
+      verify(
+        { email, otp: value.otp },
+        {
+          onSuccess: (res) => {
+            clearPending(null);
+            toast.success(t("auth.verify.welcome"));
+            router.replace(homeAfterLogin(res.data.accessToken, locale));
+            router.refresh();
+          },
+          onError: (err) => {
+            toast.error(t.dynamic(getErrorMessage(err)));
+            applyServerErrors(form, err);
+          },
+        },
+      );
     },
   });
 
@@ -73,8 +73,6 @@ export function VerifyEmailForm({ email }: { email: string }) {
         </p>
       </div>
 
-      <FormAlert message={formError} />
-
       <form
         noValidate
         onSubmit={(event) => {
@@ -88,6 +86,7 @@ export function VerifyEmailForm({ email }: { email: string }) {
           </form.AppField>
           <form.AppForm>
             <form.SubmitButton
+              isPending={isPending}
               size="lg"
               className="w-full"
               pendingLabel={t("auth.verify.submitting")}

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Logo from "@/assets/svg/Logo";
+import ForgotPasswordForm from "@/components/form/forgot-password-form";
 import AuthAside from "@/components/modules/auth/auth-aside";
 import LanguageSwitcher from "@/components/ui/language-switcher";
 import ThemeToggle from "@/components/ui/theme-toggle";
-import ForgotPasswordForm from "@/components/form/forgot-password-form";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 import { alternates } from "@/i18n/metadata";
