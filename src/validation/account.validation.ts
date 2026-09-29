@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { todayInDhaka } from "@/lib/format";
+import z from "zod";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/types";
+import { todayInDhaka } from "@/utils";
 
 // --- Profile ---------------------------------------------------------------
 
@@ -30,11 +30,16 @@ export const financeEntrySchema = z
   .object({
     type: z.enum(["INCOME", "EXPENSE"], { message: "validation.selectType" }),
     category: z.string().min(1, "validation.selectCategory"),
-    amount: z.coerce
-      .number()
-      .positive("validation.amountPositive")
-      .multipleOf(0.01, "validation.amountDecimals")
-      .max(10_000_000, "validation.amountMax"),
+    amount: z
+      .string()
+      .transform(Number)
+      .pipe(
+        z
+          .number("validation.amountPositive")
+          .positive("validation.amountPositive")
+          .multipleOf(0.01, "validation.amountDecimals")
+          .max(10_000_000, "validation.amountMax"),
+      ),
     date: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, "validation.dateRequired")

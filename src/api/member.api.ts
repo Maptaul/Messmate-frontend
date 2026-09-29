@@ -17,10 +17,7 @@ export function getMessMembers(
   });
 }
 
-export function getMyMemberships(
-  params: MemberListParams,
-  client = apiClient,
-) {
+export function getMyMemberships(params: MemberListParams, client = apiClient) {
   return client<ApiResponse<MyMembership[]>>("/member/my-memberships", {
     params,
   });

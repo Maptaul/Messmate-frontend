@@ -16,6 +16,15 @@ import {
 } from "@/api";
 import type { MemberListParams, MessListParams } from "@/types";
 
+/** Everyone currently in the mess — options for a deposit, an expense payer, the register. */
+export function useActiveMembers(messId: string) {
+  return useQuery({
+    queryKey: ["members", messId, { status: "ACTIVE", limit: 100 }],
+    queryFn: () => getMessMembers(messId, { status: "ACTIVE", limit: 100 }),
+    enabled: !!messId,
+  });
+}
+
 export function useSuspenseMyMesses(params: MessListParams) {
   return useSuspenseQuery({
     queryKey: ["my-messes", params],
@@ -23,24 +32,10 @@ export function useSuspenseMyMesses(params: MessListParams) {
   });
 }
 
-export function useMess(messId: string) {
-  return useQuery({
-    queryKey: ["mess", messId],
-    queryFn: () => getMess(messId),
-  });
-}
-
 export function useSuspenseMess(messId: string) {
   return useSuspenseQuery({
     queryKey: ["mess", messId],
     queryFn: () => getMess(messId),
-  });
-}
-
-export function useMessMembers(messId: string, params: MemberListParams) {
-  return useQuery({
-    queryKey: ["members", messId, params],
-    queryFn: () => getMessMembers(messId, params),
   });
 }
 

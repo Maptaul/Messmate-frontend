@@ -1,7 +1,7 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import GoogleAuthProvider from "./google-auth.provider";
 import QueryProvider from "./query.provider";

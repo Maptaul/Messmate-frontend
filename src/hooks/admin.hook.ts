@@ -1,6 +1,5 @@
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -26,13 +25,6 @@ export function useSuspenseDashboardStats() {
   return useSuspenseQuery({
     queryKey: ["admin-stats"],
     queryFn: () => getDashboardStats(),
-  });
-}
-
-export function useUsers(params: UserListParams) {
-  return useQuery({
-    queryKey: ["users", params],
-    queryFn: () => getUsers(params),
   });
 }
 

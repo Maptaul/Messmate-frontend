@@ -28,3 +28,8 @@ export function getFieldErrors(error: unknown): Record<string, string> {
 
   return fieldErrors;
 }
+
+/** The HTTP status of a failed API call; undefined when nothing came back (offline). */
+export function getErrorStatus(error: unknown): number | undefined {
+  return error instanceof FetchError ? error.status : undefined;
+}

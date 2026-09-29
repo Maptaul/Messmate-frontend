@@ -15,13 +15,6 @@ import {
 } from "@/api";
 import type { BillListParams, PaymentListParams } from "@/types";
 
-export function useMyBills(params: BillListParams) {
-  return useQuery({
-    queryKey: ["my-bills", params],
-    queryFn: () => getMyBills(params),
-  });
-}
-
 export function useSuspenseMyBills(params: BillListParams) {
   return useSuspenseQuery({
     queryKey: ["my-bills", params],

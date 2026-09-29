@@ -1,5 +1,4 @@
 import apiClient from "@/lib/apiClient";
-import { toFormData, uploadWithProgress } from "@/utils/upload.util";
 import type {
   AddExpensePayload,
   ApiResponse,
@@ -8,6 +7,7 @@ import type {
   ExpenseSummary,
   UpdateExpensePayload,
 } from "@/types";
+import { toFormData, uploadWithProgress } from "@/utils/upload.util";
 
 export function getCycleExpenses(
   cycleId: string,
@@ -19,10 +19,7 @@ export function getCycleExpenses(
   });
 }
 
-export function getExpenseSummary(
-  cycleId: string,
-  client = apiClient,
-) {
+export function getExpenseSummary(cycleId: string, client = apiClient) {
   return client<ApiResponse<ExpenseSummary>>(
     `/expense/expense-summary/${cycleId}`,
   );

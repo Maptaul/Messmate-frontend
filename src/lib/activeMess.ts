@@ -3,10 +3,9 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import { getMe } from "@/api";
 import type { ApiResponse, Me, UserRole } from "@/types";
-import { serverApi } from "./server-api";
+import { ACTIVE_MESS_COOKIE } from "@/utils/mess.util";
+import serverApi from "./serverApi";
 import { getSessionUser } from "./session";
-
-export const ACTIVE_MESS_COOKIE = "activeMessId";
 
 export interface MessChoice {
   id: string;

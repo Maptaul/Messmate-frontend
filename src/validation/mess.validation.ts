@@ -1,5 +1,6 @@
-import { z } from "zod";
+import z from "zod";
 import { EXPENSE_TYPES, SPLIT_METHODS } from "@/types";
+import { todayInDhaka } from "@/utils/format.util";
 
 // Every rule mirrors the API's Zod schema for the same route; messages are
 // dictionary keys. Form values are strings, so numbers are coerced.
@@ -11,10 +12,19 @@ const ymd = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "validation.dateRequired");
 const optionalText = (max: number, message: string) =>
   z.string().trim().max(max, message);
 
-export const amountRule = z.coerce
-  .number()
-  .positive("validation.amountPositive")
-  .max(MAX_AMOUNT, "validation.amountMax");
+// Inputs hold strings; empty or non-numeric text becomes NaN and is rejected.
+const amountUpTo = (max: number, maxMessage: string) =>
+  z
+    .string()
+    .transform(Number)
+    .pipe(
+      z
+        .number("validation.amountPositive")
+        .positive("validation.amountPositive")
+        .max(max, maxMessage),
+    );
+
+export const amountRule = amountUpTo(MAX_AMOUNT, "validation.amountMax");
 
 /** Whole or half meals, 0–10. */
 export const mealCountRule = z.coerce
@@ -38,15 +48,31 @@ export const messDetailsSchema = z.object({
     .max(300, "validation.addressMax"),
 });
 
+// Inputs hold strings; empty or non-numeric text becomes NaN and is rejected
+// with the same message as a wrong amount.
+const rentRule = z
+  .string()
+  .transform(Number)
+  .pipe(
+    z
+      .number("validation.rentPositive")
+      .positive("validation.rentPositive")
+      .max(MAX_AMOUNT, "validation.amountMax"),
+  );
+
+const depositRule = z
+  .string()
+  .transform(Number)
+  .pipe(
+    z
+      .number("validation.amountNotNegative")
+      .min(0, "validation.amountNotNegative")
+      .max(MAX_AMOUNT, "validation.amountMax"),
+  );
+
 export const messMoneySchema = z.object({
-  monthlyRent: z.coerce
-    .number()
-    .positive("validation.rentPositive")
-    .max(MAX_AMOUNT, "validation.amountMax"),
-  monthlyDeposit: z.coerce
-    .number()
-    .min(0, "validation.amountNotNegative")
-    .max(MAX_AMOUNT, "validation.amountMax"),
+  monthlyRent: rentRule,
+  monthlyDeposit: depositRule,
 });
 
 export const messSchema = messDetailsSchema.extend(messMoneySchema.shape);
@@ -65,29 +91,45 @@ export const defaultMealsSchema = z.object({
 // --- Billing cycle ----------------------------------------------------------
 
 export const openCycleSchema = z.object({
-  year: z.coerce
-    .number()
-    .int("validation.yearRange")
-    .min(2000, "validation.yearRange")
-    .max(2100, "validation.yearRange"),
-  month: z.coerce
-    .number()
-    .int("validation.monthRange")
-    .min(1, "validation.monthRange")
-    .max(12, "validation.monthRange"),
+  year: z
+    .string()
+    .transform(Number)
+    .pipe(
+      z
+        .number("validation.yearRange")
+        .int("validation.yearRange")
+        .min(2000, "validation.yearRange")
+        .max(2100, "validation.yearRange"),
+    ),
+  month: z
+    .string()
+    .transform(Number)
+    .pipe(
+      z
+        .number("validation.monthRange")
+        .int("validation.monthRange")
+        .min(1, "validation.monthRange")
+        .max(12, "validation.monthRange"),
+    ),
 });
 
 // --- Expenses ---------------------------------------------------------------
 
-export const expenseSchema = z.object({
-  type: z.enum(EXPENSE_TYPES, { message: "validation.selectType" }),
-  amount: amountRule,
-  splitMethod: z.enum(SPLIT_METHODS),
-  /** "" = paid from the mess fund */
-  paidByMemberId: z.string(),
-  description: optionalText(500, "validation.descriptionMax"),
-  spentAt: ymd,
-});
+export const expenseSchema = z
+  .object({
+    type: z.enum(EXPENSE_TYPES, { message: "validation.selectType" }),
+    amount: amountRule,
+    splitMethod: z.enum(SPLIT_METHODS),
+    /** "" = paid from the mess fund */
+    paidByMemberId: z.string(),
+    description: optionalText(500, "validation.descriptionMax"),
+    spentAt: ymd,
+  })
+  // YYYY-MM-DD compares correctly as text; an expense can't be in the future.
+  .refine((expense) => expense.spentAt <= todayInDhaka(), {
+    message: "validation.noFutureDate",
+    path: ["spentAt"],
+  });
 
 // --- Deposits ---------------------------------------------------------------
 
@@ -95,6 +137,12 @@ export const depositSchema = z.object({
   memberId: z.string().min(1, "validation.selectMember"),
   amount: amountRule,
   note: optionalText(500, "validation.noteMax"),
+});
+
+/** Editing a deposit changes the amount and note only; the member is fixed. */
+export const depositEditSchema = depositSchema.pick({
+  amount: true,
+  note: true,
 });
 
 // --- Bazar duty -------------------------------------------------------------
@@ -117,6 +165,6 @@ export const dutySchema = z
 /** Cash can be partial but never more than what is still due. */
 export const cashPaymentSchema = (due: number) =>
   z.object({
-    amount: amountRule.max(due, "validation.cashOverDue"),
+    amount: amountUpTo(due, "validation.cashOverDue"),
     note: optionalText(200, "validation.noteMax"),
   });

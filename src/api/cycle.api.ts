@@ -23,10 +23,7 @@ export function getCycle(cycleId: string, client = apiClient) {
   return client<ApiResponse<CycleDetail>>(`/cycle/${cycleId}`);
 }
 
-export function getSettlementPreview(
-  cycleId: string,
-  client = apiClient,
-) {
+export function getSettlementPreview(cycleId: string, client = apiClient) {
   return client<ApiResponse<SettlementPreview>>(
     `/cycle/settlement-preview/${cycleId}`,
   );

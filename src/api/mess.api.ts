@@ -7,17 +7,11 @@ import type {
   MessListParams,
 } from "@/types";
 
-export function getAllMesses(
-  params: MessListParams,
-  client = apiClient,
-) {
+export function getAllMesses(params: MessListParams, client = apiClient) {
   return client<ApiResponse<Mess[]>>("/mess/all-messes", { params });
 }
 
-export function getMyMesses(
-  params: MessListParams,
-  client = apiClient,
-) {
+export function getMyMesses(params: MessListParams, client = apiClient) {
   return client<ApiResponse<Mess[]>>("/mess/my-messes", { params });
 }
 

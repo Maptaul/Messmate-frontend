@@ -1,4 +1,4 @@
-import { z } from "zod";
+import z from "zod";
 
 // Messages are dictionary keys; the field components translate them.
 
@@ -22,7 +22,7 @@ export const loginSchema = z.object({
   password: z.string().min(1, "validation.passwordRequired"),
 });
 
-export const registerSchema = z
+export const registrationSchema = z
   .object({
     name: z
       .string()
@@ -48,7 +48,7 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
-export const verifyEmailSchema = z.object({ otp });
+export const verifyAccountSchema = z.object({ otp });
 
 export const forgotPasswordSchema = z.object({ email });
 

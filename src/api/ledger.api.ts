@@ -61,10 +61,7 @@ export function getCycleDuties(cycleId: string, client = apiClient) {
   );
 }
 
-export function getDutyCalendar(
-  cycleId: string,
-  client = apiClient,
-) {
+export function getDutyCalendar(cycleId: string, client = apiClient) {
   return client<ApiResponse<DutyCalendar>>(
     `/grocery-duty/cycle-calendar/${cycleId}`,
   );
@@ -113,10 +110,7 @@ export function getMessAuditLogs(
   });
 }
 
-export function getActivityUnread(
-  messId: string,
-  client = apiClient,
-) {
+export function getActivityUnread(messId: string, client = apiClient) {
   return client<ApiResponse<ActivityUnread>>(`/mess/activity-unread/${messId}`);
 }
 

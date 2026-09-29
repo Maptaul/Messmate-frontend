@@ -42,13 +42,6 @@ export function useSuspenseCycleExpenses(
   });
 }
 
-export function useExpenseSummary(cycleId: string) {
-  return useQuery({
-    queryKey: ["expense-summary", cycleId],
-    queryFn: () => getExpenseSummary(cycleId),
-  });
-}
-
 export function useSuspenseExpenseSummary(cycleId: string) {
   return useSuspenseQuery({
     queryKey: ["expense-summary", cycleId],
@@ -158,8 +151,8 @@ export function useSuspenseDutyCalendar(cycleId: string) {
   });
 }
 
-export function useMyDutyDays(cycleId: string) {
-  return useQuery({
+export function useSuspenseMyDutyDays(cycleId: string) {
+  return useSuspenseQuery({
     queryKey: ["my-duty", cycleId],
     queryFn: () => getMyDutyDays(cycleId),
   });

@@ -1,6 +1,5 @@
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -24,13 +23,6 @@ export function useSuspenseCycleMeals(cycleId: string, params: MealListParams) {
   return useSuspenseQuery({
     queryKey: ["meals", cycleId, params],
     queryFn: () => getCycleMeals(cycleId, params),
-  });
-}
-
-export function useMealSummary(cycleId: string) {
-  return useQuery({
-    queryKey: ["meal-summary", cycleId],
-    queryFn: () => getMealSummary(cycleId),
   });
 }
 
@@ -94,14 +86,6 @@ export function useSuspenseMyCalendar(cycleId: string) {
   return useSuspenseQuery({
     queryKey: ["my-calendar", cycleId],
     queryFn: () => getMyCalendar(cycleId),
-  });
-}
-
-/** `date` → that day's headcount; none → the month (sparse). */
-export function useCycleCalendar(cycleId: string, date?: string) {
-  return useQuery({
-    queryKey: ["headcount", cycleId, date],
-    queryFn: () => getCycleCalendar(cycleId, date),
   });
 }
 

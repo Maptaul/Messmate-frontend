@@ -55,6 +55,17 @@ export const formatMonth = (
     timeZone: "UTC",
   }).format(new Date(Date.UTC(year, month - 1, 1)));
 
+/** The API's deadlines are "YYYY-MM-DD HH:mm" in Dhaka time (UTC+6, no DST). */
+export const formatDeadline = (deadline: string, locale: Locale = "en") =>
+  formatDateTime(`${deadline.replace(" ", "T")}:00+06:00`, locale);
+
+/** Just the month name ("September" / "সেপ্টেম্বর"), for pickers. */
+export const formatMonthName = (month: number, locale: Locale = "en") =>
+  new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    month: "long",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(2000, month - 1, 1)));
+
 /** Today's date in Dhaka as YYYY-MM-DD — the format every API date takes. */
 export const todayInDhaka = () =>
   new Intl.DateTimeFormat("en-CA", { timeZone: DHAKA }).format(new Date());

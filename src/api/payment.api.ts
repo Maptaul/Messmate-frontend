@@ -12,10 +12,7 @@ import type {
   StripeConfirmation,
 } from "@/types";
 
-export function getMyBills(
-  params: BillListParams,
-  client = apiClient,
-) {
+export function getMyBills(params: BillListParams, client = apiClient) {
   return client<ApiResponse<MyBill[]>>("/payment/my-bills", { params });
 }
 
@@ -29,10 +26,7 @@ export function getCycleBills(
   });
 }
 
-export function getMyPayments(
-  params: PaymentListParams,
-  client = apiClient,
-) {
+export function getMyPayments(params: PaymentListParams, client = apiClient) {
   return client<ApiResponse<Payment[]>>("/payment/my-payments", {
     params,
   });
@@ -51,10 +45,7 @@ export function startStripeCheckout(billId: string) {
 }
 
 /** Called by /payment/success with Stripe's session id; safe to repeat. */
-export function confirmStripePayment(
-  sessionId: string,
-  client = apiClient,
-) {
+export function confirmStripePayment(sessionId: string, client = apiClient) {
   return client<ApiResponse<StripeConfirmation>>("/payment/confirm-stripe", {
     method: "POST",
     body: { sessionId },

@@ -14,19 +14,18 @@ import {
 } from "@/api";
 import type { CycleListParams } from "@/types";
 
+export function useMessCycles(messId: string, params: CycleListParams) {
+  return useQuery({
+    queryKey: ["cycles", messId, params],
+    queryFn: () => getMessCycles(messId, params),
+    enabled: !!messId,
+  });
+}
+
 export function useSuspenseMessCycles(messId: string, params: CycleListParams) {
   return useSuspenseQuery({
     queryKey: ["cycles", messId, params],
     queryFn: () => getMessCycles(messId, params),
-  });
-}
-
-/** The mess's OPEN month, if any — most manager pages work on it. */
-export function useOpenCycle(messId: string) {
-  return useQuery({
-    queryKey: ["cycles", messId, { status: "OPEN" }],
-    queryFn: () => getMessCycles(messId, { status: "OPEN", limit: 1 }),
-    select: (res) => res.data[0] ?? null,
   });
 }
 
@@ -37,11 +36,10 @@ export function useSuspenseCycle(cycleId: string) {
   });
 }
 
-export function useSettlementPreview(cycleId: string, enabled = true) {
-  return useQuery({
+export function useSuspenseSettlementPreview(cycleId: string) {
+  return useSuspenseQuery({
     queryKey: ["settlement", cycleId],
     queryFn: () => getSettlementPreview(cycleId),
-    enabled,
   });
 }
 

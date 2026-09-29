@@ -5,9 +5,9 @@ import type {
   AuditLog,
   AuditLogParams,
   DashboardStats,
-  UserRole,
   User,
   UserListParams,
+  UserRole,
   UserStatus,
 } from "@/types";
 
@@ -15,10 +15,7 @@ export function getDashboardStats(client = apiClient) {
   return client<ApiResponse<DashboardStats>>("/admin/dashboard-stats");
 }
 
-export function getUsers(
-  params: UserListParams,
-  client = apiClient,
-) {
+export function getUsers(params: UserListParams, client = apiClient) {
   return client<ApiResponse<User[]>>("/admin/users", { params });
 }
 
@@ -52,10 +49,7 @@ export function updateUserStatus({
   });
 }
 
-export function getAuditLogs(
-  params: AuditLogParams,
-  client = apiClient,
-) {
+export function getAuditLogs(params: AuditLogParams, client = apiClient) {
   return client<ApiResponse<AuditLog[]>>("/admin/audit-logs", {
     params,
   });

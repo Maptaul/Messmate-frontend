@@ -25,3 +25,9 @@ export function homeAfterLogin(
     safeRedirect(redirect) ?? localePath(locale, role ? ROLE_HOME[role] : "/")
   );
 }
+
+/** The display name the backend put in the access token. */
+export function nameFromToken(accessToken: string) {
+  const { name } = decodeJwt(accessToken) as { name?: string };
+  return name ?? "";
+}
