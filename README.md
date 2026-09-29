@@ -49,14 +49,15 @@ One click on `/login` signs in as any of them. They hold demo data only.
 
 | Role             | Pages                                                                                                                                  |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Admin**        | `/admin` platform overview with charts, `/admin/users` (search, filters, role change, optimistic block/unblock), `/admin/messes`, `/admin/audit-logs` |
-| **Mess manager** | `/manager` month at a glance, meal register, headcount, expenses with receipt upload, deposits, bazar duty, billing months with settlement preview and close, bills with cash payments, members, activity log, mess settings, a four-step create-mess wizard |
+| **Admin**        | `/admin` platform overview with charts, `/admin/users` (search, filters, role change, optimistic block/unblock) and each user's detail, `/admin/messes` and each mess's detail (members, recent months, reopen a closed month), `/admin/audit-logs` |
+| **Mess manager** | `/manager` month at a glance, meal register (edit or delete a single entry), headcount, expenses with receipt upload, deposits, bazar duty, billing months with settlement preview and close, bills with cash payments, members, activity log, mess settings, a four-step create-mess wizard |
 | **Member**       | `/dashboard` today, meal plan (optimistic, locks at the 11 PM cutoff), the mess ledger, bills with Stripe or bKash, payment history, activity |
 | **Everyone**     | `/profile` (photo upload with progress), `/finance` personal income and spending with charts                                         |
 | **Public**       | Home, features, about us, FAQ, contact, login (three demo accounts + Google), register with email OTP, forgot password               |
 
 A manager also eats and pays like a member, so the manager sidebar carries the
-member pages too.
+member pages too. Managers and members get an activity bell in the header with the
+number of changes since they last opened the feed.
 
 ---
 
