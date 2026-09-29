@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useT } from "@/i18n/i18n-provider";
 
 const ALL = "__all__";
 
@@ -16,7 +17,7 @@ export function FilterSelect({
   value,
   options,
   onChange,
-  allLabel = "All",
+  allLabel,
 }: {
   label: string;
   value: string | undefined;
@@ -24,7 +25,11 @@ export function FilterSelect({
   onChange: (value: string | undefined) => void;
   allLabel?: string;
 }) {
-  const items = [{ label: allLabel, value: ALL }, ...options];
+  const t = useT();
+  const items = [
+    { label: allLabel ?? t("common.all"), value: ALL },
+    ...options,
+  ];
 
   return (
     <Select

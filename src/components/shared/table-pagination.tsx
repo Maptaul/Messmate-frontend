@@ -9,6 +9,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useLocale, useT } from "@/i18n/i18n-provider";
+import { formatNumber } from "@/lib/format";
 import type { Meta } from "@/types";
 
 /** 1 … 4 5 6 … 12 — the current page, its neighbours and both ends. */
@@ -30,6 +32,9 @@ export function TablePagination({
   meta: Meta | undefined;
   onPageChange: (page: number) => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
+
   if (!meta || meta.totalPages <= 1) return null;
 
   const { page, totalPages, total, limit } = meta;
@@ -46,12 +51,18 @@ export function TablePagination({
   return (
     <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
       <p className="text-sm text-muted-foreground">
-        Showing {from}–{to} of {total}
+        {t("common.showingRange", {
+          from: formatNumber(from, locale),
+          to: formatNumber(to, locale),
+          total: formatNumber(total, locale),
+        })}
       </p>
       <Pagination className="mx-0 w-auto">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
+              text={t("common.previous")}
+              aria-label={t("common.previousPage")}
               href={`?page=${page - 1}`}
               onClick={go(page - 1)}
               aria-disabled={page === 1}
@@ -73,13 +84,15 @@ export function TablePagination({
                   isActive={entry === page}
                   onClick={go(entry)}
                 >
-                  {entry}
+                  {formatNumber(entry, locale)}
                 </PaginationLink>
               </PaginationItem>
             ),
           )}
           <PaginationItem>
             <PaginationNext
+              text={t("common.next")}
+              aria-label={t("common.nextPage")}
               href={`?page=${page + 1}`}
               onClick={go(page + 1)}
               aria-disabled={page === totalPages}

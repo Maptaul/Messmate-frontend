@@ -19,11 +19,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useLogout } from "@/hooks";
-import { ROLE_LABEL } from "@/lib/constants";
+import { useLocalePath, useT } from "@/i18n/i18n-provider";
+import { ROLE_LABEL_KEY } from "@/lib/constants";
 import { useSession } from "@/providers/session-provider";
 
 export function UserMenu({ avatarUrl }: { avatarUrl?: string | null }) {
   const user = useSession();
+  const t = useT();
+  const href = useLocalePath();
   const { mutate: logOut, isPending } = useLogout();
 
   return (
@@ -40,7 +43,7 @@ export function UserMenu({ avatarUrl }: { avatarUrl?: string | null }) {
         <span className="grid flex-1 text-left text-sm leading-tight">
           <span className="truncate font-medium">{user.name}</span>
           <span className="truncate text-xs text-muted-foreground">
-            {ROLE_LABEL[user.role]}
+            {t(ROLE_LABEL_KEY[user.role])}
           </span>
         </span>
         <ChevronsUpDownIcon className="ml-auto size-4" />
@@ -55,13 +58,13 @@ export function UserMenu({ avatarUrl }: { avatarUrl?: string | null }) {
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link href="/profile" />}>
+        <DropdownMenuItem render={<Link href={href("/profile")} />}>
           <CircleUserRoundIcon />
-          Profile
+          {t("userMenu.profile")}
         </DropdownMenuItem>
-        <DropdownMenuItem render={<Link href="/finance" />}>
+        <DropdownMenuItem render={<Link href={href("/finance")} />}>
           <WalletIcon />
-          Personal finance
+          {t("userMenu.finance")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -70,7 +73,7 @@ export function UserMenu({ avatarUrl }: { avatarUrl?: string | null }) {
           onClick={() => logOut()}
         >
           <LogOutIcon />
-          Log out
+          {t("userMenu.logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

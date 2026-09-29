@@ -15,8 +15,9 @@ import {
   updateUserRole,
   updateUserStatus,
 } from "@/api";
+import { useT } from "@/i18n/i18n-provider";
 import type { ApiClient } from "@/lib/api-client";
-import { ROLE_LABEL } from "@/lib/constants";
+import { ROLE_LABEL_KEY } from "@/lib/constants";
 import type {
   ApiResponse,
   AuditLogParams,
@@ -116,6 +117,7 @@ function useOptimisticUserPatch() {
 /** Block/unblock flips in the table immediately and rolls back if refused. */
 export const useUpdateUserStatus = () => {
   const optimistic = useOptimisticUserPatch();
+  const t = useT();
 
   return useMutation({
     mutationFn: updateUserStatus,
@@ -123,9 +125,14 @@ export const useUpdateUserStatus = () => {
     onError: (_error, _vars, snapshot) => optimistic.rollback(snapshot),
     onSuccess: ({ data }) =>
       toast.success(
-        data.status === "BLOCKED"
-          ? `${data.name} is blocked`
-          : `${data.name} is active again`,
+        t(
+          data.status === "BLOCKED"
+            ? "admin.toast.blocked"
+            : "admin.toast.unblocked",
+          {
+            name: data.name,
+          },
+        ),
       ),
     onSettled: optimistic.settle,
   });
@@ -133,24 +140,31 @@ export const useUpdateUserStatus = () => {
 
 export const useUpdateUserRole = () => {
   const optimistic = useOptimisticUserPatch();
+  const t = useT();
 
   return useMutation({
     mutationFn: updateUserRole,
     onMutate: ({ userId, role }) => optimistic.patch(userId, { role }),
     onError: (_error, _vars, snapshot) => optimistic.rollback(snapshot),
     onSuccess: ({ data }) =>
-      toast.success(`${data.name} is now ${ROLE_LABEL[data.role]}`),
+      toast.success(
+        t("admin.toast.roleChanged", {
+          name: data.name,
+          role: t(ROLE_LABEL_KEY[data.role]),
+        }),
+      ),
     onSettled: optimistic.settle,
   });
 };
 
 export const useDeleteMess = () => {
   const queryClient = useQueryClient();
+  const t = useT();
 
   return useMutation({
     mutationFn: deleteMess,
     onSuccess: ({ data }) => {
-      toast.success(`${data.name} was deleted`);
+      toast.success(t("admin.toast.messDeleted", { name: data.name }));
       queryClient.invalidateQueries({ queryKey: adminKeys.all });
     },
   });

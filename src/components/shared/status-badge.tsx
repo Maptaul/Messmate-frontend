@@ -1,4 +1,7 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
+import { useT } from "@/i18n/i18n-provider";
 import { humanize } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -51,11 +54,14 @@ export function StatusBadge({
   label?: string;
   className?: string;
 }) {
+  const t = useT();
   const tone = STATUS_TONE[status] ?? "gray";
+  const translated = t.dynamic(`status.${status}`);
 
   return (
     <Badge variant="outline" className={cn(TONE_CLASS[tone], className)}>
-      {label ?? humanize(status)}
+      {label ??
+        (translated.startsWith("status.") ? humanize(status) : translated)}
     </Badge>
   );
 }

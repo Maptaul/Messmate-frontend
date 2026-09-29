@@ -1,4 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE } from "@/i18n/config";
+import { localePath, splitLocale } from "@/i18n/locale-path";
 import { ACCESS_COOKIE, REFRESH_COOKIE, ROLE_HOME } from "@/lib/constants";
 import { verifyAccessToken } from "@/lib/jwt";
 import type { Role, SessionUser } from "@/types";
@@ -18,6 +20,12 @@ const AREAS: { prefix: string; roles: Role[] }[] = [
   { prefix: "/profile", roles: ANY_ROLE },
   { prefix: "/finance", roles: ANY_ROLE },
 ];
+
+const LOCALE_COOKIE_OPTIONS = {
+  path: "/",
+  maxAge: 60 * 60 * 24 * 365,
+  sameSite: "lax",
+} as const;
 
 const isUnder = (pathname: string, prefix: string) =>
   pathname === prefix || pathname.startsWith(`${prefix}/`);
@@ -55,7 +63,23 @@ async function refreshSession(refreshToken: string) {
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+  const { locale, path, explicit } = splitLocale(pathname);
+  const savedLocale = request.cookies.get(LOCALE_COOKIE)?.value;
+  const at = (target: string) => new URL(target, request.url);
 
+  // 1. `/en/...` isn't canonical — remember English and drop the prefix.
+  if (explicit && locale === DEFAULT_LOCALE) {
+    const response = NextResponse.redirect(at(path + search));
+    response.cookies.set(LOCALE_COOKIE, locale, LOCALE_COOKIE_OPTIONS);
+    return response;
+  }
+
+  // 2. An unprefixed link, but this visitor chose Bangla before.
+  if (!explicit && isLocale(savedLocale) && savedLocale !== DEFAULT_LOCALE) {
+    return NextResponse.redirect(at(localePath(savedLocale, path) + search));
+  }
+
+  // 3. Auth and roles, on the path without its locale.
   let user: SessionUser | null = await verifyAccessToken(
     request.cookies.get(ACCESS_COOKIE)?.value,
   );
@@ -70,17 +94,17 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const area = AREAS.find(({ prefix }) => isUnder(pathname, prefix));
-  const isAuthPage = AUTH_PAGES.some((page) => isUnder(pathname, page));
+  const area = AREAS.find(({ prefix }) => isUnder(path, prefix));
+  const isAuthPage = AUTH_PAGES.some((page) => isUnder(path, page));
 
   let response: NextResponse;
 
   if (user && isAuthPage) {
     response = NextResponse.redirect(
-      new URL(ROLE_HOME[user.role], request.url),
+      at(localePath(locale, ROLE_HOME[user.role])),
     );
   } else if (area && !user) {
-    const login = new URL("/login", request.url);
+    const login = at(localePath(locale, "/login"));
     login.searchParams.set("redirect", pathname + search);
     response = NextResponse.redirect(login);
     // Whatever was left is dead; don't keep sending it.
@@ -88,20 +112,34 @@ export async function proxy(request: NextRequest) {
     response.cookies.delete(REFRESH_COOKIE);
   } else if (area && user && !area.roles.includes(user.role)) {
     response = NextResponse.redirect(
-      new URL(ROLE_HOME[user.role], request.url),
+      at(localePath(locale, ROLE_HOME[user.role])),
     );
   } else {
     // Hand fresh tokens to this very render, not just the next request.
     for (const cookie of setCookies) {
       const [pair] = cookie.split(";");
-      const at = pair.indexOf("=");
-      request.cookies.set(pair.slice(0, at), pair.slice(at + 1));
+      const eq = pair.indexOf("=");
+      request.cookies.set(pair.slice(0, eq), pair.slice(eq + 1));
     }
-    response = NextResponse.next({ request: { headers: request.headers } });
+    const init = { request: { headers: request.headers } };
+
+    // 4. English URLs carry no prefix, so serve them from app/[lang] as "en".
+    response =
+      locale === DEFAULT_LOCALE
+        ? NextResponse.rewrite(
+            at(`/${DEFAULT_LOCALE}${path === "/" ? "" : path}${search}`),
+            init,
+          )
+        : NextResponse.next(init);
+
+    if (explicit && savedLocale !== locale) {
+      response.cookies.set(LOCALE_COOKIE, locale, LOCALE_COOKIE_OPTIONS);
+    }
   }
 
-  for (const cookie of setCookies)
+  for (const cookie of setCookies) {
     response.headers.append("set-cookie", cookie);
+  }
 
   return response;
 }

@@ -7,27 +7,17 @@ import { useState } from "react";
 import { applyServerErrors, useAppForm } from "@/components/form";
 import { FieldGroup } from "@/components/ui/field";
 import { useRegister } from "@/hooks";
+import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage } from "@/lib/errors";
 import { usePendingRegistration } from "@/stores/pending-registration.store";
 import type { RegisterPayload } from "@/types";
 import { registerSchema } from "@/validation";
 import { FormAlert } from "./form-alert";
 
-const ROLE_OPTIONS = [
-  {
-    value: "MEMBER",
-    title: "I live in a mess",
-    description: "Plan meals, see the ledger, pay my bill.",
-  },
-  {
-    value: "MESS_MANAGER",
-    title: "I run a mess",
-    description: "Add members, record expenses, close the month.",
-  },
-];
-
 export function RegisterForm() {
   const router = useRouter();
+  const t = useT();
+  const href = useLocalePath();
   const { mutateAsync: createAccount } = useRegister();
   const setPending = usePendingRegistration((state) => state.setPayload);
   const [formError, setFormError] = useState<string | null>(null);
@@ -54,7 +44,9 @@ export function RegisterForm() {
       try {
         await createAccount(payload);
         setPending(payload);
-        router.push(`/verify-email?email=${encodeURIComponent(payload.email)}`);
+        router.push(
+          `${href("/verify-email")}?email=${encodeURIComponent(payload.email)}`,
+        );
       } catch (error) {
         setFormError(getErrorMessage(error));
         applyServerErrors(form, error);
@@ -66,10 +58,10 @@ export function RegisterForm() {
     <div className="space-y-8">
       <div className="space-y-1.5 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Create your account
+          {t("auth.register.title")}
         </h1>
         <p className="text-sm text-muted-foreground">
-          We'll email you a 6-digit code to confirm it's you.
+          {t("auth.register.subtitle")}
         </p>
       </div>
 
@@ -86,34 +78,48 @@ export function RegisterForm() {
           <form.AppField name="role">
             {(field) => (
               <field.RadioCardsField
-                label="How will you use MessMate?"
-                options={ROLE_OPTIONS}
+                label={t("auth.register.roleLabel")}
+                options={[
+                  {
+                    value: "MEMBER",
+                    title: t("auth.register.memberTitle"),
+                    description: t("auth.register.memberDescription"),
+                  },
+                  {
+                    value: "MESS_MANAGER",
+                    title: t("auth.register.managerTitle"),
+                    description: t("auth.register.managerDescription"),
+                  },
+                ]}
               />
             )}
           </form.AppField>
           <form.AppField name="name">
             {(field) => (
-              <field.TextField label="Full name" autoComplete="name" />
+              <field.TextField
+                label={t("auth.register.name")}
+                autoComplete="name"
+              />
             )}
           </form.AppField>
           <div className="grid gap-6 sm:grid-cols-2">
             <form.AppField name="email">
               {(field) => (
                 <field.TextField
-                  label="Email"
+                  label={t("auth.register.email")}
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder={t("auth.login.emailPlaceholder")}
                 />
               )}
             </form.AppField>
             <form.AppField name="phone">
               {(field) => (
                 <field.TextField
-                  label="Phone (optional)"
+                  label={t("auth.register.phone")}
                   type="tel"
                   autoComplete="tel"
-                  placeholder="01XXXXXXXXX"
+                  placeholder={t("auth.register.phonePlaceholder")}
                 />
               )}
             </form.AppField>
@@ -121,16 +127,16 @@ export function RegisterForm() {
           <form.AppField name="password">
             {(field) => (
               <field.PasswordField
-                label="Password"
+                label={t("auth.register.password")}
                 autoComplete="new-password"
-                description="8+ characters with upper and lower case, a number and a symbol."
+                description={t("auth.register.passwordHint")}
               />
             )}
           </form.AppField>
           <form.AppField name="confirmPassword">
             {(field) => (
               <field.PasswordField
-                label="Confirm password"
+                label={t("auth.register.confirmPassword")}
                 autoComplete="new-password"
               />
             )}
@@ -139,22 +145,22 @@ export function RegisterForm() {
             <form.SubmitButton
               size="lg"
               className="w-full"
-              pendingLabel="Sending code…"
+              pendingLabel={t("auth.register.submitting")}
             >
               <UserPlusIcon />
-              Create account
+              {t("auth.register.submit")}
             </form.SubmitButton>
           </form.AppForm>
         </FieldGroup>
       </form>
 
       <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        {t("auth.register.haveAccount")}{" "}
         <Link
-          href="/login"
+          href={href("/login")}
           className="font-medium text-primary underline-offset-4 hover:underline"
         >
-          Log in
+          {t("auth.register.login")}
         </Link>
       </p>
     </div>

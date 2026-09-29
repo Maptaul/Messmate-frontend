@@ -9,8 +9,10 @@ import { applyServerErrors, useAppForm } from "@/components/form";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useRegister, useVerifyEmail } from "@/hooks";
+import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import { homeAfterLogin } from "@/lib/auth-redirect";
 import { getErrorMessage } from "@/lib/errors";
+import { formatNumber } from "@/lib/format";
 import { usePendingRegistration } from "@/stores/pending-registration.store";
 import { verifyEmailSchema } from "@/validation";
 import { FormAlert } from "./form-alert";
@@ -19,6 +21,9 @@ const RESEND_COOLDOWN_SECONDS = 60;
 
 export function VerifyEmailForm({ email }: { email: string }) {
   const router = useRouter();
+  const t = useT();
+  const locale = useLocale();
+  const href = useLocalePath();
   const { mutateAsync: verify } = useVerifyEmail();
   const { mutate: resend, isPending: isResending } = useRegister();
   const pending = usePendingRegistration((state) => state.payload);
@@ -40,8 +45,8 @@ export function VerifyEmailForm({ email }: { email: string }) {
       try {
         const { data } = await verify({ email, otp: value.otp });
         clearPending(null);
-        toast.success("Email confirmed — welcome to MessMate!");
-        router.replace(homeAfterLogin(data.accessToken));
+        toast.success(t("auth.verify.welcome"));
+        router.replace(homeAfterLogin(data.accessToken, locale));
         router.refresh();
       } catch (error) {
         setFormError(getErrorMessage(error));
@@ -61,12 +66,10 @@ export function VerifyEmailForm({ email }: { email: string }) {
           <MailCheckIcon className="size-6" aria-hidden />
         </span>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Check your email
+          {t("auth.verify.title")}
         </h1>
         <p className="text-sm text-muted-foreground">
-          We sent a 6-digit code to{" "}
-          <span className="font-medium text-foreground">{email}</span>. It
-          expires in 5 minutes.
+          {t("auth.verify.sentTo", { email })}
         </p>
       </div>
 
@@ -81,15 +84,15 @@ export function VerifyEmailForm({ email }: { email: string }) {
       >
         <FieldGroup>
           <form.AppField name="otp">
-            {(field) => <field.OtpField label="Verification code" />}
+            {(field) => <field.OtpField label={t("auth.verify.code")} />}
           </form.AppField>
           <form.AppForm>
             <form.SubmitButton
               size="lg"
               className="w-full"
-              pendingLabel="Verifying…"
+              pendingLabel={t("auth.verify.submitting")}
             >
-              Verify and continue
+              {t("auth.verify.submit")}
             </form.SubmitButton>
           </form.AppForm>
         </FieldGroup>
@@ -103,25 +106,29 @@ export function VerifyEmailForm({ email }: { email: string }) {
             onClick={() =>
               resend(pending, {
                 onSuccess: () => {
-                  toast.success("A new code is on its way.");
+                  toast.success(t("auth.verify.resent"));
                   setCooldown(RESEND_COOLDOWN_SECONDS);
                 },
               })
             }
           >
             <RotateCwIcon />
-            {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
+            {cooldown > 0
+              ? t("auth.verify.resendIn", {
+                  seconds: formatNumber(cooldown, locale),
+                })
+              : t("auth.verify.resend")}
           </Button>
         ) : (
           <p>
-            Code expired?{" "}
+            {t("auth.verify.expired")}{" "}
             <Link
-              href="/register"
+              href={href("/register")}
               className="font-medium text-primary underline-offset-4 hover:underline"
             >
-              Register again
+              {t("auth.verify.registerAgain")}
             </Link>{" "}
-            to get a new one.
+            {t("auth.verify.toGetNew")}
           </p>
         )}
       </div>

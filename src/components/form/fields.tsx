@@ -27,7 +27,28 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { useT } from "@/i18n/i18n-provider";
 import { useFieldContext, useFormContext } from "./form-context";
+
+/**
+ * Zod messages in this app are dictionary keys ("validation.emailInvalid");
+ * API field messages are plain text. `t.dynamic` handles both.
+ */
+function TranslatedErrors({ errors }: { errors: unknown[] }) {
+  const t = useT();
+
+  return (
+    <FieldError
+      errors={errors.map((error) => {
+        const message =
+          typeof error === "string"
+            ? error
+            : (error as { message?: string } | undefined)?.message;
+        return { message: message ? t.dynamic(message) : undefined };
+      })}
+    />
+  );
+}
 
 interface FieldShellProps {
   label: string;
@@ -47,13 +68,7 @@ function FieldShell({ label, description, children }: FieldShellProps) {
       {description && !invalid && (
         <FieldDescription>{description}</FieldDescription>
       )}
-      {invalid && (
-        <FieldError
-          errors={field.state.meta.errors.map((error) =>
-            typeof error === "string" ? { message: error } : error,
-          )}
-        />
-      )}
+      {invalid && <TranslatedErrors errors={field.state.meta.errors} />}
     </Field>
   );
 }
@@ -100,6 +115,7 @@ export function PasswordField({
   autoComplete?: string;
 }) {
   const field = useFieldContext<string>();
+  const t = useT();
   const [visible, setVisible] = useState(false);
 
   return (
@@ -123,7 +139,9 @@ export function PasswordField({
             size="icon-sm"
             className="absolute top-1/2 right-1 -translate-y-1/2 text-muted-foreground"
             onClick={() => setVisible((shown) => !shown)}
-            aria-label={visible ? "Hide password" : "Show password"}
+            aria-label={t(
+              visible ? "common.hidePassword" : "common.showPassword",
+            )}
           >
             {visible ? <EyeOffIcon /> : <EyeIcon />}
           </Button>
@@ -169,7 +187,7 @@ export function SelectField({
   label,
   description,
   options,
-  placeholder = "Select…",
+  placeholder,
 }: {
   label: string;
   description?: ReactNode;
@@ -177,6 +195,7 @@ export function SelectField({
   placeholder?: string;
 }) {
   const field = useFieldContext<string>();
+  const t = useT();
 
   return (
     <FieldShell label={label} description={description}>
@@ -190,7 +209,7 @@ export function SelectField({
           }}
         >
           <SelectTrigger id={id} aria-invalid={invalid} className="w-full">
-            <SelectValue placeholder={placeholder} />
+            <SelectValue placeholder={placeholder ?? t("common.select")} />
           </SelectTrigger>
           <SelectContent>
             {options.map((option) => (
@@ -253,13 +272,7 @@ export function RadioCardsField({
           );
         })}
       </RadioGroup>
-      {invalid && (
-        <FieldError
-          errors={field.state.meta.errors.map((error) =>
-            typeof error === "string" ? { message: error } : error,
-          )}
-        />
-      )}
+      {invalid && <TranslatedErrors errors={field.state.meta.errors} />}
     </Field>
   );
 }

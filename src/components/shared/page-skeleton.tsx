@@ -4,16 +4,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function PageSkeleton({
   stats = 4,
   rows = 6,
+  label,
 }: {
   stats?: number;
   rows?: number;
+  /** Announced to screen readers; pass the translated "Loading". */
+  label?: string;
 }) {
   return (
-    <section
-      aria-busy="true"
-      aria-label="Loading"
-      className="flex flex-col gap-6"
-    >
+    <section aria-busy="true" className="flex flex-col gap-6">
+      {label && <span className="sr-only">{label}</span>}
       <div className="space-y-2">
         <Skeleton className="h-7 w-56" />
         <Skeleton className="h-4 w-80 max-w-full" />

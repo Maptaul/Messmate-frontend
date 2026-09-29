@@ -11,6 +11,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useLocalePath, useT } from "@/i18n/i18n-provider";
 
 /** What an error boundary shows: what happened, and two ways out. */
 export function ErrorState({
@@ -22,6 +23,9 @@ export function ErrorState({
   retry: () => void;
   homeHref?: string;
 }) {
+  const t = useT();
+  const href = useLocalePath();
+
   return (
     <Empty className="min-h-[60svh]">
       <EmptyHeader>
@@ -31,12 +35,12 @@ export function ErrorState({
         >
           <TriangleAlertIcon />
         </EmptyMedia>
-        <EmptyTitle>This page hit a problem</EmptyTitle>
+        <EmptyTitle>{t("errors.pageTitle")}</EmptyTitle>
         <EmptyDescription>
-          Your data is safe — something failed while loading this view.
+          {t("errors.pageBody")}
           {error.digest && (
             <span className="mt-2 block font-mono text-xs">
-              Reference: {error.digest}
+              {t("errors.reference", { id: error.digest })}
             </span>
           )}
         </EmptyDescription>
@@ -44,14 +48,14 @@ export function ErrorState({
       <EmptyContent className="flex-row justify-center">
         <Button onClick={() => retry()}>
           <RotateCwIcon />
-          Try again
+          {t("common.tryAgain")}
         </Button>
         <Button
           variant="outline"
-          render={<Link href={homeHref} />}
+          render={<Link href={href(homeHref)} />}
           nativeButton={false}
         >
-          Go home
+          {t("common.goHome")}
         </Button>
       </EmptyContent>
     </Empty>

@@ -1,4 +1,5 @@
 import { FetchError, type FetchOptions, ofetch } from "ofetch";
+import { localePath, splitLocale } from "@/i18n/locale-path";
 
 /**
  * The one shape every API function accepts, so the same function runs in the
@@ -50,8 +51,11 @@ export const apiClient: ApiClient = async <T>(
 
     if (await refreshSession()) return browserFetch<T>(url, options);
 
-    const here = window.location.pathname + window.location.search;
-    window.location.assign(`/login?redirect=${encodeURIComponent(here)}`);
+    const { pathname, search } = window.location;
+    const { locale } = splitLocale(pathname);
+    window.location.assign(
+      `${localePath(locale, "/login")}?redirect=${encodeURIComponent(pathname + search)}`,
+    );
     throw error;
   }
 };

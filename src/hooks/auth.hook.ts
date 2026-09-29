@@ -14,6 +14,7 @@ import {
   resetPassword,
   verifyEmail,
 } from "@/api";
+import { useLocalePath } from "@/i18n/i18n-provider";
 import type { ApiClient } from "@/lib/api-client";
 
 export const meQuery = (client?: ApiClient) =>
@@ -46,12 +47,13 @@ export const useResetPassword = () =>
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const href = useLocalePath();
 
   return useMutation({
     mutationFn: logout,
     onSettled: () => {
       queryClient.clear();
-      router.replace("/login");
+      router.replace(href("/login"));
       router.refresh();
     },
   });

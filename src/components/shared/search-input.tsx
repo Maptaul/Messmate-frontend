@@ -5,19 +5,21 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useT } from "@/i18n/i18n-provider";
 
 /** Types freely; reports the value only after the user pauses. */
 export function SearchInput({
   value,
   onSearch,
-  placeholder = "Search…",
-  label = "Search",
+  placeholder,
+  label,
 }: {
   value: string;
   onSearch: (value: string) => void;
   placeholder?: string;
   label?: string;
 }) {
+  const t = useT();
   const [draft, setDraft] = useState(value);
   const debounced = useDebounce(draft);
 
@@ -35,8 +37,8 @@ export function SearchInput({
         type="search"
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
-        placeholder={placeholder}
-        aria-label={label}
+        placeholder={placeholder ?? t("common.searchPlaceholder")}
+        aria-label={label ?? t("common.search")}
         className="pr-8 pl-8"
       />
       {draft && (
@@ -45,7 +47,7 @@ export function SearchInput({
           size="icon-xs"
           className="absolute top-1/2 right-1.5 -translate-y-1/2"
           onClick={() => setDraft("")}
-          aria-label="Clear search"
+          aria-label={t("common.clearSearch")}
         >
           <XIcon />
         </Button>

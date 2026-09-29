@@ -18,6 +18,8 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useLocalePath, useT } from "@/i18n/i18n-provider";
+import { splitLocale } from "@/i18n/locale-path";
 import { ROLE_HOME } from "@/lib/constants";
 import { useSession } from "@/providers/session-provider";
 import { isNavItemActive, NAV_BY_ROLE } from "@/routes";
@@ -30,34 +32,36 @@ export function AppSidebar({
   footer: ReactNode;
 }) {
   const { role } = useSession();
-  const pathname = usePathname();
+  const t = useT();
+  const href = useLocalePath();
+  const { path } = splitLocale(usePathname());
   const { setOpenMobile } = useSidebar();
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="gap-3 p-3">
         <Logo
-          href={ROLE_HOME[role]}
+          href={href(ROLE_HOME[role])}
           className="group-data-[collapsible=icon]:hidden"
         />
         {header}
       </SidebarHeader>
       <SidebarContent>
         {NAV_BY_ROLE[role].map((group) => (
-          <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+          <SidebarGroup key={group.titleKey}>
+            <SidebarGroupLabel>{t(group.titleKey)}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.url}>
                     <SidebarMenuButton
-                      render={<Link href={item.url} />}
-                      isActive={isNavItemActive(item, pathname)}
-                      tooltip={item.title}
+                      render={<Link href={href(item.url)} />}
+                      isActive={isNavItemActive(item, path)}
+                      tooltip={t(item.titleKey)}
                       onClick={() => setOpenMobile(false)}
                     >
                       <item.icon />
-                      <span>{item.title}</span>
+                      <span>{t(item.titleKey)}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

@@ -3,31 +3,43 @@ import {
   ReceiptTextIcon,
   WalletCardsIcon,
 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { Logo } from "@/components/shared/logo";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { getLocale, getT } from "@/i18n/get-dictionary";
+import { localePath } from "@/i18n/locale-path";
 
-const POINTS = [
-  {
-    icon: CalendarCheck2Icon,
-    title: "Plan meals before 11 PM",
-    body: "Everyone marks tomorrow's lunch and dinner; the cook sees the headcount.",
-  },
-  {
-    icon: ReceiptTextIcon,
-    title: "One ledger, no arguments",
-    body: "Groceries, gas, rent and deposits are recorded once and visible to all.",
-  },
-  {
-    icon: WalletCardsIcon,
-    title: "Month-end bill in one click",
-    body: "Close the cycle, every member gets their share — pay by card or bKash.",
-  },
-];
+export default async function AuthLayout({ children }: LayoutProps<"/[lang]">) {
+  const [t, locale] = await Promise.all([getT(), getLocale()]);
 
-export default function AuthLayout({ children }: LayoutProps<"/">) {
+  const points = [
+    {
+      icon: CalendarCheck2Icon,
+      title: t("auth.layout.planTitle"),
+      body: t("auth.layout.planBody"),
+    },
+    {
+      icon: ReceiptTextIcon,
+      title: t("auth.layout.ledgerTitle"),
+      body: t("auth.layout.ledgerBody"),
+    },
+    {
+      icon: WalletCardsIcon,
+      title: t("auth.layout.billTitle"),
+      body: t("auth.layout.billBody"),
+    },
+  ];
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-8 p-6 md:p-10">
-        <Logo />
+        <div className="flex items-center justify-between gap-4">
+          <Logo href={localePath(locale, "/")} />
+          <div className="flex items-center gap-1">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
+        </div>
         <main className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-md">{children}</div>
         </main>
@@ -39,15 +51,15 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
           className="absolute -top-24 -right-24 size-96 rounded-full bg-primary-foreground/10 blur-3xl"
         />
         <div className="relative space-y-3">
-          <p className="text-sm font-medium tracking-widest uppercase opacity-80">
-            For shared messes in Bangladesh
+          <p className="text-sm font-medium opacity-80">
+            {t("auth.layout.eyebrow")}
           </p>
           <h2 className="max-w-md text-4xl leading-tight font-semibold text-balance">
-            The whole month's khata, settled without a notebook.
+            {t("auth.layout.title")}
           </h2>
         </div>
         <ul className="relative space-y-6">
-          {POINTS.map(({ icon: Icon, title, body }) => (
+          {points.map(({ icon: Icon, title, body }) => (
             <li key={title} className="flex gap-4">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-foreground/15">
                 <Icon className="size-5" aria-hidden />

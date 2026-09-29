@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { UserMenu } from "@/components/dashboard/user-menu";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -11,15 +12,19 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { meQuery } from "@/hooks/auth.hook";
+import { getLocale } from "@/i18n/get-dictionary";
+import { localePath } from "@/i18n/locale-path";
 import { getQueryClient } from "@/lib/query-client";
 import { serverApi } from "@/lib/server-api";
 import { getSessionUser } from "@/lib/session";
 import { SessionProvider } from "@/providers/session-provider";
 
-export default async function ProtectedLayout({ children }: LayoutProps<"/">) {
+export default async function ProtectedLayout({
+  children,
+}: LayoutProps<"/[lang]">) {
   // proxy.ts already guarantees a session here; this is the belt to its braces.
   const user = await getSessionUser();
-  if (!user) redirect("/login");
+  if (!user) redirect(localePath(await getLocale(), "/login"));
 
   const queryClient = getQueryClient();
   const me = await queryClient
@@ -38,6 +43,7 @@ export default async function ProtectedLayout({ children }: LayoutProps<"/">) {
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
               <div className="flex-1" />
+              <LanguageSwitcher />
               <ThemeToggle />
             </header>
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">

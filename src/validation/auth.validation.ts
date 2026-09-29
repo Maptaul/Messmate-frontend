@@ -1,25 +1,25 @@
 import { z } from "zod";
 
-const email = z.string().trim().pipe(z.email("Enter a valid email address"));
+// Messages are dictionary keys; the field components translate them.
+
+const email = z.string().trim().pipe(z.email("validation.emailInvalid"));
 
 /** The backend's rule, so the form never lets through what the API rejects. */
 export const passwordRule = z
   .string()
-  .min(8, "Use at least 8 characters")
-  .regex(/[a-z]/, "Add a lowercase letter")
-  .regex(/[A-Z]/, "Add an uppercase letter")
-  .regex(/[0-9]/, "Add a number")
-  .regex(/[^A-Za-z0-9]/, "Add a symbol, like @ or #");
+  .min(8, "validation.passwordMin")
+  .regex(/[a-z]/, "validation.passwordLower")
+  .regex(/[A-Z]/, "validation.passwordUpper")
+  .regex(/[0-9]/, "validation.passwordNumber")
+  .regex(/[^A-Za-z0-9]/, "validation.passwordSymbol");
 
-const otp = z
-  .string()
-  .regex(/^\d{6}$/, "Enter the 6-digit code from the email");
+const otp = z.string().regex(/^\d{6}$/, "validation.otpInvalid");
 
 // Login only checks presence: an old password that predates the rule should
 // still reach the server and get an honest "invalid credentials".
 export const loginSchema = z.object({
   email,
-  password: z.string().min(1, "Enter your password"),
+  password: z.string().min(1, "validation.passwordRequired"),
 });
 
 export const registerSchema = z
@@ -27,24 +27,24 @@ export const registerSchema = z
     name: z
       .string()
       .trim()
-      .min(3, "Name must be at least 3 characters")
-      .max(120, "Name is too long"),
+      .min(3, "validation.nameMin")
+      .max(120, "validation.nameMax"),
     email,
     phone: z
       .string()
       .trim()
-      .max(20, "Phone number is too long")
+      .max(20, "validation.phoneMax")
       .refine((value) => value === "" || /^[0-9+\-\s]{6,20}$/.test(value), {
-        message: "Enter a valid phone number",
+        message: "validation.phoneInvalid",
       }),
     role: z.enum(["MEMBER", "MESS_MANAGER"], {
-      message: "Choose how you'll use MessMate",
+      message: "validation.roleRequired",
     }),
     password: passwordRule,
     confirmPassword: z.string(),
   })
   .refine((values) => values.password === values.confirmPassword, {
-    message: "Passwords don't match",
+    message: "validation.passwordsMismatch",
     path: ["confirmPassword"],
   });
 
@@ -59,6 +59,6 @@ export const resetPasswordSchema = z
     confirmPassword: z.string(),
   })
   .refine((values) => values.newPassword === values.confirmPassword, {
-    message: "Passwords don't match",
+    message: "validation.passwordsMismatch",
     path: ["confirmPassword"],
   });
