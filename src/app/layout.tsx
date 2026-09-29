@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Anek_Bangla, Roboto } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
+// English in Roboto; any Bengali glyph falls through to Anek Bangla (see --font-sans).
+const roboto = Roboto({ subsets: ["latin"], variable: "--font-roboto" });
+const anekBangla = Anek_Bangla({
+  subsets: ["bengali", "latin"],
+  variable: "--font-anek-bangla",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -32,8 +36,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={cn(
         "font-sans antialiased",
-        geist.variable,
-        geistMono.variable,
+        roboto.variable,
+        anekBangla.variable,
       )}
     >
       <body>
