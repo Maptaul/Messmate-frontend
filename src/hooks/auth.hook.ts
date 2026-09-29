@@ -1,60 +1,61 @@
-import {
-  queryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   forgotPassword,
   getMe,
-  login,
-  logout,
-  register,
+  googleOAuth,
   resetPassword,
-  verifyEmail,
+  userLogin,
+  userLogout,
+  userRegistration,
+  verifyAccount,
 } from "@/api";
-import { useLocalePath } from "@/i18n/i18n-provider";
-import type { ApiClient } from "@/lib/api-client";
 
-export const meQuery = (client?: ApiClient) =>
-  queryOptions({
-    queryKey: ["me"],
-    queryFn: () => getMe(client),
-    select: (res) => res.data,
-    // The auth routes share a tight rate limit; the profile rarely changes.
-    staleTime: 5 * 60 * 1000,
-  });
-
-export const useMe = () => useQuery(meQuery());
-
-export const useLogin = () =>
-  useMutation({ mutationFn: login, meta: { silent: true } });
-
-export const useRegister = () =>
-  useMutation({ mutationFn: register, meta: { silent: true } });
-
-export const useVerifyEmail = () =>
-  useMutation({ mutationFn: verifyEmail, meta: { silent: true } });
-
-export const useForgotPassword = () =>
-  useMutation({ mutationFn: forgotPassword, meta: { silent: true } });
-
-export const useResetPassword = () =>
-  useMutation({ mutationFn: resetPassword, meta: { silent: true } });
-
-/** Clears the cookies, drops every cached query, and lands on /login. */
-export const useLogout = () => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const href = useLocalePath();
-
+export function useLogin() {
   return useMutation({
-    mutationFn: logout,
-    onSettled: () => {
-      queryClient.clear();
-      router.replace(href("/login"));
-      router.refresh();
-    },
+    mutationFn: userLogin,
   });
-};
+}
+
+export function useVerifyAccount() {
+  return useMutation({
+    mutationFn: verifyAccount,
+  });
+}
+
+export function useRegistration() {
+  return useMutation({
+    mutationFn: userRegistration,
+  });
+}
+
+export function useLogout() {
+  return useMutation({
+    mutationFn: userLogout,
+  });
+}
+
+export function useGoogleOAuth() {
+  return useMutation({
+    mutationFn: googleOAuth,
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: forgotPassword,
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: resetPassword,
+  });
+}
+
+export function useGetMe() {
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: () => getMe(),
+    retry: false,
+  });
+}

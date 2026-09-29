@@ -1,4 +1,4 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   ApiResponse,
   CreateMessPayload,
@@ -9,19 +9,19 @@ import type {
 
 export function getAllMesses(
   params: MessListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
-  return client<ApiResponse<Mess[]>>("/mess/all-messes", { query: params });
+  return client<ApiResponse<Mess[]>>("/mess/all-messes", { params });
 }
 
 export function getMyMesses(
   params: MessListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
-  return client<ApiResponse<Mess[]>>("/mess/my-messes", { query: params });
+  return client<ApiResponse<Mess[]>>("/mess/my-messes", { params });
 }
 
-export function getMess(messId: string, client: ApiClient = apiClient) {
+export function getMess(messId: string, client = apiClient) {
   return client<ApiResponse<MessDetail>>(`/mess/${messId}`);
 }
 

@@ -1,23 +1,19 @@
 import {
-  keepPreviousData,
-  queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   deleteMess,
   getAllMesses,
   getAuditLogs,
   getDashboardStats,
+  getUser,
   getUsers,
   updateUserRole,
   updateUserStatus,
 } from "@/api";
-import { useT } from "@/i18n/i18n-provider";
-import type { ApiClient } from "@/lib/api-client";
-import { ROLE_LABEL_KEY } from "@/lib/constants";
 import type {
   ApiResponse,
   AuditLogParams,
@@ -26,146 +22,111 @@ import type {
   UserListParams,
 } from "@/types";
 
-export const adminKeys = {
-  all: ["admin"] as const,
-  stats: ["admin", "stats"] as const,
-  users: (params?: UserListParams) =>
-    params
-      ? (["admin", "users", params] as const)
-      : (["admin", "users"] as const),
-  auditLogs: (params: AuditLogParams) =>
-    ["admin", "audit-logs", params] as const,
-  messes: (params?: MessListParams) =>
-    params
-      ? (["admin", "messes", params] as const)
-      : (["admin", "messes"] as const),
-};
-
-export const dashboardStatsQuery = (client?: ApiClient) =>
-  queryOptions({
-    queryKey: adminKeys.stats,
-    queryFn: () => getDashboardStats(client),
+export function useSuspenseDashboardStats() {
+  return useSuspenseQuery({
+    queryKey: ["admin-stats"],
+    queryFn: () => getDashboardStats(),
   });
+}
 
-export const usersQuery = (params: UserListParams, client?: ApiClient) =>
-  queryOptions({
-    queryKey: adminKeys.users(params),
-    queryFn: () => getUsers(params, client),
-    placeholderData: keepPreviousData,
+export function useUsers(params: UserListParams) {
+  return useQuery({
+    queryKey: ["users", params],
+    queryFn: () => getUsers(params),
   });
+}
 
-export const auditLogsQuery = (params: AuditLogParams, client?: ApiClient) =>
-  queryOptions({
-    queryKey: adminKeys.auditLogs(params),
-    queryFn: () => getAuditLogs(params, client),
-    placeholderData: keepPreviousData,
+export function useSuspenseUsers(params: UserListParams) {
+  return useSuspenseQuery({
+    queryKey: ["users", params],
+    queryFn: () => getUsers(params),
   });
+}
 
-export const allMessesQuery = (params: MessListParams, client?: ApiClient) =>
-  queryOptions({
-    queryKey: adminKeys.messes(params),
-    queryFn: () => getAllMesses(params, client),
-    placeholderData: keepPreviousData,
+export function useSuspenseUser(userId: string) {
+  return useSuspenseQuery({
+    queryKey: ["user-detail", userId],
+    queryFn: () => getUser(userId),
   });
+}
 
-export const useDashboardStats = () => useQuery(dashboardStatsQuery());
-export const useUsers = (params: UserListParams) =>
-  useQuery(usersQuery(params));
-export const useAuditLogs = (params: AuditLogParams) =>
-  useQuery(auditLogsQuery(params));
-export const useAllMesses = (params: MessListParams) =>
-  useQuery(allMessesQuery(params));
+export function useSuspenseAuditLogs(params: AuditLogParams) {
+  return useSuspenseQuery({
+    queryKey: ["audit-logs", params],
+    queryFn: () => getAuditLogs(params),
+  });
+}
 
-type UserPage = ApiResponse<User[]>;
+export function useSuspenseAllMesses(params: MessListParams) {
+  return useSuspenseQuery({
+    queryKey: ["messes", params],
+    queryFn: () => getAllMesses(params),
+  });
+}
 
-/** Rewrites one user in every cached page of the users list. */
-function useOptimisticUserPatch() {
+/**
+ * Optimistic (B7A7): the status badge flips at once and flips back if the
+ * API refuses (e.g. blocking a manager with an open month).
+ */
+export function useUpdateUserStatus() {
   const queryClient = useQueryClient();
 
-  return {
-    async patch(userId: string, changes: Partial<User>) {
-      await queryClient.cancelQueries({ queryKey: adminKeys.users() });
-      const snapshot = queryClient.getQueriesData<UserPage>({
-        queryKey: adminKeys.users(),
+  return useMutation({
+    mutationFn: updateUserStatus,
+    onMutate: async ({ userId, status }) => {
+      await queryClient.cancelQueries({ queryKey: ["users"] });
+      const previous = queryClient.getQueriesData<ApiResponse<User[]>>({
+        queryKey: ["users"],
       });
 
-      queryClient.setQueriesData<UserPage>(
-        { queryKey: adminKeys.users() },
-        (page) =>
-          page && {
-            ...page,
-            data: page.data.map((user) =>
-              user.id === userId ? { ...user, ...changes } : user,
+      queryClient.setQueriesData<ApiResponse<User[]>>(
+        { queryKey: ["users"] },
+        (old) =>
+          old && {
+            ...old,
+            data: old.data.map((user) =>
+              user.id === userId ? { ...user, status } : user,
             ),
           },
       );
 
-      return snapshot;
+      return { previous };
     },
-    rollback(
-      snapshot: [readonly unknown[], UserPage | undefined][] | undefined,
-    ) {
-      for (const [key, page] of snapshot ?? [])
-        queryClient.setQueryData(key, page);
+    onError: (_error, _variables, context) => {
+      for (const [key, data] of context?.previous ?? []) {
+        queryClient.setQueryData(key, data);
+      }
     },
-    settle() {
-      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["user-detail"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
     },
-  };
+  });
 }
 
-/** Block/unblock flips in the table immediately and rolls back if refused. */
-export const useUpdateUserStatus = () => {
-  const optimistic = useOptimisticUserPatch();
-  const t = useT();
-
-  return useMutation({
-    mutationFn: updateUserStatus,
-    onMutate: ({ userId, status }) => optimistic.patch(userId, { status }),
-    onError: (_error, _vars, snapshot) => optimistic.rollback(snapshot),
-    onSuccess: ({ data }) =>
-      toast.success(
-        t(
-          data.status === "BLOCKED"
-            ? "admin.toast.blocked"
-            : "admin.toast.unblocked",
-          {
-            name: data.name,
-          },
-        ),
-      ),
-    onSettled: optimistic.settle,
-  });
-};
-
-export const useUpdateUserRole = () => {
-  const optimistic = useOptimisticUserPatch();
-  const t = useT();
+export function useUpdateUserRole() {
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: updateUserRole,
-    onMutate: ({ userId, role }) => optimistic.patch(userId, { role }),
-    onError: (_error, _vars, snapshot) => optimistic.rollback(snapshot),
-    onSuccess: ({ data }) =>
-      toast.success(
-        t("admin.toast.roleChanged", {
-          name: data.name,
-          role: t(ROLE_LABEL_KEY[data.role]),
-        }),
-      ),
-    onSettled: optimistic.settle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["user-detail"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
+    },
   });
-};
+}
 
-export const useDeleteMess = () => {
+export function useDeleteMess() {
   const queryClient = useQueryClient();
-  const t = useT();
 
   return useMutation({
     mutationFn: deleteMess,
-    onSuccess: ({ data }) => {
-      toast.success(t("admin.toast.messDeleted", { name: data.name }));
-      queryClient.invalidateQueries({ queryKey: adminKeys.all });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["messes"] });
+      queryClient.invalidateQueries({ queryKey: ["my-messes"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
     },
   });
-};
+}

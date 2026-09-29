@@ -1,28 +1,28 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   AdminUserDetail,
   ApiResponse,
   AuditLog,
   AuditLogParams,
   DashboardStats,
-  Role,
+  UserRole,
   User,
   UserListParams,
   UserStatus,
 } from "@/types";
 
-export function getDashboardStats(client: ApiClient = apiClient) {
+export function getDashboardStats(client = apiClient) {
   return client<ApiResponse<DashboardStats>>("/admin/dashboard-stats");
 }
 
 export function getUsers(
   params: UserListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
-  return client<ApiResponse<User[]>>("/admin/users", { query: params });
+  return client<ApiResponse<User[]>>("/admin/users", { params });
 }
 
-export function getUser(userId: string, client: ApiClient = apiClient) {
+export function getUser(userId: string, client = apiClient) {
   return client<ApiResponse<AdminUserDetail>>(`/admin/users/${userId}`);
 }
 
@@ -31,7 +31,7 @@ export function updateUserRole({
   role,
 }: {
   userId: string;
-  role: Role;
+  role: UserRole;
 }) {
   return apiClient<ApiResponse<User>>(`/admin/users/${userId}/role`, {
     method: "PATCH",
@@ -54,9 +54,9 @@ export function updateUserStatus({
 
 export function getAuditLogs(
   params: AuditLogParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<AuditLog[]>>("/admin/audit-logs", {
-    query: params,
+    params,
   });
 }

@@ -9,7 +9,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
-export function EmptyState({
+export default function EmptyState({
   icon: Icon,
   title,
   description,

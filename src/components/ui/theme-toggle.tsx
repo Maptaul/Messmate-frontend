@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/i18n/i18n-provider";
 
-export function ThemeToggle() {
+export default function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const t = useT();
   const isDark = resolvedTheme === "dark";

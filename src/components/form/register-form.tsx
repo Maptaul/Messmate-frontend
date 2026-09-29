@@ -10,7 +10,7 @@ import { useRegister } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage } from "@/lib/errors";
 import { usePendingRegistration } from "@/stores/pending-registration.store";
-import type { RegisterPayload } from "@/types";
+import type { RegistrationPayload } from "@/types";
 import { registerSchema } from "@/validation";
 import { FormAlert } from "./form-alert";
 
@@ -39,7 +39,7 @@ export function RegisterForm() {
         phone,
         ...rest
       } = registerSchema.parse(value);
-      const payload: RegisterPayload = { ...rest, ...(phone ? { phone } : {}) };
+      const payload: RegistrationPayload = { ...rest, ...(phone ? { phone } : {}) };
 
       try {
         await createAccount(payload);

@@ -1,4 +1,4 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   ApiResponse,
   BillListParams,
@@ -14,31 +14,31 @@ import type {
 
 export function getMyBills(
   params: BillListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
-  return client<ApiResponse<MyBill[]>>("/payment/my-bills", { query: params });
+  return client<ApiResponse<MyBill[]>>("/payment/my-bills", { params });
 }
 
 export function getCycleBills(
   cycleId: string,
   params: BillListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<CycleBill[]>>(`/payment/cycle-bills/${cycleId}`, {
-    query: params,
+    params,
   });
 }
 
 export function getMyPayments(
   params: PaymentListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<Payment[]>>("/payment/my-payments", {
-    query: params,
+    params,
   });
 }
 
-export function getPayment(paymentId: string, client: ApiClient = apiClient) {
+export function getPayment(paymentId: string, client = apiClient) {
   return client<ApiResponse<Payment>>(`/payment/${paymentId}`);
 }
 
@@ -53,7 +53,7 @@ export function startStripeCheckout(billId: string) {
 /** Called by /payment/success with Stripe's session id; safe to repeat. */
 export function confirmStripePayment(
   sessionId: string,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<StripeConfirmation>>("/payment/confirm-stripe", {
     method: "POST",

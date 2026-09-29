@@ -9,7 +9,7 @@ export const initialsOf = (name: string) =>
     .map((part) => part[0]?.toUpperCase())
     .join("");
 
-export function UserAvatar({
+export default function UserAvatar({
   name,
   src,
   className,

@@ -1,156 +1,116 @@
 import {
-  keepPreviousData,
-  queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import {
   addFinanceEntry,
   deleteFinanceEntry,
   getFinanceCategories,
   getFinanceEntries,
   getFinanceSummary,
-  refreshToken,
   removeAvatar,
   updateFinanceEntry,
   updateProfile,
   uploadAvatar,
 } from "@/api";
-import { useT } from "@/i18n/i18n-provider";
-import type { ApiClient } from "@/lib/api-client";
 import type { FinanceEntryParams, SummaryPeriod } from "@/types";
-import { keys } from "./keys";
 
 // --- Profile ---------------------------------------------------------------
 
-/** Re-renders server components (sidebar avatar, name) after a change. */
-function useProfileRefresh() {
+export function useUpdateProfile() {
   const queryClient = useQueryClient();
-  const router = useRouter();
-
-  return () => {
-    queryClient.invalidateQueries({ queryKey: keys.me });
-    router.refresh();
-  };
-}
-
-/**
- * The API kills the access token when the name changes, so trade the refresh
- * token for a new pair before anything else asks for data.
- */
-export const useUpdateProfile = () => {
-  const refreshView = useProfileRefresh();
-  const t = useT();
 
   return useMutation({
-    mutationFn: async (payload: Parameters<typeof updateProfile>[0]) => {
-      const result = await updateProfile(payload);
-      await refreshToken();
-      return result;
-    },
-    meta: { silent: true },
+    mutationFn: updateProfile,
     onSuccess: () => {
-      toast.success(t("toast.profileSaved"));
-      refreshView();
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
-};
+}
 
-export const useUploadAvatar = () => {
-  const refreshView = useProfileRefresh();
-  const t = useT();
+export function useUploadAvatar() {
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: uploadAvatar,
-    meta: { silent: true },
     onSuccess: () => {
-      toast.success(t("toast.photoUpdated"));
-      refreshView();
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
-};
+}
 
-export const useRemoveAvatar = () => {
-  const refreshView = useProfileRefresh();
-  const t = useT();
+export function useRemoveAvatar() {
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: removeAvatar,
     onSuccess: () => {
-      toast.success(t("toast.photoRemoved"));
-      refreshView();
-    },
-  });
-};
-
-// --- Personal finance -------------------------------------------------------
-
-export const financeCategoriesQuery = (client?: ApiClient) =>
-  queryOptions({
-    queryKey: keys.financeCategories,
-    queryFn: () => getFinanceCategories(client),
-    staleTime: Number.POSITIVE_INFINITY,
-  });
-
-export const financeEntriesQuery = (
-  params: FinanceEntryParams,
-  client?: ApiClient,
-) =>
-  queryOptions({
-    queryKey: keys.financeEntries(params),
-    queryFn: () => getFinanceEntries(params, client),
-    placeholderData: keepPreviousData,
-  });
-
-export const financeSummaryQuery = (
-  params: { period: SummaryPeriod; date?: string },
-  client?: ApiClient,
-) =>
-  queryOptions({
-    queryKey: keys.financeSummary(params),
-    queryFn: () => getFinanceSummary(params, client),
-    placeholderData: keepPreviousData,
-  });
-
-export const useFinanceCategories = () => useQuery(financeCategoriesQuery());
-export const useFinanceEntries = (params: FinanceEntryParams) =>
-  useQuery(financeEntriesQuery(params));
-export const useFinanceSummary = (params: {
-  period: SummaryPeriod;
-  date?: string;
-}) => useQuery(financeSummaryQuery(params));
-
-function useFinanceWrite<TVars, TRes>(
-  mutationFn: (vars: TVars) => Promise<TRes>,
-  message: () => string,
-  silent: boolean,
-) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn,
-    meta: { silent },
-    onSuccess: () => {
-      toast.success(message());
-      queryClient.invalidateQueries({ queryKey: keys.finance });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 }
 
-export const useAddFinanceEntry = () => {
-  const t = useT();
-  return useFinanceWrite(addFinanceEntry, () => t("toast.entryAdded"), true);
-};
+// --- Personal finance -------------------------------------------------------
 
-export const useUpdateFinanceEntry = () => {
-  const t = useT();
-  return useFinanceWrite(updateFinanceEntry, () => t("toast.saved"), true);
-};
+export function useFinanceCategories() {
+  return useQuery({
+    queryKey: ["finance-categories"],
+    queryFn: () => getFinanceCategories(),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+}
 
-export const useDeleteFinanceEntry = () => {
-  const t = useT();
-  return useFinanceWrite(deleteFinanceEntry, () => t("toast.deleted"), false);
-};
+export function useSuspenseFinanceEntries(params: FinanceEntryParams) {
+  return useSuspenseQuery({
+    queryKey: ["finance-entries", params],
+    queryFn: () => getFinanceEntries(params),
+  });
+}
+
+export function useSuspenseFinanceSummary(params: {
+  period: SummaryPeriod;
+  date?: string;
+}) {
+  return useSuspenseQuery({
+    queryKey: ["finance-summary", params],
+    queryFn: () => getFinanceSummary(params),
+  });
+}
+
+function useInvalidateFinance() {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.invalidateQueries({ queryKey: ["finance-entries"] });
+    queryClient.invalidateQueries({ queryKey: ["finance-summary"] });
+  };
+}
+
+export function useAddFinanceEntry() {
+  const invalidate = useInvalidateFinance();
+
+  return useMutation({
+    mutationFn: addFinanceEntry,
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdateFinanceEntry() {
+  const invalidate = useInvalidateFinance();
+
+  return useMutation({
+    mutationFn: updateFinanceEntry,
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeleteFinanceEntry() {
+  const invalidate = useInvalidateFinance();
+
+  return useMutation({
+    mutationFn: deleteFinanceEntry,
+    onSuccess: invalidate,
+  });
+}

@@ -1,15 +1,12 @@
 "use client";
 
-import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
-import type { ReactNode } from "react";
-import { Toaster } from "@/components/ui/sonner";
+import { ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { getQueryClient } from "@/lib/query-client";
+import GoogleAuthProvider from "./google-auth.provider";
+import QueryProvider from "./query.provider";
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const queryClient = getQueryClient();
-
   return (
     <ThemeProvider
       attribute="class"
@@ -17,10 +14,11 @@ export default function Providers({ children }: { children: ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>{children}</TooltipProvider>
-        <Toaster richColors closeButton position="top-right" />
-      </QueryClientProvider>
+      <GoogleAuthProvider>
+        <QueryProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </QueryProvider>
+      </GoogleAuthProvider>
     </ThemeProvider>
   );
 }

@@ -1,11 +1,9 @@
 import {
-  keepPreviousData,
-  queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   addMember,
   createMess,
@@ -16,103 +14,98 @@ import {
   removeMember,
   updateMess,
 } from "@/api";
-import { useT } from "@/i18n/i18n-provider";
-import type { ApiClient } from "@/lib/api-client";
 import type { MemberListParams, MessListParams } from "@/types";
-import { keys } from "./keys";
 
-export const myMessesQuery = (
-  params: MessListParams = {},
-  client?: ApiClient,
-) =>
-  queryOptions({
-    queryKey: keys.myMesses(params),
-    queryFn: () => getMyMesses(params, client),
+export function useSuspenseMyMesses(params: MessListParams) {
+  return useSuspenseQuery({
+    queryKey: ["my-messes", params],
+    queryFn: () => getMyMesses(params),
   });
+}
 
-export const messQuery = (messId: string, client?: ApiClient) =>
-  queryOptions({
-    queryKey: keys.mess(messId),
-    queryFn: () => getMess(messId, client),
+export function useMess(messId: string) {
+  return useQuery({
+    queryKey: ["mess", messId],
+    queryFn: () => getMess(messId),
   });
+}
 
-export const messMembersQuery = (
+export function useSuspenseMess(messId: string) {
+  return useSuspenseQuery({
+    queryKey: ["mess", messId],
+    queryFn: () => getMess(messId),
+  });
+}
+
+export function useMessMembers(messId: string, params: MemberListParams) {
+  return useQuery({
+    queryKey: ["members", messId, params],
+    queryFn: () => getMessMembers(messId, params),
+  });
+}
+
+export function useSuspenseMessMembers(
   messId: string,
   params: MemberListParams,
-  client?: ApiClient,
-) =>
-  queryOptions({
-    queryKey: keys.messMembers(messId, params),
-    queryFn: () => getMessMembers(messId, params, client),
-    placeholderData: keepPreviousData,
+) {
+  return useSuspenseQuery({
+    queryKey: ["members", messId, params],
+    queryFn: () => getMessMembers(messId, params),
   });
+}
 
-export const myMembershipsQuery = (client?: ApiClient) =>
-  queryOptions({
-    queryKey: keys.myMemberships,
-    queryFn: () => getMyMemberships({ limit: 100 }, client),
+export function useSuspenseMyMemberships() {
+  return useSuspenseQuery({
+    queryKey: ["my-memberships"],
+    queryFn: () => getMyMemberships({ limit: 100 }),
   });
+}
 
-export const useMyMesses = (params?: MessListParams) =>
-  useQuery(myMessesQuery(params));
-export const useMess = (messId: string) => useQuery(messQuery(messId));
-export const useMessMembers = (messId: string, params: MemberListParams) =>
-  useQuery(messMembersQuery(messId, params));
-export const useMyMemberships = () => useQuery(myMembershipsQuery());
-
-/** The wizard adds members itself, so this stays quiet on success. */
-export const useCreateMess = () => {
+export function useCreateMess() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createMess,
-    meta: { silent: true },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["messes"] });
-      queryClient.invalidateQueries({ queryKey: keys.me });
+      queryClient.invalidateQueries({ queryKey: ["my-messes"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
-};
+}
 
-export const useUpdateMess = () => {
+export function useUpdateMess() {
   const queryClient = useQueryClient();
-  const t = useT();
 
   return useMutation({
     mutationFn: updateMess,
-    meta: { silent: true },
-    onSuccess: ({ data }) => {
-      toast.success(t("toast.messUpdated"));
-      queryClient.invalidateQueries({ queryKey: keys.mess(data.id) });
-      queryClient.invalidateQueries({ queryKey: ["messes"] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mess"] });
+      queryClient.invalidateQueries({ queryKey: ["my-messes"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
-};
+}
 
-export const useAddMember = ({ quiet = false } = {}) => {
+export function useAddMember() {
   const queryClient = useQueryClient();
-  const t = useT();
 
   return useMutation({
     mutationFn: addMember,
-    meta: { silent: true },
-    onSuccess: ({ data }) => {
-      if (!quiet)
-        toast.success(t("toast.memberAdded", { name: data.user.name }));
-      queryClient.invalidateQueries({ queryKey: keys.mess(data.mess.id) });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["mess"] });
     },
   });
-};
+}
 
-export const useRemoveMember = () => {
+export function useRemoveMember() {
   const queryClient = useQueryClient();
-  const t = useT();
 
   return useMutation({
     mutationFn: removeMember,
-    onSuccess: ({ data }) => {
-      toast.success(t("toast.memberRemoved", { name: data.user.name }));
-      queryClient.invalidateQueries({ queryKey: keys.mess(data.mess.id) });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["mess"] });
     },
   });
-};
+}

@@ -1,29 +1,60 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { LogInIcon, ShieldCheckIcon, UserIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { applyServerErrors, useAppForm } from "@/components/form";
+import { toast } from "sonner";
+import GoogleLoginComponent from "@/components/modules/google-login/GoogleLogin";
 import { Button } from "@/components/ui/button";
 import { FieldGroup, FieldSeparator } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
-import { homeAfterLogin } from "@/lib/auth-redirect";
-import { DEMO_ACCOUNTS, ROLE_LABEL_KEY } from "@/lib/constants";
-import { getErrorMessage } from "@/lib/errors";
-import type { LoginPayload, Role } from "@/types";
+import type { MessageKey } from "@/i18n/translate";
+import type { AuthTokens, LoginPayload, UserRole } from "@/types";
+import {
+  getErrorMessage,
+  homeAfterLogin,
+  ROLE_LABEL_KEY,
+} from "@/utils";
 import { loginSchema } from "@/validation";
-import { FormAlert } from "./form-alert";
+import { applyServerErrors, useAppForm } from ".";
 
-const DEMO_ICON: Record<Role, typeof UserIcon> = {
-  ADMIN: ShieldCheckIcon,
-  MESS_MANAGER: UsersIcon,
-  MEMBER: UserIcon,
-};
+// Seeded demo accounts for evaluators. Public on purpose: B7A7 asks for
+// one-click demo login, and these hold no real data.
+const DEMO_ACCOUNTS: {
+  role: UserRole;
+  email: string;
+  password: string;
+  blurbKey: MessageKey;
+  icon: typeof UserIcon;
+}[] = [
+  {
+    role: "ADMIN",
+    email: "admin@messmate.app",
+    password: "Admin@messmate12345",
+    blurbKey: "auth.login.demoAdmin",
+    icon: ShieldCheckIcon,
+  },
+  {
+    role: "MESS_MANAGER",
+    email: "manager@messmate.app",
+    password: "Manager@messmate12345",
+    blurbKey: "auth.login.demoManager",
+    icon: UsersIcon,
+  },
+  {
+    role: "MEMBER",
+    email: "member@messmate.app",
+    password: "Member@messmate12345",
+    blurbKey: "auth.login.demoMember",
+    icon: UserIcon,
+  },
+];
 
-export function LoginForm({
+export default function LoginForm({
   redirect,
   initialEmail = "",
 }: {
@@ -31,65 +62,64 @@ export function LoginForm({
   initialEmail?: string;
 }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const t = useT();
   const locale = useLocale();
   const href = useLocalePath();
-  const { mutateAsync: signIn } = useLogin();
-  const [formError, setFormError] = useState<string | null>(null);
-  const [demoRole, setDemoRole] = useState<Role | null>(null);
+  const [demoRole, setDemoRole] = useState<UserRole | null>(null);
 
-  const enter = async (payload: LoginPayload) => {
-    setFormError(null);
-    const { data } = await signIn(payload);
-    router.replace(homeAfterLogin(data.accessToken, locale, redirect));
+  const { mutate: login, isPending: loginPending } = useLogin();
+
+  const onLoggedIn = (tokens: AuthTokens) => {
+    toast.success(t("toast.loggedIn", { name: tokens.user.name }));
+    queryClient.removeQueries({ queryKey: ["user"] });
+    router.replace(homeAfterLogin(tokens.accessToken, locale, redirect));
     router.refresh();
   };
 
   const form = useAppForm({
     defaultValues: { email: initialEmail, password: "" },
     validators: { onChange: loginSchema },
-    onSubmit: async ({ value }) => {
-      try {
-        await enter(value);
-      } catch (error) {
-        setFormError(getErrorMessage(error));
-        applyServerErrors(form, error);
-      }
+    onSubmit: ({ value }) => {
+      login(value, {
+        onSuccess: (res) => onLoggedIn(res.data),
+        onError: (err) => {
+          toast.error(t.dynamic(getErrorMessage(err)));
+          applyServerErrors(form, err);
+        },
+      });
     },
   });
 
-  const demoLogin = async (role: Role) => {
-    const account = DEMO_ACCOUNTS.find((demo) => demo.role === role);
-    if (!account) return;
-
-    setDemoRole(role);
-    try {
-      await enter({ email: account.email, password: account.password });
-    } catch (error) {
-      setFormError(getErrorMessage(error));
-      setDemoRole(null);
-    }
+  const demoLogin = (demo: LoginPayload & { role: UserRole }) => {
+    setDemoRole(demo.role);
+    login(
+      { email: demo.email, password: demo.password },
+      {
+        onSuccess: (res) => onLoggedIn(res.data),
+        onError: (err) => {
+          toast.error(t.dynamic(getErrorMessage(err)));
+          setDemoRole(null);
+        },
+      },
+    );
   };
 
-  const busy = demoRole !== null;
-
   return (
-    <div className="space-y-8">
-      <div className="space-y-1.5 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-2xl font-bold tracking-tight">
           {t("auth.login.title")}
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-balance text-sm text-muted-foreground">
           {t("auth.login.subtitle")}
         </p>
       </div>
 
-      <FormAlert message={formError} />
-
       <form
         noValidate
-        onSubmit={(event) => {
-          event.preventDefault();
+        onSubmit={(e) => {
+          e.preventDefault();
           form.handleSubmit();
         }}
       >
@@ -121,6 +151,7 @@ export function LoginForm({
             <form.SubmitButton
               size="lg"
               className="w-full"
+              isPending={loginPending && !demoRole}
               pendingLabel={t("auth.login.submitting")}
             >
               <LogInIcon />
@@ -130,6 +161,8 @@ export function LoginForm({
         </FieldGroup>
       </form>
 
+      <GoogleLoginComponent redirect={redirect} />
+
       <FieldSeparator>{t("auth.login.orDemo")}</FieldSeparator>
 
       <section aria-labelledby="demo-login" className="space-y-3">
@@ -137,46 +170,47 @@ export function LoginForm({
           {t("auth.login.demoTitle")}
         </h2>
         <div className="grid gap-3 sm:grid-cols-3">
-          {DEMO_ACCOUNTS.map(({ role, blurbKey }) => {
-            const Icon = DEMO_ICON[role];
-            return (
-              <div
-                key={role}
-                className="flex flex-col items-center gap-2 rounded-xl border bg-card p-4 text-center"
+          {DEMO_ACCOUNTS.map((demo) => (
+            <div
+              key={demo.role}
+              className="flex flex-col items-center gap-2 rounded-xl border bg-card p-4 text-center"
+            >
+              <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <demo.icon className="size-5" aria-hidden />
+              </span>
+              <p className="text-sm font-medium">
+                {t(ROLE_LABEL_KEY[demo.role])}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t(demo.blurbKey)}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-auto w-full"
+                disabled={loginPending}
+                onClick={() => demoLogin(demo)}
+                aria-label={t("auth.login.demoAria", {
+                  role: t(ROLE_LABEL_KEY[demo.role]),
+                })}
               >
-                <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Icon className="size-5" aria-hidden />
-                </span>
-                <p className="text-sm font-medium">{t(ROLE_LABEL_KEY[role])}</p>
-                <p className="text-xs text-muted-foreground">{t(blurbKey)}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-auto w-full"
-                  disabled={busy}
-                  onClick={() => demoLogin(role)}
-                  aria-label={t("auth.login.demoAria", {
-                    role: t(ROLE_LABEL_KEY[role]),
-                  })}
-                >
-                  {demoRole === role ? <Spinner /> : null}
-                  {t("auth.login.demoButton")}
-                </Button>
-              </div>
-            );
-          })}
+                {demoRole === demo.role && <Spinner />}
+                {t("auth.login.demoButton")}
+              </Button>
+            </div>
+          ))}
         </div>
       </section>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <div className="text-center text-sm text-muted-foreground">
         {t("auth.login.newHere")}{" "}
         <Link
           href={href("/register")}
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="font-medium underline underline-offset-4 hover:text-primary"
         >
           {t("auth.login.createAccount")}
         </Link>
-      </p>
+      </div>
     </div>
   );
 }

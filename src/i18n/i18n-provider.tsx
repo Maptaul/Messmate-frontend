@@ -1,7 +1,6 @@
 "use client";
 
-import { createContext, type ReactNode, useContext, useEffect } from "react";
-import { setErrorTranslator } from "@/lib/errors";
+import { createContext, type ReactNode, useContext } from "react";
 import type { Locale } from "./config";
 import { localePath } from "./locale-path";
 import {
@@ -28,10 +27,6 @@ export function I18nProvider({
   children: ReactNode;
 }) {
   const t = createTranslator(dictionary);
-
-  // Error toasts are raised outside React (the query cache), so they read
-  // the active translator from a module-level slot.
-  useEffect(() => setErrorTranslator(t), [t]);
 
   return <I18nContext value={{ locale, t }}>{children}</I18nContext>;
 }

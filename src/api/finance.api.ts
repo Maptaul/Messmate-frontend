@@ -1,4 +1,4 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   ApiResponse,
   FinanceCategory,
@@ -9,7 +9,7 @@ import type {
   SummaryPeriod,
 } from "@/types";
 
-export function getFinanceCategories(client: ApiClient = apiClient) {
+export function getFinanceCategories(client = apiClient) {
   return client<
     ApiResponse<{ INCOME: FinanceCategory[]; EXPENSE: FinanceCategory[] }>
   >("/finance/categories");
@@ -17,19 +17,19 @@ export function getFinanceCategories(client: ApiClient = apiClient) {
 
 export function getFinanceEntries(
   params: FinanceEntryParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<FinanceEntry[]>>("/finance/my-entries", {
-    query: params,
+    params,
   });
 }
 
 export function getFinanceSummary(
   params: { period: SummaryPeriod; date?: string },
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<FinanceSummary>>("/finance/summary", {
-    query: params,
+    params,
   });
 }
 

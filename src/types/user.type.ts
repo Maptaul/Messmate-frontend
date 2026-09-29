@@ -1,6 +1,6 @@
 import type { ListParams, Money } from "./api.type";
 
-export type Role = "ADMIN" | "MESS_MANAGER" | "MEMBER";
+export type UserRole = "ADMIN" | "MESS_MANAGER" | "MEMBER";
 export type UserStatus = "ACTIVE" | "BLOCKED";
 export type MembershipStatus = "ACTIVE" | "LEFT";
 
@@ -9,7 +9,7 @@ export interface SessionUser {
   userId: string;
   name: string;
   email: string;
-  role: Role;
+  role: UserRole;
 }
 
 export interface User {
@@ -17,7 +17,7 @@ export interface User {
   name: string;
   email: string;
   phone: string | null;
-  role: Role;
+  role: UserRole;
   status: UserStatus;
   emailVerified: boolean;
   authProvider: string;
@@ -54,7 +54,7 @@ export interface AdminUserDetail extends User {
 }
 
 export interface UserListParams extends ListParams {
-  role?: Role;
+  role?: UserRole;
   status?: UserStatus;
 }
 

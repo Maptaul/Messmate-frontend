@@ -22,7 +22,7 @@ import {
   WalletIcon,
 } from "lucide-react";
 import type { MessageKey } from "@/i18n/translate";
-import type { Role } from "@/types";
+import type { UserRole } from "@/types";
 
 export interface NavItem {
   titleKey: MessageKey;
@@ -185,7 +185,7 @@ const accountNav: NavGroup = {
 };
 
 /** What each role sees in the sidebar — the proxy enforces the same split. */
-export const NAV_BY_ROLE: Record<Role, NavGroup[]> = {
+export const NAV_BY_ROLE: Record<UserRole, NavGroup[]> = {
   ADMIN: [adminNav, accountNav],
   MESS_MANAGER: [managerNav, managerResidentNav, accountNav],
   MEMBER: [memberNav, accountNav],

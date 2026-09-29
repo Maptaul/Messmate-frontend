@@ -1,5 +1,5 @@
 import type { ListParams, Money } from "./api.type";
-import type { Role } from "./user.type";
+import type { UserRole } from "./user.type";
 
 export interface DashboardStats {
   users: {
@@ -59,7 +59,7 @@ export interface AuditLog {
   before: Record<string, unknown> | null;
   after: Record<string, unknown> | null;
   createdAt: string;
-  actor: { id: string; name: string; email: string; role: Role };
+  actor: { id: string; name: string; email: string; role: UserRole };
   subjectMember?: { id: string; user: { name: string } } | null;
 }
 

@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { useT } from "@/i18n/i18n-provider";
-import { humanize } from "@/lib/format";
+import { humanize } from "@/utils/format.util";
 import { cn } from "@/lib/utils";
 
 type Tone = "green" | "amber" | "red" | "blue" | "violet" | "gray";
@@ -45,7 +45,7 @@ const STATUS_TONE: Record<string, Tone> = {
   EXPENSE: "red",
 };
 
-export function StatusBadge({
+export default function StatusBadge({
   status,
   label,
   className,

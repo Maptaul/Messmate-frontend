@@ -1,8 +1,8 @@
 import { decodeJwt } from "jose";
 import type { Locale } from "@/i18n/config";
 import { localePath } from "@/i18n/locale-path";
-import type { Role } from "@/types";
-import { ROLE_HOME } from "./constants";
+import type { UserRole } from "@/types";
+import { ROLE_HOME } from "./role.util";
 
 /** Only ever follow a path on this site — never `//evil.com` or a full URL. */
 export function safeRedirect(value: string | null | undefined): string | null {
@@ -19,7 +19,7 @@ export function homeAfterLogin(
   locale: Locale,
   redirect?: string | null,
 ) {
-  const { role } = decodeJwt(accessToken) as { role?: Role };
+  const { role } = decodeJwt(accessToken) as { role?: UserRole };
   // A redirect already carries its locale prefix (the proxy set it).
   return (
     safeRedirect(redirect) ?? localePath(locale, role ? ROLE_HOME[role] : "/")

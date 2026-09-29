@@ -1,53 +1,42 @@
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
 
 type ParamValue = string | number | null | undefined;
 
 /**
- * Filters, search and pagination live in the URL so a view can be bookmarked
- * or shared. Updates use history.replaceState, which Next keeps in sync with
- * useSearchParams without a server round-trip; TanStack Query refetches off
- * the new key.
+ * B7A7: filters, search and page live in the URL (bookmarkable). Same job as
+ * the reference's `useState` for tab/search/page, but read from and written
+ * to the query string. history.replaceState keeps useSearchParams in sync
+ * without a server round-trip.
  */
-export function useQueryParams() {
+export default function useQueryParams() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const get = useCallback(
-    (key: string) => searchParams.get(key) ?? undefined,
-    [searchParams],
-  );
+  const get = (key: string) => searchParams.get(key) ?? undefined;
 
-  const set = useCallback(
-    (updates: Record<string, ParamValue>, { resetPage = true } = {}) => {
-      const next = new URLSearchParams(searchParams.toString());
+  const set = (updates: Record<string, ParamValue>) => {
+    const next = new URLSearchParams(searchParams.toString());
 
-      for (const [key, value] of Object.entries(updates)) {
-        if (value === null || value === undefined || value === "") {
-          next.delete(key);
-        } else {
-          next.set(key, String(value));
-        }
+    for (const [key, value] of Object.entries(updates)) {
+      if (value === null || value === undefined || value === "") {
+        next.delete(key);
+      } else {
+        next.set(key, String(value));
       }
+    }
 
-      // Changing a filter while on page 5 would often show an empty page.
-      if (resetPage && !("page" in updates)) next.delete("page");
+    // A new filter starts from page 1, like the reference's setPage(1).
+    if (!("page" in updates)) next.delete("page");
 
-      const query = next.toString();
-      window.history.replaceState(
-        null,
-        "",
-        query ? `${pathname}?${query}` : pathname,
-      );
-    },
-    [pathname, searchParams],
-  );
+    const query = next.toString();
+    window.history.replaceState(
+      null,
+      "",
+      query ? `${pathname}?${query}` : pathname,
+    );
+  };
 
-  return { searchParams, get, set };
-}
+  const page = Math.max(Number(searchParams.get("page")) || 1, 1);
 
-/** Reads the shared list params from a URLSearchParams-like source. */
-export function readPage(value: string | undefined) {
-  const page = Number(value);
-  return Number.isInteger(page) && page > 1 ? page : 1;
+  return { searchParams, get, set, page };
 }

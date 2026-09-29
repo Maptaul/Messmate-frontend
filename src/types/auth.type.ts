@@ -3,7 +3,7 @@ export interface LoginPayload {
   password: string;
 }
 
-export interface RegisterPayload {
+export interface RegistrationPayload {
   name: string;
   email: string;
   password: string;
@@ -11,7 +11,7 @@ export interface RegisterPayload {
   role: "MESS_MANAGER" | "MEMBER";
 }
 
-export interface VerifyEmailPayload {
+export interface VerifyAccountPayload {
   email: string;
   otp: string;
 }

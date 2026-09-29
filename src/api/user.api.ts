@@ -1,5 +1,5 @@
-import { apiClient } from "@/lib/api-client";
-import { uploadWithProgress } from "@/lib/upload";
+import apiClient from "@/lib/apiClient";
+import { uploadWithProgress } from "@/utils/upload.util";
 import type { ApiResponse, UpdateProfilePayload, User } from "@/types";
 
 /** Changing the name kills the current access token — refresh afterwards. */

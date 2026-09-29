@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-export function StatCard({
+export default function StatCard({
   label,
   value,
   hint,

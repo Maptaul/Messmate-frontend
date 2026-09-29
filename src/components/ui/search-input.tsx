@@ -4,11 +4,11 @@ import { SearchIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useDebounce } from "@/hooks/use-debounce";
+import useDebounce from "@/hooks/debounce.hook";
 import { useT } from "@/i18n/i18n-provider";
 
 /** Types freely; reports the value only after the user pauses. */
-export function SearchInput({
+export default function SearchInput({
   value,
   onSearch,
   placeholder,

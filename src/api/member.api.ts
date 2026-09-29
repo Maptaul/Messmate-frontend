@@ -1,4 +1,4 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   AddMemberPayload,
   ApiResponse,
@@ -10,19 +10,19 @@ import type {
 export function getMessMembers(
   messId: string,
   params: MemberListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<MessMember[]>>(`/member/mess-members/${messId}`, {
-    query: params,
+    params,
   });
 }
 
 export function getMyMemberships(
   params: MemberListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<MyMembership[]>>("/member/my-memberships", {
-    query: params,
+    params,
   });
 }
 

@@ -116,7 +116,8 @@
       "demoManager": "Cycles, meals, expenses, bills",
       "demoMember": "Meal plan, bills, card payment",
       "newHere": "New to MessMate?",
-      "createAccount": "Create an account"
+      "createAccount": "Create an account",
+      "orGoogle": "Or continue with"
     },
     "register": {
       "metaTitle": "Create an account",
@@ -240,6 +241,34 @@
       "unblocked": "{name} is active again",
       "roleChanged": "{name} is now {role}",
       "messDeleted": "{name} was deleted"
+    },
+    "overview": {
+      "metaTitle": "Platform overview",
+      "title": "Platform overview",
+      "description": "Everything happening across MessMate right now.",
+      "users": "Users",
+      "usersHint": "{count} blocked",
+      "messes": "Messes",
+      "messesHint": "{count} active memberships",
+      "openCycles": "Open months",
+      "openCyclesHint": "{count} closed",
+      "outstanding": "Outstanding due",
+      "outstandingHint": "Unpaid across all closed months",
+      "usersByRole": "Users by role",
+      "usersByRoleCaption": "How the {total} accounts split",
+      "collection": "Collection rate",
+      "collectionCaption": "{collected} collected of {billed} billed",
+      "collected": "Collected",
+      "stillDue": "Still due",
+      "moneyFlow": "Money in vs money spent",
+      "moneyFlowCaption": "Deposits members made and expenses messes recorded",
+      "deposits": "Deposits",
+      "expenses": "Expenses",
+      "cycles": "Billing months",
+      "cyclesCaption": "{open} open, {closed} closed",
+      "recentActivity": "Recent activity",
+      "openAuditLog": "Open audit log",
+      "noActivity": "Nothing has happened yet."
     }
   },
   "notFound": {
@@ -273,12 +302,52 @@
     "photoUpdated": "Profile photo updated",
     "photoRemoved": "Profile photo removed",
     "redirectingStripe": "Opening Stripe checkout…",
-    "redirectingBkash": "Opening bKash…"
+    "redirectingBkash": "Opening bKash…",
+    "loggedIn": "Welcome back, {name}",
+    "loggedOut": "You are logged out",
+    "codeSent": "We sent a reset code to {email}",
+    "googleFailed": "Google sign-in failed. Please try again."
   },
   "messSwitcher": {
     "label": "Switch mess",
     "current": "Current mess",
     "create": "Create a mess",
     "noMess": "No mess yet"
+  },
+  "audit": {
+    "actions": {
+      "CYCLE_CLOSED": "Month closed",
+      "CYCLE_REOPENED": "Month reopened",
+      "PAYMENT_SETTLED": "Payment settled",
+      "USER_ROLE_CHANGED": "UserRole changed",
+      "USER_BLOCKED": "User blocked",
+      "USER_UNBLOCKED": "User unblocked",
+      "MEMBER_REMOVED": "Member removed",
+      "EXPENSE_ADDED": "Expense added",
+      "EXPENSE_UPDATED": "Expense updated",
+      "EXPENSE_DELETED": "Expense deleted",
+      "DEPOSIT_ADDED": "Deposit added",
+      "DEPOSIT_UPDATED": "Deposit updated",
+      "DEPOSIT_DELETED": "Deposit deleted",
+      "MEAL_RECORDED": "Meals recorded",
+      "MEAL_UPDATED": "Meals updated",
+      "MEAL_DELETED": "Meals deleted"
+    },
+    "entities": {
+      "BillingCycle": "Billing month",
+      "Payment": "Payment",
+      "User": "User",
+      "MessMember": "Member",
+      "Expense": "Expense",
+      "Deposit": "Deposit",
+      "MealEntry": "Meal entry"
+    },
+    "viewChange": "View change",
+    "changeTitle": "What changed",
+    "before": "Before",
+    "after": "After",
+    "field": "Field",
+    "noDetails": "No details were recorded for this change.",
+    "about": "about {name}"
   }
 }

@@ -1,14 +1,15 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { ofetch } from "ofetch";
-import type { ApiClient } from "./api-client";
 
-const backendUrl = `${process.env.BACKEND_URL?.replace(/\/+$/, "")}/api/v1`;
+const BASE_URL = `${process.env.BACKEND_URL?.replace(/\/+$/, "")}/api/v1`;
 
-/** Calls the backend directly from the server, carrying the user's cookies. */
-export async function serverApi(): Promise<ApiClient> {
+/**
+ * The same client as `apiClient`, for server prefetch: it calls the API
+ * directly and carries the visitor's cookies.
+ */
+export default async function serverApi() {
   const cookie = (await cookies()).toString();
-  const client = ofetch.create({ baseURL: backendUrl, headers: { cookie } });
 
-  return (url, options) => client(url, options);
+  return ofetch.create({ baseURL: BASE_URL, headers: { cookie } });
 }

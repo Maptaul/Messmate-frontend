@@ -12,7 +12,7 @@ import { useT } from "@/i18n/i18n-provider";
 const ALL = "__all__";
 
 /** A dropdown filter whose first option clears it. */
-export function FilterSelect({
+export default function FilterSelect({
   label,
   value,
   options,

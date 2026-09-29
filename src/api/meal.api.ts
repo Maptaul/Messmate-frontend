@@ -1,4 +1,4 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   AddDailyMealsPayload,
   ApiResponse,
@@ -18,14 +18,14 @@ import type {
 export function getCycleMeals(
   cycleId: string,
   params: MealListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<MealEntry[]>>(`/meal/cycle-meals/${cycleId}`, {
-    query: params,
+    params,
   });
 }
 
-export function getMealSummary(cycleId: string, client: ApiClient = apiClient) {
+export function getMealSummary(cycleId: string, client = apiClient) {
   return client<ApiResponse<MealSummary>>(`/meal/meal-summary/${cycleId}`);
 }
 
@@ -54,7 +54,7 @@ export function deleteMeal(mealId: string) {
 
 // --- Meal plan (everyone) ---------------------------------------------
 
-export function getMyCalendar(cycleId: string, client: ApiClient = apiClient) {
+export function getMyCalendar(cycleId: string, client = apiClient) {
   return client<ApiResponse<MyCalendar>>(`/meal-plan/my-calendar/${cycleId}`);
 }
 
@@ -62,11 +62,11 @@ export function getMyCalendar(cycleId: string, client: ApiClient = apiClient) {
 export function getCycleCalendar(
   cycleId: string,
   date?: string,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<CycleCalendar>>(
     `/meal-plan/cycle-calendar/${cycleId}`,
-    { query: { date } },
+    { params: { date } },
   );
 }
 

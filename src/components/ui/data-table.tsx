@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { EmptyState } from "./empty-state";
+import EmptyState from "./empty-state";
 
 export interface Column<T> {
   key: string;
@@ -36,7 +36,7 @@ interface DataTableProps<T> {
  * skeleton on first load, dimmed rows while the next page loads, and an
  * empty state that says why it is empty.
  */
-export function DataTable<T>({
+export default function DataTable<T>({
   columns,
   rows,
   rowKey,

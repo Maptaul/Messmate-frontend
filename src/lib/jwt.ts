@@ -1,7 +1,10 @@
 import { jwtVerify } from "jose";
-import type { Role, SessionUser } from "@/types";
+import type { SessionUser, UserRole } from "@/types";
 
-const ROLES: readonly Role[] = ["ADMIN", "MESS_MANAGER", "MEMBER"];
+export const ACCESS_COOKIE = "accessToken";
+export const REFRESH_COOKIE = "refreshToken";
+
+const ROLES: readonly UserRole[] = ["ADMIN", "MESS_MANAGER", "MEMBER"];
 
 const secretValue = process.env.JWT_ACCESS_SECRET;
 
@@ -31,12 +34,12 @@ export async function verifyAccessToken(
       typeof userId !== "string" ||
       typeof name !== "string" ||
       typeof email !== "string" ||
-      !ROLES.includes(role as Role)
+      !ROLES.includes(role as UserRole)
     ) {
       return null;
     }
 
-    return { userId, name, email, role: role as Role };
+    return { userId, name, email, role: role as UserRole };
   } catch {
     return null;
   }

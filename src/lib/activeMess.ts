@@ -2,7 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { getMe } from "@/api";
-import type { ApiResponse, Me, Role } from "@/types";
+import type { ApiResponse, Me, UserRole } from "@/types";
 import { serverApi } from "./server-api";
 import { getSessionUser } from "./session";
 
@@ -26,7 +26,7 @@ export const getMeOnServer = cache(
 );
 
 /** A manager works in the messes they own; a member in the ones they live in. */
-export function messChoicesFor(me: Me | null, role: Role): MessChoice[] {
+export function messChoicesFor(me: Me | null, role: UserRole): MessChoice[] {
   if (!me) return [];
   if (role === "MESS_MANAGER") {
     return me.managedMesses.map(({ id, name, address }) => ({

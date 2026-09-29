@@ -1,15 +1,15 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   ApiResponse,
   AuthTokens,
   LoginPayload,
   Me,
-  RegisterPayload,
+  RegistrationPayload,
   ResetPasswordPayload,
-  VerifyEmailPayload,
+  VerifyAccountPayload,
 } from "@/types";
 
-export function login(payload: LoginPayload) {
+export function userLogin(payload: LoginPayload) {
   return apiClient<ApiResponse<AuthTokens>>("/auth/login", {
     method: "POST",
     body: payload,
@@ -17,21 +17,21 @@ export function login(payload: LoginPayload) {
 }
 
 /** Google Identity ID token → session cookies. New Google users join as MEMBER. */
-export function googleLogin(idToken: string) {
+export function googleOAuth(payload: { idToken: string }) {
   return apiClient<ApiResponse<AuthTokens>>("/auth/google", {
     method: "POST",
-    body: { idToken },
+    body: payload,
   });
 }
 
-export function register(payload: RegisterPayload) {
+export function userRegistration(payload: RegistrationPayload) {
   return apiClient<ApiResponse<null>>("/auth/register", {
     method: "POST",
     body: payload,
   });
 }
 
-export function verifyEmail(payload: VerifyEmailPayload) {
+export function verifyAccount(payload: VerifyAccountPayload) {
   return apiClient<ApiResponse<AuthTokens>>("/auth/verify-email", {
     method: "POST",
     body: payload,
@@ -52,7 +52,7 @@ export function resetPassword(payload: ResetPasswordPayload) {
   });
 }
 
-export function logout() {
+export function userLogout() {
   return apiClient<ApiResponse<null>>("/auth/logout", { method: "POST" });
 }
 
@@ -62,6 +62,6 @@ export function refreshToken() {
   });
 }
 
-export function getMe(client: ApiClient = apiClient) {
+export function getMe(client = apiClient) {
   return client<ApiResponse<Me>>("/auth/me");
 }

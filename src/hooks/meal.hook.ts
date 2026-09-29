@@ -1,11 +1,9 @@
 import {
-  keepPreviousData,
-  queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   addDailyMeals,
   applyPlanToRegister,
@@ -18,198 +16,167 @@ import {
   setMealPlan,
   updateMeal,
 } from "@/api";
-import { useLocale, useT } from "@/i18n/i18n-provider";
-import type { ApiClient } from "@/lib/api-client";
-import { formatDate, formatNumber } from "@/lib/format";
-import type {
-  ApiResponse,
-  MealListParams,
-  MyCalendar,
-  SetMealPlanPayload,
-} from "@/types";
-import { keys } from "./keys";
-
-// --- Queries ----------------------------------------------------------------
-
-export const cycleMealsQuery = (
-  cycleId: string,
-  params: MealListParams,
-  client?: ApiClient,
-) =>
-  queryOptions({
-    queryKey: keys.cyclePart(cycleId, "meals", params),
-    queryFn: () => getCycleMeals(cycleId, params, client),
-    placeholderData: keepPreviousData,
-  });
-
-export const mealSummaryQuery = (cycleId: string, client?: ApiClient) =>
-  queryOptions({
-    queryKey: keys.cyclePart(cycleId, "meal-summary"),
-    queryFn: () => getMealSummary(cycleId, client),
-  });
-
-export const myCalendarQuery = (cycleId: string, client?: ApiClient) =>
-  queryOptions({
-    queryKey: keys.cyclePart(cycleId, "my-calendar"),
-    queryFn: () => getMyCalendar(cycleId, client),
-  });
-
-/** `date` → that day's headcount; none → the month (sparse). */
-export const cycleCalendarQuery = (
-  cycleId: string,
-  date?: string,
-  client?: ApiClient,
-) =>
-  queryOptions({
-    queryKey: keys.cyclePart(cycleId, "headcount", { date }),
-    queryFn: () => getCycleCalendar(cycleId, date, client),
-  });
-
-export const useCycleMeals = (cycleId: string, params: MealListParams) =>
-  useQuery(cycleMealsQuery(cycleId, params));
-export const useMealSummary = (cycleId: string) =>
-  useQuery(mealSummaryQuery(cycleId));
-export const useMyCalendar = (cycleId: string) =>
-  useQuery(myCalendarQuery(cycleId));
-export const useCycleCalendar = (cycleId: string, date?: string) =>
-  useQuery(cycleCalendarQuery(cycleId, date));
+import type { ApiResponse, MealListParams, MyCalendar } from "@/types";
 
 // --- Meal register (manager) -------------------------------------------
 
-function useCycleRefresh() {
-  const queryClient = useQueryClient();
-  return (cycleId: string) =>
-    queryClient.invalidateQueries({ queryKey: keys.cycle(cycleId) });
+export function useSuspenseCycleMeals(cycleId: string, params: MealListParams) {
+  return useSuspenseQuery({
+    queryKey: ["meals", cycleId, params],
+    queryFn: () => getCycleMeals(cycleId, params),
+  });
 }
 
-export const useAddDailyMeals = () => {
-  const refresh = useCycleRefresh();
-  const t = useT();
-  const locale = useLocale();
+export function useMealSummary(cycleId: string) {
+  return useQuery({
+    queryKey: ["meal-summary", cycleId],
+    queryFn: () => getMealSummary(cycleId),
+  });
+}
+
+export function useSuspenseMealSummary(cycleId: string) {
+  return useSuspenseQuery({
+    queryKey: ["meal-summary", cycleId],
+    queryFn: () => getMealSummary(cycleId),
+  });
+}
+
+function useInvalidateMeals() {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.invalidateQueries({ queryKey: ["meals"] });
+    queryClient.invalidateQueries({ queryKey: ["meal-summary"] });
+    queryClient.invalidateQueries({ queryKey: ["cycle"] });
+    queryClient.invalidateQueries({ queryKey: ["settlement"] });
+  };
+}
+
+export function useAddDailyMeals() {
+  const invalidate = useInvalidateMeals();
 
   return useMutation({
     mutationFn: addDailyMeals,
-    onSuccess: (_res, { cycleId, date }) => {
-      toast.success(t("toast.mealsSaved", { date: formatDate(date, locale) }));
-      refresh(cycleId);
-    },
+    onSuccess: invalidate,
   });
-};
+}
 
-export const useUpdateMeal = (cycleId: string) => {
-  const refresh = useCycleRefresh();
-  const t = useT();
+export function useUpdateMeal() {
+  const invalidate = useInvalidateMeals();
 
   return useMutation({
     mutationFn: updateMeal,
-    onSuccess: () => {
-      toast.success(t("toast.saved"));
-      refresh(cycleId);
-    },
+    onSuccess: invalidate,
   });
-};
+}
 
-export const useDeleteMeal = (cycleId: string) => {
-  const refresh = useCycleRefresh();
-  const t = useT();
+export function useDeleteMeal() {
+  const invalidate = useInvalidateMeals();
 
   return useMutation({
     mutationFn: deleteMeal,
-    onSuccess: () => {
-      toast.success(t("toast.deleted"));
-      refresh(cycleId);
-    },
+    onSuccess: invalidate,
   });
-};
+}
 
-export const useApplyPlan = () => {
-  const refresh = useCycleRefresh();
-  const t = useT();
-  const locale = useLocale();
+export function useApplyPlan() {
+  const invalidate = useInvalidateMeals();
 
   return useMutation({
     mutationFn: applyPlanToRegister,
-    onSuccess: ({ data }, { cycleId }) => {
-      toast.success(
-        t("toast.planApplied", {
-          created: formatNumber(data.created, locale),
-          fromDefaults: formatNumber(data.fromDefaults, locale),
-        }),
-      );
-      refresh(cycleId);
-    },
+    onSuccess: invalidate,
   });
-};
+}
 
-// --- Meal plan (everyone) ---------------------------------------------
+// --- Meal plan & headcount --------------------------------------------
+
+export function useSuspenseMyCalendar(cycleId: string) {
+  return useSuspenseQuery({
+    queryKey: ["my-calendar", cycleId],
+    queryFn: () => getMyCalendar(cycleId),
+  });
+}
+
+/** `date` → that day's headcount; none → the month (sparse). */
+export function useCycleCalendar(cycleId: string, date?: string) {
+  return useQuery({
+    queryKey: ["headcount", cycleId, date],
+    queryFn: () => getCycleCalendar(cycleId, date),
+  });
+}
+
+export function useSuspenseCycleCalendar(cycleId: string, date?: string) {
+  return useSuspenseQuery({
+    queryKey: ["headcount", cycleId, date],
+    queryFn: () => getCycleCalendar(cycleId, date),
+  });
+}
 
 /**
- * Optimistic: the calendar shows the new plan at once. A day that locked in
- * the meantime comes back as a 409 — the global toast explains, and the
- * snapshot puts the calendar back.
+ * Optimistic (B7A7): the calendar shows the new plan at once. A day that
+ * locked meanwhile comes back as a 409 and the calendar is put back.
  */
-export const useSetMealPlan = () => {
+export function useSetMealPlan() {
   const queryClient = useQueryClient();
-  const t = useT();
 
   return useMutation({
     mutationFn: setMealPlan,
-    onMutate: async ({ cycleId, memberId, days }: SetMealPlanPayload) => {
+    onMutate: async ({ cycleId, memberId, days }) => {
       // Planning for someone else doesn't touch *my* calendar.
       if (memberId) return undefined;
 
-      const key = keys.cyclePart(cycleId, "my-calendar");
-      await queryClient.cancelQueries({ queryKey: key });
-      const snapshot = queryClient.getQueryData<ApiResponse<MyCalendar>>(key);
+      const queryKey = ["my-calendar", cycleId];
+      await queryClient.cancelQueries({ queryKey });
+      const previous =
+        queryClient.getQueryData<ApiResponse<MyCalendar>>(queryKey);
 
       const changes = new Map(days.map((day) => [day.date, day]));
-      queryClient.setQueryData<ApiResponse<MyCalendar>>(key, (old) =>
-        old
-          ? {
-              ...old,
-              data: {
-                ...old.data,
-                days: old.data.days.map((day) => {
-                  const change = changes.get(day.date);
-                  return change
-                    ? {
-                        ...day,
-                        lunch: change.lunch,
-                        dinner: change.dinner,
-                        isPlanned: true,
-                        isDefault: false,
-                      }
-                    : day;
-                }),
-              },
-            }
-          : old,
+      queryClient.setQueryData<ApiResponse<MyCalendar>>(
+        queryKey,
+        (old) =>
+          old && {
+            ...old,
+            data: {
+              ...old.data,
+              days: old.data.days.map((day) => {
+                const change = changes.get(day.date);
+                return change
+                  ? {
+                      ...day,
+                      lunch: change.lunch,
+                      dinner: change.dinner,
+                      isPlanned: true,
+                      isDefault: false,
+                    }
+                  : day;
+              }),
+            },
+          },
       );
 
-      return { key, snapshot };
+      return { queryKey, previous };
     },
-    onError: (_error, _vars, context) => {
-      if (context?.snapshot) {
-        queryClient.setQueryData(context.key, context.snapshot);
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(context.queryKey, context.previous);
       }
     },
-    onSuccess: () => toast.success(t("toast.planSaved")),
-    onSettled: (_res, _error, { cycleId }) =>
-      queryClient.invalidateQueries({ queryKey: keys.cycle(cycleId) }),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-calendar"] });
+      queryClient.invalidateQueries({ queryKey: ["headcount"] });
+    },
   });
-};
+}
 
-export const useSetDefaultMeals = () => {
+export function useSetDefaultMeals() {
   const queryClient = useQueryClient();
-  const t = useT();
 
   return useMutation({
     mutationFn: setDefaultMeals,
-    meta: { silent: true },
-    onSuccess: (_res, { messId }) => {
-      toast.success(t("toast.defaultsSaved"));
-      queryClient.invalidateQueries({ queryKey: keys.mess(messId) });
-      queryClient.invalidateQueries({ queryKey: ["cycle"] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-calendar"] });
+      queryClient.invalidateQueries({ queryKey: ["headcount"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
     },
   });
-};
+}

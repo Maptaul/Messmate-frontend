@@ -1,4 +1,4 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   ApiResponse,
   CloseCycleResult,
@@ -12,20 +12,20 @@ import type {
 export function getMessCycles(
   messId: string,
   params: CycleListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<Cycle[]>>(`/cycle/mess-cycles/${messId}`, {
-    query: params,
+    params,
   });
 }
 
-export function getCycle(cycleId: string, client: ApiClient = apiClient) {
+export function getCycle(cycleId: string, client = apiClient) {
   return client<ApiResponse<CycleDetail>>(`/cycle/${cycleId}`);
 }
 
 export function getSettlementPreview(
   cycleId: string,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<SettlementPreview>>(
     `/cycle/settlement-preview/${cycleId}`,

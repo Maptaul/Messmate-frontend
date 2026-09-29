@@ -1,4 +1,4 @@
-import { type ApiClient, apiClient } from "@/lib/api-client";
+import apiClient from "@/lib/apiClient";
 import type {
   ActivityUnread,
   AddDepositPayload,
@@ -18,10 +18,10 @@ import type {
 export function getCycleDeposits(
   cycleId: string,
   params: DepositListParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<Deposit[]>>(`/deposit/cycle-deposits/${cycleId}`, {
-    query: params,
+    params,
   });
 }
 
@@ -55,7 +55,7 @@ export function deleteDeposit(depositId: string) {
 
 // --- Grocery (bazar) duty -------------------------------------------------
 
-export function getCycleDuties(cycleId: string, client: ApiClient = apiClient) {
+export function getCycleDuties(cycleId: string, client = apiClient) {
   return client<ApiResponse<GroceryDuty[]>>(
     `/grocery-duty/cycle-duties/${cycleId}`,
   );
@@ -63,14 +63,14 @@ export function getCycleDuties(cycleId: string, client: ApiClient = apiClient) {
 
 export function getDutyCalendar(
   cycleId: string,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<DutyCalendar>>(
     `/grocery-duty/cycle-calendar/${cycleId}`,
   );
 }
 
-export function getMyDutyDays(cycleId: string, client: ApiClient = apiClient) {
+export function getMyDutyDays(cycleId: string, client = apiClient) {
   return client<ApiResponse<MyDutyDays>>(
     `/grocery-duty/my-duty-days/${cycleId}`,
   );
@@ -106,16 +106,16 @@ export function removeDuty(dutyId: string) {
 export function getMessAuditLogs(
   messId: string,
   params: MessAuditParams,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<AuditLog[]>>(`/mess/audit-logs/${messId}`, {
-    query: params,
+    params,
   });
 }
 
 export function getActivityUnread(
   messId: string,
-  client: ApiClient = apiClient,
+  client = apiClient,
 ) {
   return client<ApiResponse<ActivityUnread>>(`/mess/activity-unread/${messId}`);
 }

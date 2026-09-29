@@ -10,7 +10,7 @@ export interface ApiResponse<T> {
   statusCode: number;
   message: string;
   data: T;
-  meta?: Meta;
+  meta: Meta;
 }
 
 export interface ApiFieldError {

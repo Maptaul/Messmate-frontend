@@ -1,17 +1,17 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE } from "@/i18n/config";
 import { localePath, splitLocale } from "@/i18n/locale-path";
-import { ACCESS_COOKIE, REFRESH_COOKIE, ROLE_HOME } from "@/lib/constants";
-import { verifyAccessToken } from "@/lib/jwt";
-import type { Role, SessionUser } from "@/types";
+import { ACCESS_COOKIE, REFRESH_COOKIE, verifyAccessToken } from "@/lib/jwt";
+import { ROLE_HOME } from "@/utils/role.util";
+import type { UserRole, SessionUser } from "@/types";
 
 const AUTH_PAGES = ["/login", "/register", "/verify-email", "/forgot-password"];
 
-const ANY_ROLE: Role[] = ["ADMIN", "MESS_MANAGER", "MEMBER"];
-const RESIDENTS: Role[] = ["MESS_MANAGER", "MEMBER"];
+const ANY_ROLE: UserRole[] = ["ADMIN", "MESS_MANAGER", "MEMBER"];
+const RESIDENTS: UserRole[] = ["MESS_MANAGER", "MEMBER"];
 
 /** Which roles may open each protected area. First match wins. */
-const AREAS: { prefix: string; roles: Role[] }[] = [
+const AREAS: { prefix: string; roles: UserRole[] }[] = [
   { prefix: "/admin", roles: ["ADMIN"] },
   { prefix: "/manager", roles: ["MESS_MANAGER"] },
   // A manager lives in the mess too: plans meals and pays a bill.

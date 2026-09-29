@@ -116,7 +116,8 @@
       "demoManager": "বিলিং মাস, মিল, খরচ, বিল",
       "demoMember": "মিল প্ল্যান, বিল, কার্ডে পেমেন্ট",
       "newHere": "MessMate-এ নতুন?",
-      "createAccount": "অ্যাকাউন্ট খুলুন"
+      "createAccount": "অ্যাকাউন্ট খুলুন",
+      "orGoogle": "অথবা এভাবে চালিয়ে যান"
     },
     "register": {
       "metaTitle": "অ্যাকাউন্ট খুলুন",
@@ -240,6 +241,34 @@
       "unblocked": "{name} আবার সক্রিয়",
       "roleChanged": "{name} এখন {role}",
       "messDeleted": "{name} মুছে ফেলা হয়েছে"
+    },
+    "overview": {
+      "metaTitle": "প্ল্যাটফর্ম ওভারভিউ",
+      "title": "প্ল্যাটফর্ম ওভারভিউ",
+      "description": "MessMate-এ এই মুহূর্তে যা চলছে, সব এক জায়গায়।",
+      "users": "ইউজার",
+      "usersHint": "{count} জন ব্লকড",
+      "messes": "মেস",
+      "messesHint": "{count}টি সক্রিয় সদস্যপদ",
+      "openCycles": "চলমান মাস",
+      "openCyclesHint": "{count}টি বন্ধ",
+      "outstanding": "মোট বাকি",
+      "outstandingHint": "সব বন্ধ মাসের অপরিশোধিত টাকা",
+      "usersByRole": "রোল অনুযায়ী ইউজার",
+      "usersByRoleCaption": "{total}টি অ্যাকাউন্ট কীভাবে ভাগ",
+      "collection": "আদায়ের হার",
+      "collectionCaption": "বিল হয়েছে {billed}, আদায় হয়েছে {collected}",
+      "collected": "আদায়",
+      "stillDue": "বাকি",
+      "moneyFlow": "জমা বনাম খরচ",
+      "moneyFlowCaption": "সদস্যদের জমা আর মেসের লেখা খরচ",
+      "deposits": "ডিপোজিট",
+      "expenses": "খরচ",
+      "cycles": "বিলিং মাস",
+      "cyclesCaption": "{open}টি চলমান, {closed}টি বন্ধ",
+      "recentActivity": "সাম্প্রতিক কার্যকলাপ",
+      "openAuditLog": "অডিট লগ খুলুন",
+      "noActivity": "এখনো কিছু ঘটেনি।"
     }
   },
   "notFound": {
@@ -273,12 +302,52 @@
     "photoUpdated": "প্রোফাইল ছবি আপডেট হয়েছে",
     "photoRemoved": "প্রোফাইল ছবি সরানো হয়েছে",
     "redirectingStripe": "Stripe চেকআউট খোলা হচ্ছে…",
-    "redirectingBkash": "বিকাশ খোলা হচ্ছে…"
+    "redirectingBkash": "বিকাশ খোলা হচ্ছে…",
+    "loggedIn": "আবার স্বাগতম, {name}",
+    "loggedOut": "আপনি লগ আউট করেছেন",
+    "codeSent": "{email}-এ রিসেট কোড পাঠানো হয়েছে",
+    "googleFailed": "Google দিয়ে সাইন ইন হয়নি। আবার চেষ্টা করুন।"
   },
   "messSwitcher": {
     "label": "মেস বদলান",
     "current": "বর্তমান মেস",
     "create": "মেস তৈরি করুন",
     "noMess": "এখনো কোনো মেস নেই"
+  },
+  "audit": {
+    "actions": {
+      "CYCLE_CLOSED": "মাস বন্ধ",
+      "CYCLE_REOPENED": "মাস আবার চালু",
+      "PAYMENT_SETTLED": "পেমেন্ট সম্পন্ন",
+      "USER_ROLE_CHANGED": "রোল বদলানো",
+      "USER_BLOCKED": "ইউজার ব্লক",
+      "USER_UNBLOCKED": "ইউজার আনব্লক",
+      "MEMBER_REMOVED": "সদস্য সরানো",
+      "EXPENSE_ADDED": "খরচ যোগ",
+      "EXPENSE_UPDATED": "খরচ আপডেট",
+      "EXPENSE_DELETED": "খরচ মুছে ফেলা",
+      "DEPOSIT_ADDED": "ডিপোজিট যোগ",
+      "DEPOSIT_UPDATED": "ডিপোজিট আপডেট",
+      "DEPOSIT_DELETED": "ডিপোজিট মুছে ফেলা",
+      "MEAL_RECORDED": "মিল লেখা",
+      "MEAL_UPDATED": "মিল আপডেট",
+      "MEAL_DELETED": "মিল মুছে ফেলা"
+    },
+    "entities": {
+      "BillingCycle": "বিলিং মাস",
+      "Payment": "পেমেন্ট",
+      "User": "ইউজার",
+      "MessMember": "সদস্য",
+      "Expense": "খরচ",
+      "Deposit": "ডিপোজিট",
+      "MealEntry": "মিল এন্ট্রি"
+    },
+    "viewChange": "পরিবর্তন দেখুন",
+    "changeTitle": "কী বদলেছে",
+    "before": "আগে",
+    "after": "পরে",
+    "field": "ঘর",
+    "noDetails": "এই পরিবর্তনের কোনো বিস্তারিত নেই।",
+    "about": "{name} সম্পর্কে"
   }
 }
