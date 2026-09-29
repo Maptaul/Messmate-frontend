@@ -19,8 +19,11 @@ export default function MealRegisterTable({
     date,
   });
 
+  // Everyone living in the mess, plus anyone who has since left but still has
+  // an entry on this day, so that entry can be corrected or removed.
+  const withEntry = new Set(entries.data.map((entry) => entry.member.id));
   const members = summary.data.members.filter(
-    (member) => member.status === "ACTIVE",
+    (member) => member.status === "ACTIVE" || withEntry.has(member.memberId),
   );
 
   // A fresh grid whenever the day or the saved values change underneath it.

@@ -10,13 +10,15 @@ import { Spinner } from "@/components/ui/spinner";
 import UserAvatar from "@/components/ui/user-avatar";
 import { useAddDailyMeals, useApplyPlan } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
-import type { MealCounts, MealEntry } from "@/types";
+import type { MealCounts, MealEntry, MembershipStatus } from "@/types";
 import { formatDate, formatNumber, getErrorMessage } from "@/utils";
+import MealEntryActions from "./meal-entry-actions";
 
 interface Member {
   memberId: string;
   name: string;
   email: string;
+  status: MembershipStatus;
 }
 
 /** One day's meals for everyone: nudge the counts, then save. */
@@ -39,8 +41,9 @@ export default function MealRegisterGrid({
   const { mutate: addDailyMeals, isPending: saving } = useAddDailyMeals();
   const { mutate: applyPlan, isPending: applying } = useApplyPlan();
 
+  const saved = new Map(entries.map((entry) => [entry.member.id, entry]));
+
   const [counts, setCounts] = useState<Record<string, MealCounts>>(() => {
-    const saved = new Map(entries.map((entry) => [entry.member.id, entry]));
     return Object.fromEntries(
       members.map(({ memberId }) => [
         memberId,
@@ -51,7 +54,6 @@ export default function MealRegisterGrid({
       ]),
     );
   });
-  const recorded = new Set(entries.map((entry) => entry.member.id));
 
   const setMeal = (memberId: string, meal: keyof MealCounts, value: number) =>
     setCounts((current) => ({
@@ -70,12 +72,14 @@ export default function MealRegisterGrid({
       {
         cycleId,
         date,
-        // Members with nothing eaten and no record yet stay out of the register.
+        // Members with nothing eaten and no record yet stay out of the register;
+        // a former member's entry is only changed through its own row actions.
         entries: members
           .filter(
-            ({ memberId }) =>
-              recorded.has(memberId) ||
-              counts[memberId].lunch + counts[memberId].dinner > 0,
+            ({ memberId, status }) =>
+              status === "ACTIVE" &&
+              (saved.has(memberId) ||
+                counts[memberId].lunch + counts[memberId].dinner > 0),
           )
           .map(({ memberId }) => ({ memberId, ...counts[memberId] })),
       },
@@ -134,7 +138,7 @@ export default function MealRegisterGrid({
         cell: (member) => (
           <MealStepper
             value={counts[member.memberId]?.[meal] ?? 0}
-            disabled={locked || saving}
+            disabled={locked || saving || member.status !== "ACTIVE"}
             onChange={(value) => setMeal(member.memberId, meal, value)}
             decreaseLabel={t("manager.meals.decrease", {
               name: member.name,
@@ -148,6 +152,17 @@ export default function MealRegisterGrid({
         ),
       }),
     ),
+    {
+      key: "actions",
+      header: <span className="sr-only">{t("manager.meals.actions")}</span>,
+      className: "text-right",
+      cell: (member) => {
+        const entry = saved.get(member.memberId);
+        return entry && !locked ? (
+          <MealEntryActions entry={entry} name={member.name} />
+        ) : null;
+      },
+    },
   ];
 
   return (
