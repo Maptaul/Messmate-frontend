@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  CircleAlertIcon,
-  LogInIcon,
-  ShieldCheckIcon,
-  UserIcon,
-  UsersIcon,
-} from "lucide-react";
+import { LogInIcon, ShieldCheckIcon, UserIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { applyServerErrors, useAppForm } from "@/components/form";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { FieldGroup, FieldSeparator } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
@@ -21,6 +14,7 @@ import { DEMO_ACCOUNTS, ROLE_LABEL } from "@/lib/constants";
 import { getErrorMessage } from "@/lib/errors";
 import type { LoginPayload, Role } from "@/types";
 import { loginSchema } from "@/validation";
+import { FormAlert } from "./form-alert";
 
 const DEMO_ICON: Record<Role, typeof UserIcon> = {
   ADMIN: ShieldCheckIcon,
@@ -86,12 +80,7 @@ export function LoginForm({
         </p>
       </div>
 
-      {formError && (
-        <Alert variant="destructive" role="alert">
-          <CircleAlertIcon />
-          <AlertDescription>{formError}</AlertDescription>
-        </Alert>
-      )}
+      <FormAlert message={formError} />
 
       <form
         noValidate

@@ -6,6 +6,7 @@ import { getFieldErrors } from "@/lib/errors";
 import {
   OtpField,
   PasswordField,
+  RadioCardsField,
   SelectField,
   SubmitButton,
   TextareaField,
@@ -13,7 +14,7 @@ import {
 } from "./fields";
 import { fieldContext, formContext } from "./form-context";
 
-export type { SelectOption } from "./fields";
+export type { RadioCardOption, SelectOption } from "./fields";
 
 /**
  * `useAppForm` is TanStack Form with our shadcn fields pre-wired, so a form
@@ -28,6 +29,7 @@ export const { useAppForm, withForm } = createFormHook({
     TextareaField,
     SelectField,
     OtpField,
+    RadioCardsField,
   },
   formComponents: { SubmitButton },
 });

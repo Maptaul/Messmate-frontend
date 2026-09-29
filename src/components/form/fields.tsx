@@ -5,9 +5,11 @@ import { type ComponentProps, type ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldError,
   FieldLabel,
+  FieldTitle,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,6 +17,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -202,6 +205,65 @@ export function SelectField({
   );
 }
 
+export interface RadioCardOption {
+  value: string;
+  title: string;
+  description: string;
+}
+
+/** A radio group drawn as selectable cards, for small either/or choices. */
+export function RadioCardsField({
+  label,
+  options,
+}: {
+  label: string;
+  options: RadioCardOption[];
+}) {
+  const field = useFieldContext<string>();
+  const invalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <Field data-invalid={invalid}>
+      <FieldTitle>{label}</FieldTitle>
+      <RadioGroup
+        aria-label={label}
+        value={field.state.value}
+        onValueChange={(value) => {
+          field.handleChange(String(value));
+          field.handleBlur();
+        }}
+        className="grid-cols-1 sm:grid-cols-2"
+      >
+        {options.map((option) => {
+          const id = `${field.name}-${option.value}`;
+          return (
+            <FieldLabel key={option.value} htmlFor={id}>
+              <Field orientation="horizontal">
+                <FieldContent>
+                  <FieldTitle>{option.title}</FieldTitle>
+                  <FieldDescription>{option.description}</FieldDescription>
+                </FieldContent>
+                <RadioGroupItem
+                  id={id}
+                  value={option.value}
+                  aria-invalid={invalid}
+                />
+              </Field>
+            </FieldLabel>
+          );
+        })}
+      </RadioGroup>
+      {invalid && (
+        <FieldError
+          errors={field.state.meta.errors.map((error) =>
+            typeof error === "string" ? { message: error } : error,
+          )}
+        />
+      )}
+    </Field>
+  );
+}
+
 export function OtpField({
   label,
   length = 6,
@@ -226,8 +288,7 @@ export function OtpField({
           containerClassName="justify-center"
         >
           <InputOTPGroup>
-            {Array.from({ length }, (_, slot) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: slots are positional
+            {Array.from({ length }, (_, position) => position).map((slot) => (
               <InputOTPSlot
                 key={slot}
                 index={slot}
