@@ -2,10 +2,10 @@ import { type NextRequest, NextResponse } from "next/server";
 import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE } from "@/i18n/config";
 import { localePath, splitLocale } from "@/i18n/locale-path";
 import { ACCESS_COOKIE, REFRESH_COOKIE, verifyAccessToken } from "@/lib/jwt";
+import type { SessionUser, UserRole } from "@/types";
 import { ROLE_HOME } from "@/utils/role.util";
-import type { UserRole, SessionUser } from "@/types";
 
-const AUTH_PAGES = ["/login", "/register", "/verify-email", "/forgot-password"];
+const AUTH_PAGES = ["/login", "/register", "/forgot-password"];
 
 const ANY_ROLE: UserRole[] = ["ADMIN", "MESS_MANAGER", "MEMBER"];
 const RESIDENTS: UserRole[] = ["MESS_MANAGER", "MEMBER"];

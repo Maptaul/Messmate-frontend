@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
-import { Logo } from "@/components/shared/logo";
+import Logo from "@/assets/svg/Logo";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -19,49 +17,49 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
-import { splitLocale } from "@/i18n/locale-path";
-import { ROLE_HOME } from "@/lib/constants";
-import { useSession } from "@/providers/session-provider";
-import { isNavItemActive, NAV_BY_ROLE } from "@/routes";
+import { adminRoutes, managerRoutes, memberRoutes } from "@/routes";
+import type { UserRole } from "@/types";
+import type { SidebarItems } from "@/types/sidebar.type";
+import { ROLE_HOME } from "@/utils";
 
-export function AppSidebar({
-  header,
-  footer,
-}: {
-  header?: ReactNode;
-  footer: ReactNode;
-}) {
-  const { role } = useSession();
+const sidebarRoutes: Record<UserRole, SidebarItems> = {
+  ADMIN: adminRoutes,
+  MESS_MANAGER: managerRoutes,
+  MEMBER: memberRoutes,
+};
+
+export function DashboardSidebar({ role }: { role: UserRole }) {
+  const pathname = usePathname();
   const t = useT();
   const href = useLocalePath();
-  const { path } = splitLocale(usePathname());
   const { setOpenMobile } = useSidebar();
+  const routes: SidebarItems = sidebarRoutes[role] || [];
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="gap-3 p-3">
-        <Logo
-          href={href(ROLE_HOME[role])}
-          className="group-data-[collapsible=icon]:hidden"
-        />
-        {header}
+    <Sidebar>
+      <SidebarHeader>
+        <Link href={href(ROLE_HOME[role])}>
+          <div className="flex items-center gap-2 p-2 font-semibold">
+            <Logo />
+            <span>MessMate</span>
+          </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
-        {NAV_BY_ROLE[role].map((group) => (
-          <SidebarGroup key={group.titleKey}>
-            <SidebarGroupLabel>{t(group.titleKey)}</SidebarGroupLabel>
+        {routes.map((item) => (
+          <SidebarGroup key={item.title}>
+            <SidebarGroupLabel>{t(item.title)}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
+                {item.items.map((item) => (
                   <SidebarMenuItem key={item.url}>
                     <SidebarMenuButton
                       render={<Link href={href(item.url)} />}
-                      isActive={isNavItemActive(item, path)}
-                      tooltip={t(item.titleKey)}
+                      isActive={pathname === href(item.url)}
+                      // The mobile sidebar is a sheet; close it on navigation.
                       onClick={() => setOpenMobile(false)}
                     >
-                      <item.icon />
-                      <span>{t(item.titleKey)}</span>
+                      {t(item.title)}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -70,11 +68,6 @@ export function AppSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>{footer}</SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

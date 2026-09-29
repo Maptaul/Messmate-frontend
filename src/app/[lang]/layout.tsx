@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anek_Bangla, Roboto } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import { LOCALES } from "@/i18n/config";
 import { getDictionary, getLocale, getT } from "@/i18n/get-dictionary";
 import { I18nProvider } from "@/i18n/i18n-provider";
@@ -56,6 +57,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
         <Providers>
           <I18nProvider locale={locale} dictionary={dictionary}>
             {children}
+            <Toaster richColors closeButton position="top-right" />
           </I18nProvider>
         </Providers>
       </body>
