@@ -16,6 +16,14 @@ export function login(payload: LoginPayload) {
   });
 }
 
+/** Google Identity ID token → session cookies. New Google users join as MEMBER. */
+export function googleLogin(idToken: string) {
+  return apiClient<ApiResponse<AuthTokens>>("/auth/google", {
+    method: "POST",
+    body: { idToken },
+  });
+}
+
 export function register(payload: RegisterPayload) {
   return apiClient<ApiResponse<null>>("/auth/register", {
     method: "POST",
