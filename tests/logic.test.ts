@@ -4,6 +4,7 @@ import { FetchError } from "ofetch";
 import { getButtonArray } from "../src/components/ui/table-pagination";
 import { localePath, splitLocale } from "../src/i18n/locale-path";
 import { createTranslator, type Dictionary } from "../src/i18n/translate";
+import { toCsv } from "../src/utils/csv.util";
 import { getErrorStatus } from "../src/utils/error.util";
 import { formatDeadline, todayInDhaka } from "../src/utils/format.util";
 import {
@@ -379,4 +380,22 @@ test("the activity feed filters accept only real audit actions and records", () 
     fromSearchParams({ action: "NOPE", entity: "Nothing" }),
   );
   assert.deepEqual([bad.action, bad.entity], [undefined, undefined]);
+});
+
+test("CSV cells with commas, quotes or line breaks are quoted", () => {
+  const csv = toCsv([
+    ["তারিখ", "Note", "Amount"],
+    ["2026-09-01", 'Rice, oil and "fresh" fish', 1250.5],
+    ["2026-09-02", "line one\nline two", 0],
+    ["2026-09-03", null, 300],
+  ]);
+  assert.equal(
+    csv,
+    [
+      "তারিখ,Note,Amount",
+      '2026-09-01,"Rice, oil and ""fresh"" fish",1250.5',
+      '2026-09-02,"line one\nline two",0',
+      "2026-09-03,,300",
+    ].join("\r\n"),
+  );
 });

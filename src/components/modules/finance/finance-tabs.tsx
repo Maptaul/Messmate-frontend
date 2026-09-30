@@ -10,6 +10,7 @@ import { FINANCE_PERIODS, financeEntriesParams, financePeriod } from "@/utils";
 import FinanceEntryCreateDialog from "./finance-entry-create-dialog";
 import FinanceEntryTable from "./finance-entry-table";
 import FinanceEntryTableLoading from "./finance-entry-table-loading";
+import FinanceExportButton from "./finance-export-button";
 import FinanceSummary from "./finance-summary";
 import FinanceSummaryLoading from "./finance-summary-loading";
 
@@ -69,7 +70,10 @@ export default function FinanceTabs() {
             onChange={(category) => set({ category })}
           />
         </div>
-        <FinanceEntryCreateDialog />
+        <div className="flex flex-wrap gap-2">
+          <FinanceExportButton params={queryParams} />
+          <FinanceEntryCreateDialog />
+        </div>
       </div>
 
       <Suspense fallback={<FinanceEntryTableLoading />}>

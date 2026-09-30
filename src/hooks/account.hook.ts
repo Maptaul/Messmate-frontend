@@ -114,3 +114,20 @@ export function useDeleteFinanceEntry() {
     onSuccess: invalidate,
   });
 }
+
+/** Every entry matching the filters, page by page (the API caps a page at 100). */
+export function useExportFinanceEntries() {
+  return useMutation({
+    mutationFn: async (params: FinanceEntryParams) => {
+      const first = await getFinanceEntries({ ...params, page: 1, limit: 100 });
+      const entries = [...first.data];
+
+      for (let page = 2; page <= first.meta.totalPages; page++) {
+        const next = await getFinanceEntries({ ...params, page, limit: 100 });
+        entries.push(...next.data);
+      }
+
+      return entries;
+    },
+  });
+}
