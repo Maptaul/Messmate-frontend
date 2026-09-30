@@ -1,7 +1,6 @@
 "use client";
 
-import StepNav from "@/components/modules/mess-wizard/step-nav";
-import { FieldGroup } from "@/components/ui/field";
+import StepNav, { StepCard } from "@/components/modules/mess-wizard/step-nav";
 import { useT } from "@/i18n/i18n-provider";
 import { useMessWizard } from "@/stores/mess-wizard.store";
 import { messMoneySchema } from "@/validation";
@@ -14,6 +13,7 @@ export default function MessMoneyForm() {
   const form = useAppForm({
     defaultValues: money,
     validators: { onChange: messMoneySchema },
+    listeners: { onChange: ({ formApi }) => setMoney(formApi.state.values) },
     onSubmit: ({ value }) => {
       setMoney(value);
       setStep(2);
@@ -23,38 +23,31 @@ export default function MessMoneyForm() {
   return (
     <form
       noValidate
+      className="flex flex-col gap-2"
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();
       }}
     >
-      <FieldGroup>
+      <StepCard title={t("manager.wizard.moneyTitle")}>
         <form.AppField name="monthlyRent">
           {(field) => (
-            <field.TextField
+            <field.MoneyField
               label={t("manager.wizard.rent")}
               description={t("manager.wizard.rentHint")}
-              type="number"
-              inputMode="decimal"
-              min={0}
-              step="any"
             />
           )}
         </form.AppField>
         <form.AppField name="monthlyDeposit">
           {(field) => (
-            <field.TextField
-              label={t("manager.wizard.deposit")}
+            <field.MoneyField
+              label={`${t("manager.wizard.deposit")} (${t("manager.wizard.optional")})`}
               description={t("manager.wizard.depositHint")}
-              type="number"
-              inputMode="decimal"
-              min={0}
-              step="any"
             />
           )}
         </form.AppField>
-        <StepNav onBack={() => setStep(0)} />
-      </FieldGroup>
+      </StepCard>
+      <StepNav onBack={() => setStep(0)} />
     </form>
   );
 }

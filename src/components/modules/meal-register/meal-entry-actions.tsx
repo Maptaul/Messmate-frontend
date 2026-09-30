@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import InlineConfirm from "@/components/ui/inline-confirm";
 import MealStepper from "@/components/ui/meal-stepper";
 import { Spinner } from "@/components/ui/spinner";
 import { useDeleteMeal, useUpdateMeal } from "@/hooks";
@@ -68,24 +69,13 @@ export default function MealEntryActions({
 
   if (confirmDelete) {
     return (
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setConfirmDelete(false)}
-        >
-          {t("manager.meals.cancel")}
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDelete}
-          disabled={deletePending}
-          title={t("manager.meals.deleteHint")}
-        >
-          {t("manager.meals.deleteConfirm")}
-        </Button>
-      </div>
+      <InlineConfirm
+        hint={t("manager.meals.deleteHint")}
+        confirmLabel={t("manager.meals.deleteConfirm")}
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+        pending={deletePending}
+      />
     );
   }
 
@@ -106,7 +96,7 @@ export default function MealEntryActions({
         <Button
           variant="ghost"
           size="icon-sm"
-          className="text-destructive hover:text-destructive"
+          className="text-destructive hover:bg-destructive-tint hover:text-destructive"
           aria-label={t("manager.meals.deleteEntry", { name })}
           onClick={() => setConfirmDelete(true)}
         >
@@ -124,11 +114,14 @@ export default function MealEntryActions({
               })}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
             {(["lunch", "dinner"] as const).map((meal) => (
-              <div key={meal} className="flex items-center justify-between">
-                <span className="text-sm">{t(`manager.meals.${meal}`)}</span>
+              <div key={meal} className="flex flex-col gap-1.5">
+                <span className="font-medium">
+                  {t(`manager.meals.${meal}`)}
+                </span>
                 <MealStepper
+                  size="lg"
                   value={counts[meal]}
                   onChange={(value) =>
                     setCounts((current) => ({ ...current, [meal]: value }))

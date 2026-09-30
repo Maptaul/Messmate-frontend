@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { getCycleMeals, getMealSummary } from "@/api";
 import CyclePicker from "@/components/modules/cycles/cycle-picker";
 import NoCycle from "@/components/modules/cycles/no-cycle";
+import MealExport from "@/components/modules/meal-register/meal-export";
 import MealRegister from "@/components/modules/meal-register/meal-register";
 import NoMess from "@/components/modules/my-messes/no-mess";
 import { getLocale, getT } from "@/i18n/get-dictionary";
@@ -43,7 +44,7 @@ export default async function page({
   const { activeMessId } = await getActiveMess();
   if (!activeMessId) {
     return (
-      <section className="p-5">
+      <section className="page-frame">
         <NoMess />
       </section>
     );
@@ -55,7 +56,7 @@ export default async function page({
   );
   if (!cycle) {
     return (
-      <section className="p-5">
+      <section className="page-frame">
         <NoCycle />
       </section>
     );
@@ -82,16 +83,19 @@ export default async function page({
   ]);
 
   return (
-    <section className="space-y-6 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">{t("manager.meals.title")}</h1>
+    <section className="page-frame">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("manager.meals.title")}</h1>
           <p className="text-muted-foreground">
             {t("manager.meals.description")} ·{" "}
             {formatMonth(cycle.year, cycle.month, locale)}
           </p>
         </div>
-        <CyclePicker messId={activeMessId} cycleId={cycle.id} />
+        <div className="flex flex-wrap gap-2">
+          <MealExport cycleId={cycle.id} />
+          <CyclePicker messId={activeMessId} cycleId={cycle.id} />
+        </div>
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <MealRegister

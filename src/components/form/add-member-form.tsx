@@ -54,6 +54,7 @@ export default function AddMemberForm({
           {(field) => (
             <field.TextField
               label={t("manager.members.email")}
+              description={t("manager.members.mustHave")}
               type="email"
               autoComplete="off"
               placeholder="name@example.com"

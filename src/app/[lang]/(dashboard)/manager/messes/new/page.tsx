@@ -1,3 +1,4 @@
+import { CloudCheckIcon } from "lucide-react";
 import type { Metadata } from "next";
 import MessWizard from "@/components/modules/mess-wizard/mess-wizard";
 import { getT } from "@/i18n/get-dictionary";
@@ -15,12 +16,18 @@ export default async function page() {
   const t = await getT();
 
   return (
-    <section className="space-y-6 p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("manager.wizard.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("manager.wizard.description")}
-        </p>
+    <section className="page-frame mx-auto max-w-192">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("manager.wizard.title")}</h1>
+          <p className="text-muted-foreground">
+            {t("manager.wizard.description")}
+          </p>
+        </div>
+        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <CloudCheckIcon className="size-3.5" />
+          {t("manager.wizard.draftSaved")}
+        </span>
       </div>
       <MessWizard />
     </section>

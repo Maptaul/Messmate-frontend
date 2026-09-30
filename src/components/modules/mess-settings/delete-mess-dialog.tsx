@@ -51,13 +51,19 @@ export default function DeleteMessDialog({ mess }: { mess: MessDetail }) {
         if (!next) setTyped("");
       }}
     >
-      <DialogTrigger render={<Button variant="destructive" />}>
+      <DialogTrigger
+        render={
+          <Button className="bg-destructive text-white hover:bg-destructive/90 dark:text-white" />
+        }
+      >
         <Trash2Icon />
         {t("manager.settings.deleteButton")}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t("manager.settings.dangerTitle")}</DialogTitle>
+          <DialogTitle>
+            {t("manager.settings.deleteTitle", { name: mess.name })}
+          </DialogTitle>
           <DialogDescription>
             {t("manager.settings.dangerBody")}
           </DialogDescription>
@@ -68,6 +74,7 @@ export default function DeleteMessDialog({ mess }: { mess: MessDetail }) {
           </label>
           <Input
             id="confirm-name"
+            placeholder={mess.name}
             value={typed}
             autoComplete="off"
             onChange={(e) => setTyped(e.target.value)}
@@ -83,7 +90,7 @@ export default function DeleteMessDialog({ mess }: { mess: MessDetail }) {
           </Button>
           <Button
             type="button"
-            variant="destructive"
+            className="bg-destructive text-white hover:bg-destructive/90 dark:text-white"
             disabled={typed.trim() !== mess.name || isPending}
             onClick={handleDelete}
           >

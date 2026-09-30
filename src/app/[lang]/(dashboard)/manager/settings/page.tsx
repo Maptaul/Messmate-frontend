@@ -41,14 +41,14 @@ export default async function page() {
   });
 
   return (
-    <section className="space-y-6 p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">
-          {t("manager.settings.title")}
-        </h1>
-        <p className="text-muted-foreground">
-          {t("manager.settings.description")}
-        </p>
+    <section className="page-frame">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("manager.settings.title")}</h1>
+          <p className="text-muted-foreground">
+            {t("manager.settings.description")}
+          </p>
+        </div>
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<Skeleton className="h-96 max-w-2xl rounded-xl" />}>

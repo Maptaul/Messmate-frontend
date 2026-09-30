@@ -65,25 +65,17 @@ export default function MessSettingsForm({ mess }: { mess: MessDetail }) {
         <div className="grid gap-4 sm:grid-cols-2">
           <form.AppField name="monthlyRent">
             {(field) => (
-              <field.TextField
+              <field.MoneyField
                 label={t("manager.settings.rent")}
                 description={t("manager.settings.rentHint")}
-                type="number"
-                inputMode="decimal"
-                min={0}
-                step="any"
               />
             )}
           </form.AppField>
           <form.AppField name="monthlyDeposit">
             {(field) => (
-              <field.TextField
+              <field.MoneyField
                 label={t("manager.settings.deposit")}
                 description={t("manager.settings.depositHint")}
-                type="number"
-                inputMode="decimal"
-                min={0}
-                step="any"
               />
             )}
           </form.AppField>

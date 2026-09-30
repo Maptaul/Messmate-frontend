@@ -6,12 +6,18 @@ import MealRegisterGrid from "./meal-register-grid";
 
 export default function MealRegisterTable({
   cycleId,
+  year,
+  month,
   date,
   locked,
+  onDateChange,
 }: {
   cycleId: string;
+  year: number;
+  month: number;
   date: string;
   locked: boolean;
+  onDateChange: (date: string) => void;
 }) {
   const { data: summary } = useSuspenseMealSummary(cycleId);
   const { data: entries } = useSuspenseCycleMeals(cycleId, {
@@ -35,10 +41,13 @@ export default function MealRegisterTable({
     <MealRegisterGrid
       key={signature}
       cycleId={cycleId}
+      year={year}
+      month={month}
       date={date}
       members={members}
       entries={entries.data}
       locked={locked}
+      onDateChange={onDateChange}
     />
   );
 }
