@@ -72,19 +72,16 @@ export default function FinanceSummary({ period }: { period: SummaryPeriod }) {
         <StatCard
           label={t("finance.income")}
           value={formatBDT(summary.income, locale)}
-          icon={ArrowDownLeftIcon}
         />
         <StatCard
           label={t("finance.expense")}
           value={formatBDT(summary.expense, locale)}
-          icon={ArrowUpRightIcon}
-          tone="warning"
+          valueClassName="text-(--tone-a-fg)"
         />
         <StatCard
           label={t("finance.balance")}
           value={formatBDT(summary.balance, locale)}
-          icon={ScaleIcon}
-          tone={summary.balance < 0 ? "danger" : "default"}
+          valueClassName={summary.balance < 0 ? "text-destructive" : undefined}
         />
       </div>
 

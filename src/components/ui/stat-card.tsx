@@ -1,43 +1,76 @@
-import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import Sparkline from "./sparkline";
 
+/**
+ * One cell of a StatStrip: label, a big tabular value, a hint and an optional
+ * trend. With `href` the whole cell is a link to the page behind the number.
+ */
 export default function StatCard({
   label,
   value,
   hint,
-  icon: Icon,
-  tone = "default",
+  hintClassName,
+  valueClassName,
+  href,
+  trend,
+  trendColor,
+  children,
 }: {
   label: string;
   value: ReactNode;
   hint?: ReactNode;
-  icon: LucideIcon;
-  tone?: "default" | "warning" | "danger";
+  hintClassName?: string;
+  valueClassName?: string;
+  href?: string;
+  trend?: number[];
+  trendColor?: string;
+  /** Extra content under the value, e.g. a progress meter. */
+  children?: ReactNode;
 }) {
-  return (
-    <Card>
-      <CardContent className="flex items-start justify-between gap-4">
-        <div className="min-w-0 space-y-1">
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className="truncate text-2xl font-semibold tracking-tight tabular-nums">
-            {value}
-          </p>
-          {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
-        </div>
-        <span
-          className={cn(
-            "flex size-10 shrink-0 items-center justify-center rounded-xl",
-            tone === "default" && "bg-primary/10 text-primary",
-            tone === "warning" &&
-              "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-            tone === "danger" && "bg-destructive/10 text-destructive",
-          )}
-        >
-          <Icon className="size-5" aria-hidden />
+  const body = (
+    <>
+      <span className="text-[12.5px] font-medium text-muted-foreground">
+        {label}
+      </span>
+      <span
+        className={cn(
+          "truncate text-2xl leading-tight font-semibold tracking-[-0.01em] tabular-nums",
+          valueClassName,
+        )}
+      >
+        {value}
+      </span>
+      {children}
+      {(hint || trend) && (
+        <span className="mt-auto flex items-end justify-between gap-2">
+          <span
+            className={cn(
+              "text-xs leading-snug text-muted-foreground",
+              hintClassName,
+            )}
+          >
+            {hint}
+          </span>
+          {trend && <Sparkline values={trend} color={trendColor} />}
         </span>
-      </CardContent>
-    </Card>
+      )}
+    </>
+  );
+  const className = cn(
+    "flex min-w-0 flex-col gap-1.5 border-r border-b px-5 py-4 text-foreground",
+    trend && "gap-2.5",
+  );
+
+  return href ? (
+    <Link
+      href={href}
+      className={cn(className, "transition-colors hover:bg-accent")}
+    >
+      {body}
+    </Link>
+  ) : (
+    <div className={className}>{body}</div>
   );
 }

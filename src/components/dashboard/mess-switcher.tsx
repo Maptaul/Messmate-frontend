@@ -3,7 +3,6 @@
 import { CheckIcon, ChevronsUpDownIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { initialsOf } from "@/components/ui/user-avatar";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { MessChoice } from "@/lib/activeMess";
 import type { UserRole } from "@/types";
@@ -45,34 +45,46 @@ export default function MessSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            className="max-w-56"
-            aria-label={t("messSwitcher.label")}
-          />
-        }
+        aria-label={t("messSwitcher.label")}
+        className="flex w-full items-center gap-2.5 rounded-md border bg-card px-2.5 py-2 text-left shadow-1 outline-none transition-colors hover:border-border-strong focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        <span className="truncate">
-          {active?.name ?? t("messSwitcher.noMess")}
+        <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-primary-tint text-xs font-semibold text-primary">
+          {initialsOf(active?.name ?? "MM")}
         </span>
-        <ChevronsUpDownIcon className="size-4" />
+        <span className="grid min-w-0 flex-1 leading-tight">
+          <span className="truncate text-[13px] font-medium">
+            {active?.name ?? t("messSwitcher.noMess")}
+          </span>
+          {active && (
+            <span className="truncate text-[11px] text-muted-foreground">
+              {active.address}
+            </span>
+          )}
+        </span>
+        <ChevronsUpDownIcon className="size-3.5 shrink-0 text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="min-w-64">
+      <DropdownMenuContent align="start" className="min-w-(--anchor-width)">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>{t("messSwitcher.label")}</DropdownMenuLabel>
+          <DropdownMenuLabel className="micro text-[10px]">
+            {t("shell.messesLabel")}
+          </DropdownMenuLabel>
           {messes.map((mess) => (
             <DropdownMenuItem
               key={mess.id}
               onClick={() => mess.id !== activeMessId && handleChoose(mess.id)}
+              className="items-start"
             >
               <span className="grid flex-1 leading-tight">
-                <span className="truncate">{mess.name}</span>
-                <span className="truncate text-xs text-muted-foreground">
+                <span className="truncate text-[13px] font-medium">
+                  {mess.name}
+                </span>
+                <span className="truncate text-[11px] text-muted-foreground">
                   {mess.address}
                 </span>
               </span>
-              {mess.id === activeMessId && <CheckIcon className="ml-auto" />}
+              {mess.id === activeMessId && (
+                <CheckIcon className="mt-0.5 ml-auto text-primary" />
+              )}
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
@@ -81,6 +93,7 @@ export default function MessSwitcher({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               render={<Link href={href("/manager/messes/new")} />}
+              className="font-medium"
             >
               <PlusIcon />
               {t("messSwitcher.create")}

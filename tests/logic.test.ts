@@ -192,10 +192,18 @@ test("list params come from the URL, and junk values are dropped", () => {
     cyclesParams(fromSearchParams({ status: "OPEN" })).status,
     "OPEN",
   );
+  // members open on the active ones; "ALL" lifts the filter, junk falls back
+  assert.equal(membersParams(fromSearchParams({})).status, "ACTIVE");
   assert.equal(
-    membersParams(fromSearchParams({ status: "OPEN" })).status,
+    membersParams(fromSearchParams({ status: "ALL" })).status,
     undefined,
   );
+  assert.equal(
+    membersParams(fromSearchParams({ status: "OPEN" })).status,
+    "ACTIVE",
+  );
+  assert.equal(cyclesParams(fromSearchParams({ year: "2026" })).year, 2026);
+  assert.equal(cyclesParams(fromSearchParams({ year: "x" })).year, undefined);
 });
 
 test("the mess money step reads typed strings and rejects bad amounts", () => {
@@ -263,6 +271,19 @@ test("expense, deposit and bill params only accept known values", () => {
   assert.equal(
     billsParams(fromSearchParams({ status: "OPEN" })).status,
     undefined,
+  );
+  // "paidBy" in the URL becomes the API's paidByMemberId ("fund" included)
+  assert.deepEqual(
+    expensesParams(
+      fromSearchParams({ paidBy: "fund", searchTerm: "rice", page: "2" }),
+    ),
+    {
+      page: 2,
+      limit: 10,
+      type: undefined,
+      paidByMemberId: "fund",
+      searchTerm: "rice",
+    },
   );
 });
 

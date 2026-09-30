@@ -1,5 +1,11 @@
+import {
+  CircleAlertIcon,
+  CircleCheckIcon,
+  InfoIcon,
+  Loader2Icon,
+} from "lucide-react";
 import type { Metadata } from "next";
-import { Anek_Bangla, Roboto } from "next/font/google";
+import { Anek_Bangla, Roboto, Roboto_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { LOCALES } from "@/i18n/config";
 import { getDictionary, getLocale, getT } from "@/i18n/get-dictionary";
@@ -13,6 +19,11 @@ const roboto = Roboto({ subsets: ["latin"], variable: "--font-roboto" });
 const anekBangla = Anek_Bangla({
   subsets: ["bengali", "latin"],
   variable: "--font-anek-bangla",
+});
+// Ids, invoice numbers and transaction references.
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-roboto-mono",
 });
 
 export function generateStaticParams() {
@@ -51,13 +62,27 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
         "font-sans antialiased",
         roboto.variable,
         anekBangla.variable,
+        robotoMono.variable,
       )}
     >
       <body>
         <Providers>
           <I18nProvider locale={locale} dictionary={dictionary}>
             {children}
-            <Toaster richColors closeButton position="top-right" />
+            <Toaster
+              closeButton
+              position="top-right"
+              icons={{
+                success: <CircleCheckIcon className="size-4 text-primary" />,
+                info: <InfoIcon className="size-4 text-muted-foreground" />,
+                warning: (
+                  <CircleAlertIcon className="size-4 text-destructive" />
+                ),
+                error: <CircleAlertIcon className="size-4 text-destructive" />,
+                loading: <Loader2Icon className="size-4 animate-spin" />,
+              }}
+              toastOptions={{ classNames: { toast: "cn-toast shadow-3!" } }}
+            />
           </I18nProvider>
         </Providers>
       </body>

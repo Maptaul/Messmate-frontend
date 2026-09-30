@@ -4,6 +4,7 @@ import {
 } from "@tanstack/react-form";
 import { getFieldErrors } from "@/utils";
 import {
+  MoneyField,
   OtpField,
   PasswordField,
   RadioCardsField,
@@ -25,6 +26,7 @@ export const { useAppForm, withForm } = createFormHook({
   formContext,
   fieldComponents: {
     TextField,
+    MoneyField,
     PasswordField,
     TextareaField,
     SelectField,

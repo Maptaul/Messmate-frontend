@@ -21,6 +21,12 @@ export default function SearchInput({
 }) {
   const t = useT();
   const [draft, setDraft] = useState(value);
+  const [previous, setPrevious] = useState(value);
+  // "Clear filters" empties the URL; empty the box with it.
+  if (value !== previous) {
+    setPrevious(value);
+    if (value === "") setDraft("");
+  }
   const debounced = useDebounce(draft);
 
   useEffect(() => {
@@ -28,7 +34,7 @@ export default function SearchInput({
   }, [debounced, value, onSearch]);
 
   return (
-    <div className="relative w-full sm:max-w-xs">
+    <div className="relative w-full sm:max-w-85">
       <SearchIcon
         className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
         aria-hidden

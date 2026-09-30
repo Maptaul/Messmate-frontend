@@ -71,3 +71,17 @@ export interface CloseCycleResult {
   bills: SettlementBill[];
   warnings: string[];
 }
+
+/** One value per day of the month so far (not running totals). */
+export interface CycleTrends {
+  cycle: { id: string; year: number; month: number };
+  previousCycle: { id: string; year: number; month: number } | null;
+  days: string[];
+  meals: number[];
+  grocery: number[];
+  shared: number[];
+  /** The caller's own meals; null when they don't eat in the mess. */
+  myMeals: number[] | null;
+  /** What the previous closed month still owed at each day's close. */
+  previousDue: number[] | null;
+}

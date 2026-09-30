@@ -20,6 +20,15 @@ export interface DashboardStats {
   auditLogEntries: number;
 }
 
+/** Seven weekly points, oldest first, for the overview sparklines. */
+export interface PlatformTrends {
+  points: string[];
+  users: number[];
+  messes: number[];
+  openCycles: number[];
+  outstandingDue: number[];
+}
+
 export const AUDIT_ACTIONS = [
   "CYCLE_CLOSED",
   "CYCLE_REOPENED",

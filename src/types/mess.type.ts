@@ -9,6 +9,8 @@ export interface Mess {
   createdAt: string;
   manager: { id: string; name: string; email: string };
   _count: { members: number; cycles: number };
+  /** The open month, if any (lists only carry its id). */
+  cycles?: { id: string }[];
 }
 
 export interface MessDetail extends Mess {
@@ -19,6 +21,9 @@ export interface MessDetail extends Mess {
     status: "OPEN" | "CLOSED";
     mealRate: Money | null;
     totalMeals: number | null;
+    totalGrocery: Money | null;
+    closedAt: string | null;
+    closedBy: { name: string } | null;
   }[];
 }
 

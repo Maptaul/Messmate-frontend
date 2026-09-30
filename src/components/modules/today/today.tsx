@@ -52,14 +52,12 @@ export default function Today({ cycleId }: { cycleId: string }) {
         <StatCard
           label={t("resident.today.plannedThisMonth")}
           value={formatNumber(calendar.data.plannedMeals, locale)}
-          icon={CalendarCheck2Icon}
         />
         <StatCard
           label={t("resident.today.dutyTitle")}
           value={t("resident.today.dutyDays", {
             count: formatNumber(duty.data.totalDays, locale),
           })}
-          icon={ShoppingCartIcon}
         />
         <StatCard
           label={t("resident.today.billTitle")}
@@ -75,8 +73,7 @@ export default function Today({ cycleId }: { cycleId: string }) {
               ? formatMonth(bill.cycle.year, bill.cycle.month, locale)
               : t("resident.today.billNone")
           }
-          icon={BanknoteIcon}
-          tone={due > 0 ? "warning" : "default"}
+          valueClassName={due > 0 ? "text-(--tone-a-fg)" : undefined}
         />
       </div>
 

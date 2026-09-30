@@ -7,6 +7,7 @@ import {
 import {
   closeCycle,
   getCycle,
+  getCycleTrends,
   getMessCycles,
   getSettlementPreview,
   openCycle,
@@ -33,6 +34,22 @@ export function useSuspenseCycle(cycleId: string) {
   return useSuspenseQuery({
     queryKey: ["cycle", cycleId],
     queryFn: () => getCycle(cycleId),
+  });
+}
+
+export function useSuspenseCycleTrends(cycleId: string) {
+  return useSuspenseQuery({
+    queryKey: ["cycle-trends", cycleId],
+    queryFn: () => getCycleTrends(cycleId),
+  });
+}
+
+/** The running meal rate for the header pill; never blocks the page. */
+export function useSettlementPreview(cycleId: string) {
+  return useQuery({
+    queryKey: ["settlement", cycleId],
+    queryFn: () => getSettlementPreview(cycleId),
+    enabled: !!cycleId,
   });
 }
 

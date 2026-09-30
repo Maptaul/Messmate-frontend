@@ -63,6 +63,7 @@ export function messesParams(get: Get): MessListParams {
     page: pageOf(get),
     limit: PAGE_SIZE,
     searchTerm: get("searchTerm") || undefined,
+    managerId: get("managerId") || undefined,
   };
 }
 
@@ -72,6 +73,7 @@ export function auditParams(get: Get): AuditLogParams {
     limit: PAGE_SIZE,
     action: oneOf<AuditAction>(AUDIT_ACTIONS, get("action")),
     entity: oneOf(AUDIT_ENTITIES, get("entity")),
+    sortOrder: get("sortOrder") === "asc" ? "asc" : undefined,
   };
 }
 
@@ -89,11 +91,16 @@ export const RECENT_ACTIVITY_PARAMS = { page: 1, limit: 5 };
 const MEMBERSHIP_STATUSES: readonly MembershipStatus[] = ["ACTIVE", "LEFT"];
 const CYCLE_STATUSES: readonly CycleStatus[] = ["OPEN", "CLOSED"];
 
+/** Active members unless the URL asks for left ones or everyone ("ALL"). */
 export function membersParams(get: Get): MemberListParams {
   return {
     page: pageOf(get),
     limit: PAGE_SIZE,
-    status: oneOf(MEMBERSHIP_STATUSES, get("status")),
+    searchTerm: get("searchTerm") || undefined,
+    status:
+      get("status") === "ALL"
+        ? undefined
+        : (oneOf(MEMBERSHIP_STATUSES, get("status")) ?? "ACTIVE"),
   };
 }
 
@@ -102,6 +109,7 @@ export function cyclesParams(get: Get): CycleListParams {
     page: pageOf(get),
     limit: PAGE_SIZE,
     status: oneOf(CYCLE_STATUSES, get("status")),
+    year: Number(get("year")) || undefined,
   };
 }
 
@@ -117,6 +125,8 @@ export function expensesParams(get: Get): ExpenseListParams {
     page: pageOf(get),
     limit: PAGE_SIZE,
     type: oneOf<ExpenseType>(EXPENSE_TYPES, get("type")),
+    paidByMemberId: get("paidBy") || undefined,
+    searchTerm: get("searchTerm") || undefined,
   };
 }
 
@@ -133,10 +143,24 @@ export function billsParams(get: Get): BillListParams {
     page: pageOf(get),
     limit: PAGE_SIZE,
     status: oneOf(BILL_STATUSES, get("status")),
+    searchTerm: get("searchTerm") || undefined,
   };
 }
 
 /** Every active member, for pickers (deposit, expense payer, register). */
+/** Everyone who ever lived in the mess, left ones included. */
+export const ALL_MEMBERS_PARAMS = { page: 1, limit: 100 };
+
+/** Every bill of a closed month, for its totals (a mess has ~10 members). */
+export const ALL_BILLS_PARAMS = { page: 1, limit: 100 };
+
+/** Every deposit of a month, for its totals. */
+// ponytail: one page of 100; a mess of ~10 members deposits far fewer.
+export const ALL_DEPOSITS_PARAMS = { page: 1, limit: 100 };
+
+/** The latest changes in one mess (admin mess detail). */
+export const MESS_ACTIVITY_PARAMS = { page: 1, limit: 20 };
+
 export const ACTIVE_MEMBERS_PARAMS = {
   status: "ACTIVE" as const,
   limit: 100,
@@ -213,5 +237,7 @@ export function messAuditParams(get: Get): MessAuditParams {
     limit: PAGE_SIZE,
     action: oneOf<AuditAction>(AUDIT_ACTIONS, get("action")),
     entity: oneOf(AUDIT_ENTITIES, get("entity")),
+    memberId: get("memberId") || undefined,
+    actorId: get("actorId") || undefined,
   };
 }

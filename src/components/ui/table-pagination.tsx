@@ -43,12 +43,17 @@ interface Props {
   totalPages: number;
   handlePageChange: (page: number) => void;
   page: number;
+  /** With both, the row also says "Showing 11–20 of 128". */
+  total?: number;
+  limit?: number;
 }
 
 export default function TablePagination({
   totalPages,
   handlePageChange,
   page,
+  total,
+  limit,
 }: Props) {
   const t = useT();
   const locale = useLocale();
@@ -57,51 +62,65 @@ export default function TablePagination({
     handlePageChange(page);
   };
 
+  const showing =
+    total && limit
+      ? t("common.showingRange", {
+          from: formatNumber((page - 1) * limit + 1, locale),
+          to: formatNumber(Math.min(page * limit, total), locale),
+          total: formatNumber(total, locale),
+        })
+      : null;
+
   if (totalPages <= 1) {
-    return null;
+    return showing ? <p className="text-muted-foreground">{showing}</p> : null;
   }
 
   return (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            text={t("common.previous")}
-            onClick={() => goToPage(page - 1)}
-            aria-disabled={page === 1}
-            className={
-              page === 1 ? "pointer-events-none opacity-50" : undefined
-            }
-          />
-        </PaginationItem>
-        {getButtonArray(totalPages, page).map((item, index) =>
-          item === "ellipsis" ? (
-            // biome-ignore lint/suspicious/noArrayIndexKey: an ellipsis has no identity
-            <PaginationItem key={`ellipsis${index}`}>
-              <PaginationEllipsis />
-            </PaginationItem>
-          ) : (
-            <PaginationItem key={item}>
-              <PaginationLink
-                onClick={() => handlePageChange(item)}
-                isActive={page === item}
-              >
-                {formatNumber(item, locale)}
-              </PaginationLink>
-            </PaginationItem>
-          ),
-        )}
-        <PaginationItem>
-          <PaginationNext
-            text={t("common.next")}
-            onClick={() => goToPage(page + 1)}
-            aria-disabled={page === totalPages}
-            className={
-              page === totalPages ? "pointer-events-none opacity-50" : undefined
-            }
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      {showing && <p className="text-muted-foreground">{showing}</p>}
+      <Pagination className="mx-0 w-auto">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              text={t("common.previous")}
+              onClick={() => goToPage(page - 1)}
+              aria-disabled={page === 1}
+              className={
+                page === 1 ? "pointer-events-none opacity-50" : undefined
+              }
+            />
+          </PaginationItem>
+          {getButtonArray(totalPages, page).map((item, index) =>
+            item === "ellipsis" ? (
+              // biome-ignore lint/suspicious/noArrayIndexKey: an ellipsis has no identity
+              <PaginationItem key={`ellipsis${index}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            ) : (
+              <PaginationItem key={item}>
+                <PaginationLink
+                  onClick={() => handlePageChange(item)}
+                  isActive={page === item}
+                >
+                  {formatNumber(item, locale)}
+                </PaginationLink>
+              </PaginationItem>
+            ),
+          )}
+          <PaginationItem>
+            <PaginationNext
+              text={t("common.next")}
+              onClick={() => goToPage(page + 1)}
+              aria-disabled={page === totalPages}
+              className={
+                page === totalPages
+                  ? "pointer-events-none opacity-50"
+                  : undefined
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
   );
 }

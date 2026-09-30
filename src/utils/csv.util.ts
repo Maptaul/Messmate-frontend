@@ -24,3 +24,20 @@ export function downloadCsv(csv: string, fileName: string) {
   link.click();
   URL.revokeObjectURL(url);
 }
+
+/** The API caps a page at 100 rows; an export wants every row that matches. */
+export const EXPORT_PAGE_SIZE = 100;
+
+export async function fetchAllPages<T>(
+  fetchPage: (page: number) => Promise<{
+    data: T[];
+    meta?: { totalPages: number };
+  }>,
+): Promise<T[]> {
+  const first = await fetchPage(1);
+  const rows = [...first.data];
+  for (let page = 2; page <= (first.meta?.totalPages ?? 1); page++) {
+    rows.push(...(await fetchPage(page)).data);
+  }
+  return rows;
+}

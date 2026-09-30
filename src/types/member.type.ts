@@ -7,6 +7,8 @@ export interface MessMember {
   status: MembershipStatus;
   joinedAt: string;
   leftAt: string | null;
+  defaultLunch: number;
+  defaultDinner: number;
   user: {
     id: string;
     name: string;

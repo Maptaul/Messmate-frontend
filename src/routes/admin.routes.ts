@@ -1,3 +1,9 @@
+import {
+  Building2Icon,
+  LayoutDashboardIcon,
+  ScrollTextIcon,
+  UsersIcon,
+} from "lucide-react";
 import type { SidebarItems } from "@/types/sidebar.type";
 import { accountRoutes } from "./account.routes";
 
@@ -10,18 +16,22 @@ export const adminRoutes: SidebarItems = [
       {
         title: "nav.items.overview",
         url: `${prefix}`,
+        icon: LayoutDashboardIcon,
       },
       {
         title: "nav.items.users",
         url: `${prefix}/users`,
+        icon: UsersIcon,
       },
       {
         title: "nav.items.messes",
         url: `${prefix}/messes`,
+        icon: Building2Icon,
       },
       {
         title: "nav.items.auditLog",
         url: `${prefix}/audit-logs`,
+        icon: ScrollTextIcon,
       },
     ],
   },

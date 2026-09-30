@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { LOCALE_LABEL, LOCALES, type Locale } from "@/i18n/config";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { splitLocale } from "@/i18n/locale-path";
@@ -31,24 +30,33 @@ export default function LanguageSwitcher({
   return (
     <fieldset
       aria-label={t("common.language")}
-      className={cn("flex items-center rounded-lg border p-0.5", className)}
+      className={cn(
+        "flex shrink-0 items-center gap-0.5 rounded-md border bg-muted p-0.5",
+        className,
+      )}
     >
       {LOCALES.map((locale) => (
-        <Button
+        <button
           key={locale}
           type="button"
-          size="xs"
-          variant={locale === current ? "secondary" : "ghost"}
           aria-pressed={locale === current}
           aria-label={t("common.switchLanguage", {
             language: LANGUAGE_NAME[locale],
           })}
           lang={locale}
           onClick={() => locale !== current && switchTo(locale)}
-          className="min-w-9"
+          className={cn(
+            "h-6 rounded-sm px-2 font-semibold transition-colors",
+            locale === "bn"
+              ? "font-[family-name:var(--font-anek-bangla)] text-xs"
+              : "text-[11px]",
+            locale === current
+              ? "bg-card text-foreground shadow-1"
+              : "text-muted-foreground hover:text-foreground",
+          )}
         >
           {LOCALE_LABEL[locale]}
-        </Button>
+        </button>
       ))}
     </fieldset>
   );

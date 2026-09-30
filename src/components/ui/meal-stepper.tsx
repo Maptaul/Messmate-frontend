@@ -1,50 +1,74 @@
 "use client";
 
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useLocale } from "@/i18n/i18n-provider";
+import { cn } from "@/lib/utils";
+import { formatNumber } from "@/utils/format.util";
 
 const STEP = 0.5;
 const MAX = 10;
 
-/** − 1.5 + for a meal count: halves allowed, 0 to 10. */
+/**
+ * − 1.5 + for a meal count: halves allowed, 0 to 10. One bordered group;
+ * "lg" (40px) is for dialogs and phones, "sm" (32px) for register rows.
+ */
 export default function MealStepper({
   value,
   onChange,
   decreaseLabel,
   increaseLabel,
   disabled,
+  size = "sm",
+  className,
 }: {
   value: number;
   onChange: (value: number) => void;
   decreaseLabel: string;
   increaseLabel: string;
   disabled?: boolean;
+  size?: "sm" | "lg";
+  className?: string;
 }) {
+  const locale = useLocale();
+  const button = cn(
+    "grid h-full place-items-center rounded-lg transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4",
+    size === "sm" ? "w-8" : "w-10",
+  );
+
   return (
-    <div className="inline-flex items-center gap-1">
-      <Button
+    <div
+      className={cn(
+        "inline-flex items-center justify-between rounded-lg border border-input bg-card",
+        size === "sm" ? "h-8" : "h-10",
+        className,
+      )}
+    >
+      <button
         type="button"
-        variant="outline"
-        size="icon-sm"
+        className={button}
         disabled={disabled || value <= 0}
         aria-label={decreaseLabel}
         onClick={() => onChange(Math.max(0, value - STEP))}
       >
         <MinusIcon />
-      </Button>
-      <output className="w-9 text-center text-sm font-medium tabular-nums">
-        {value}
+      </button>
+      <output
+        className={cn(
+          "min-w-9 text-center font-semibold tabular-nums",
+          size === "lg" && "text-base",
+        )}
+      >
+        {formatNumber(value, locale)}
       </output>
-      <Button
+      <button
         type="button"
-        variant="outline"
-        size="icon-sm"
+        className={button}
         disabled={disabled || value >= MAX}
         aria-label={increaseLabel}
         onClick={() => onChange(Math.min(MAX, value + STEP))}
       >
         <PlusIcon />
-      </Button>
+      </button>
     </div>
   );
 }

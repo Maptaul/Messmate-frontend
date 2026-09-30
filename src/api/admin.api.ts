@@ -5,6 +5,7 @@ import type {
   AuditLog,
   AuditLogParams,
   DashboardStats,
+  PlatformTrends,
   User,
   UserListParams,
   UserRole,
@@ -13,6 +14,10 @@ import type {
 
 export function getDashboardStats(client = apiClient) {
   return client<ApiResponse<DashboardStats>>("/admin/dashboard-stats");
+}
+
+export function getDashboardTrends(client = apiClient) {
+  return client<ApiResponse<PlatformTrends>>("/admin/dashboard-trends");
 }
 
 export function getUsers(params: UserListParams, client = apiClient) {

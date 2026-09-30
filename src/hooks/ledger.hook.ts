@@ -204,11 +204,25 @@ export function useSuspenseMessAudit(messId: string, params: MessAuditParams) {
   });
 }
 
+/** The bell's short feed; fetched only while the panel is open. */
+export function useMessAudit(
+  messId: string,
+  params: MessAuditParams,
+  enabled: boolean,
+) {
+  return useQuery({
+    queryKey: ["mess-audit", messId, params],
+    queryFn: () => getMessAuditLogs(messId, params),
+    enabled,
+  });
+}
+
 export function useActivityUnread(messId: string) {
   return useQuery({
     queryKey: ["activity-unread", messId],
     queryFn: () => getActivityUnread(messId),
     refetchInterval: 60 * 1000,
+    enabled: !!messId,
   });
 }
 

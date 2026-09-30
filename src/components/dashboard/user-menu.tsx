@@ -1,11 +1,15 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { CircleUserRoundIcon, LogOutIcon, WalletIcon } from "lucide-react";
+import {
+  ChevronsUpDownIcon,
+  CircleUserRoundIcon,
+  LogOutIcon,
+  WalletIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,11 +19,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
+import StatusBadge from "@/components/ui/status-badge";
 import UserAvatar from "@/components/ui/user-avatar";
 import { useGetMe, useLogout } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage, ROLE_LABEL_KEY } from "@/utils";
 
+/** The signed-in person, at the foot of the sidebar. */
 export default function UserMenu() {
   const t = useT();
   const href = useLocalePath();
@@ -53,26 +60,39 @@ export default function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full"
+          <SidebarMenuButton
+            size="lg"
+            className="h-auto gap-2.5 p-1.5"
             aria-label={user.name}
           />
         }
       >
-        <UserAvatar name={user.name} src={user.avatarUrl} />
+        <UserAvatar
+          name={user.name}
+          src={user.avatarUrl}
+          variant="ink"
+          className="size-[30px]"
+        />
+        <span className="grid min-w-0 flex-1 leading-tight">
+          <span className="truncate text-[13px] font-medium">{user.name}</span>
+          <span className="truncate text-[11px] text-muted-foreground">
+            {t(ROLE_LABEL_KEY[user.role])}
+          </span>
+        </span>
+        <ChevronsUpDownIcon className="size-3.5 text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-56">
+      <DropdownMenuContent side="top" align="start" className="w-61">
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="font-normal">
-            <p className="font-medium">{user.name}</p>
-            <p className="truncate text-xs text-muted-foreground">
-              {user.email}
+          <DropdownMenuLabel className="px-2.5 pt-2 pb-2.5 font-normal">
+            <p className="text-[13px] font-medium text-foreground">
+              {user.name}
             </p>
-            <p className="text-xs text-muted-foreground">
-              {t(ROLE_LABEL_KEY[user.role])}
-            </p>
+            <p className="mt-0.5 truncate text-xs">{user.email}</p>
+            <StatusBadge
+              status={user.role}
+              label={t(ROLE_LABEL_KEY[user.role])}
+              className="mt-2 h-5 text-[11px]"
+            />
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

@@ -14,6 +14,7 @@ export default function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
+      className="shrink-0 text-foreground-2"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={t("common.toggleTheme")}
     >

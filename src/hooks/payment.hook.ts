@@ -22,6 +22,23 @@ export function useSuspenseMyBills(params: BillListParams) {
   });
 }
 
+/** Unpaid bills for the sidebar badge; never blocks the page. */
+export function useMyBills(params: BillListParams, enabled = true) {
+  return useQuery({
+    queryKey: ["my-bills", params],
+    queryFn: () => getMyBills(params),
+    enabled,
+  });
+}
+
+export function useCycleBills(cycleId: string, params: BillListParams) {
+  return useQuery({
+    queryKey: ["cycle-bills", cycleId, params],
+    queryFn: () => getCycleBills(cycleId, params),
+    enabled: Boolean(cycleId),
+  });
+}
+
 export function useSuspenseCycleBills(cycleId: string, params: BillListParams) {
   return useSuspenseQuery({
     queryKey: ["cycle-bills", cycleId, params],

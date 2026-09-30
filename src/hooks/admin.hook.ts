@@ -1,5 +1,6 @@
 import {
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -8,6 +9,7 @@ import {
   getAllMesses,
   getAuditLogs,
   getDashboardStats,
+  getDashboardTrends,
   getUser,
   getUsers,
   updateUserRole,
@@ -21,6 +23,21 @@ import type {
   UserListParams,
 } from "@/types";
 
+export function useDashboardStats(enabled = true) {
+  return useQuery({
+    queryKey: ["admin-stats"],
+    queryFn: () => getDashboardStats(),
+    enabled,
+  });
+}
+
+export function useSuspenseDashboardTrends() {
+  return useSuspenseQuery({
+    queryKey: ["admin-trends"],
+    queryFn: () => getDashboardTrends(),
+  });
+}
+
 export function useSuspenseDashboardStats() {
   return useSuspenseQuery({
     queryKey: ["admin-stats"],
@@ -28,10 +45,28 @@ export function useSuspenseDashboardStats() {
   });
 }
 
+/** Every mess manager, for the messes page's manager filter. */
+export function useManagers() {
+  const params = { role: "MESS_MANAGER" as const, limit: 100 };
+  return useQuery({
+    queryKey: ["users", params],
+    queryFn: () => getUsers(params),
+  });
+}
+
 export function useSuspenseUsers(params: UserListParams) {
   return useSuspenseQuery({
     queryKey: ["users", params],
     queryFn: () => getUsers(params),
+  });
+}
+
+/** The role dialog's guard needs the messes a user manages. */
+export function useUserDetail(userId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["user-detail", userId],
+    queryFn: () => getUser(userId),
+    enabled,
   });
 }
 

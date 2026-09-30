@@ -12,16 +12,26 @@ export const initialsOf = (name: string) =>
 export default function UserAvatar({
   name,
   src,
+  variant = "tint",
   className,
 }: {
   name: string;
   src?: string | null;
+  /** "ink" is the signed-in user's own avatar; "tint" everyone else. */
+  variant?: "tint" | "ink";
   className?: string;
 }) {
   return (
     <Avatar className={cn("size-8", className)}>
       {src && <AvatarImage src={src} alt="" />}
-      <AvatarFallback className="bg-primary/10 font-medium text-primary">
+      <AvatarFallback
+        className={cn(
+          "text-[11px] font-semibold",
+          variant === "tint"
+            ? "bg-primary-tint text-primary"
+            : "bg-foreground text-background",
+        )}
+      >
         {initialsOf(name)}
       </AvatarFallback>
     </Avatar>

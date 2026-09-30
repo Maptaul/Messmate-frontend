@@ -5,6 +5,7 @@ import type {
   Cycle,
   CycleDetail,
   CycleListParams,
+  CycleTrends,
   OpenCyclePayload,
   SettlementPreview,
 } from "@/types";
@@ -21,6 +22,10 @@ export function getMessCycles(
 
 export function getCycle(cycleId: string, client = apiClient) {
   return client<ApiResponse<CycleDetail>>(`/cycle/${cycleId}`);
+}
+
+export function getCycleTrends(cycleId: string, client = apiClient) {
+  return client<ApiResponse<CycleTrends>>(`/cycle/trends/${cycleId}`);
 }
 
 export function getSettlementPreview(cycleId: string, client = apiClient) {

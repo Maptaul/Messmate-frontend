@@ -105,6 +105,41 @@ export function TextField({
   );
 }
 
+/** An amount in taka: a ৳ inside the box, decimals allowed, the value stays a string. */
+export function MoneyField({
+  label,
+  description,
+  ...inputProps
+}: TextFieldProps) {
+  const field = useFieldContext<string>();
+
+  return (
+    <FieldShell label={label} description={description}>
+      {({ id, invalid }) => (
+        <div className="relative">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground"
+          >
+            ৳
+          </span>
+          <Input
+            id={id}
+            name={field.name}
+            value={field.state.value}
+            onChange={(event) => field.handleChange(event.target.value)}
+            onBlur={field.handleBlur}
+            aria-invalid={invalid}
+            inputMode="decimal"
+            className="pl-6.5 tabular-nums"
+            {...inputProps}
+          />
+        </div>
+      )}
+    </FieldShell>
+  );
+}
+
 export function PasswordField({
   label,
   description,
