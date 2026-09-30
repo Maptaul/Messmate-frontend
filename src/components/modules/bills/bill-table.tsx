@@ -4,6 +4,7 @@ import { ReceiptTextIcon } from "lucide-react";
 import DataTable, { type Column } from "@/components/ui/data-table";
 import StatusBadge from "@/components/ui/status-badge";
 import TablePagination from "@/components/ui/table-pagination";
+import UserAvatar from "@/components/ui/user-avatar";
 import { useSuspenseCycleBills } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { BillListParams, CycleBill } from "@/types";
@@ -18,6 +19,8 @@ interface Props extends BillListParams {
   period: string;
   /** YYYY-MM, for the PDF file name. */
   periodKey: string;
+  /** A search or status is on, so an empty page means "no match". */
+  filtered: boolean;
   handlePageChange: (page: number) => void;
 }
 
@@ -26,6 +29,7 @@ export default function BillTable({
   messName,
   period,
   periodKey,
+  filtered,
   handlePageChange,
   ...params
 }: Props) {
@@ -35,64 +39,92 @@ export default function BillTable({
   const { data } = useSuspenseCycleBills(cycleId, params);
 
   const bills = data?.data ?? [];
-  const totalPages = data?.meta?.totalPages ?? 0;
+  const fileName = (bill: CycleBill) =>
+    `messmate-bill-${periodKey}-${bill.member.user.name.toLowerCase().replace(/\s+/g, "-")}`;
 
   const columns: Column<CycleBill>[] = [
     {
       key: "member",
       header: t("manager.bills.member"),
       cell: (bill) => (
-        <div className="min-w-0">
-          <p className="truncate font-medium">{bill.member.user.name}</p>
-          <p className="hidden truncate text-xs text-muted-foreground sm:block">
-            {bill.member.user.email}
-          </p>
-        </div>
+        <span className="flex items-center gap-2">
+          <UserAvatar name={bill.member.user.name} className="size-7" />
+          <span className="truncate font-medium">{bill.member.user.name}</span>
+        </span>
       ),
     },
     {
       key: "payable",
       header: t("manager.bills.payable"),
-      className: "hidden tabular-nums md:table-cell",
+      className: "text-right tabular-nums",
       cell: (bill) => formatBDT(bill.totalPayable, locale),
+    },
+    {
+      key: "credit",
+      header: t("manager.bills.credit"),
+      className: "text-right text-(--tone-g-fg) tabular-nums",
+      cell: (bill) => `−${formatBDT(bill.creditAmount, locale)}`,
     },
     {
       key: "paid",
       header: t("manager.bills.paid"),
-      className: "hidden tabular-nums sm:table-cell",
+      className: "text-right tabular-nums",
       cell: (bill) => formatBDT(bill.paidAmount, locale),
     },
     {
       key: "due",
       header: t("manager.bills.due"),
-      className: "tabular-nums",
+      className: "text-right font-bold whitespace-nowrap tabular-nums",
       cell: (bill) => {
         const due = toNumber(bill.dueAmount);
         if (due > 0) return formatBDT(due, locale);
-        return due < 0
-          ? `${t("manager.bills.credit")} ${formatBDT(-due, locale)}`
-          : t("manager.bills.settled");
+        return (
+          <span className="text-(--tone-g-fg)">
+            {due < 0
+              ? t("manager.bills.inCredit", { amount: formatBDT(-due, locale) })
+              : formatBDT(0, locale)}
+          </span>
+        );
       },
     },
     {
       key: "status",
       header: t("manager.bills.status"),
-      cell: (bill) => <StatusBadge status={bill.status} />,
+      cell: (bill) => {
+        const due = toNumber(bill.dueAmount);
+        if (due < 0) {
+          return (
+            <StatusBadge
+              status="CREDIT"
+              label={`${t("status.CREDIT")} ${formatBDT(-due, locale)}`}
+            />
+          );
+        }
+        return <StatusBadge status={due === 0 ? "SETTLED" : bill.status} />;
+      },
     },
     {
       key: "actions",
       header: <span className="sr-only">{t("manager.bills.actions")}</span>,
       className: "text-right",
       cell: (bill) => (
-        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:justify-end">
+        <div className="flex flex-wrap items-center gap-1.5 md:justify-end">
+          {toNumber(bill.dueAmount) > 0 && <CashPaymentDialog bill={bill} />}
           <BillInvoiceDialog
             bill={bill}
             messName={messName}
             memberName={bill.member.user.name}
             period={period}
-            fileName={`messmate-bill-${periodKey}-${bill.member.user.name.toLowerCase().replace(/\s+/g, "-")}`}
+            fileName={fileName(bill)}
           />
-          {toNumber(bill.dueAmount) > 0 && <CashPaymentDialog bill={bill} />}
+          <BillInvoiceDialog
+            variant="breakdown"
+            bill={bill}
+            messName={messName}
+            memberName={bill.member.user.name}
+            period={period}
+            fileName={fileName(bill)}
+          />
         </div>
       ),
     },
@@ -105,21 +137,23 @@ export default function BillTable({
         rows={bills}
         rowKey={(bill) => bill.id}
         caption={t("manager.bills.caption")}
-        empty={{
-          icon: ReceiptTextIcon,
-          title: t("manager.bills.empty"),
-          description: t("manager.bills.emptyHint"),
-        }}
+        empty={
+          filtered
+            ? { icon: ReceiptTextIcon, title: t("manager.bills.noMatch") }
+            : {
+                icon: ReceiptTextIcon,
+                title: t("manager.bills.empty"),
+                description: t("manager.bills.emptyHint"),
+              }
+        }
       />
-      {totalPages > 1 && (
-        <div className="my-5">
-          <TablePagination
-            page={params.page ?? 1}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        </div>
-      )}
+      <TablePagination
+        page={params.page ?? 1}
+        totalPages={data?.meta?.totalPages ?? 0}
+        total={data?.meta?.total}
+        limit={data?.meta?.limit}
+        handlePageChange={handlePageChange}
+      />
     </>
   );
 }

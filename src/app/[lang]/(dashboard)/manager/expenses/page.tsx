@@ -7,6 +7,8 @@ import type { Metadata } from "next";
 import { getCycleExpenses, getExpenseSummary, getMessMembers } from "@/api";
 import CyclePicker from "@/components/modules/cycles/cycle-picker";
 import NoCycle from "@/components/modules/cycles/no-cycle";
+import ExpenseCreateDialog from "@/components/modules/expenses/expense-create-dialog";
+import ExpenseExport from "@/components/modules/expenses/expense-export";
 import ExpenseList from "@/components/modules/expenses/expense-list";
 import NoMess from "@/components/modules/my-messes/no-mess";
 import { getLocale, getT } from "@/i18n/get-dictionary";
@@ -80,18 +82,23 @@ export default async function page({
   ]);
 
   return (
-    <section className="space-y-6 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">
-            {t("manager.expenses.title")}
-          </h1>
+    <section className="page-frame">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("manager.expenses.title")}</h1>
           <p className="text-muted-foreground">
-            {t("manager.expenses.description")} ·{" "}
-            {formatMonth(cycle.year, cycle.month, locale)}
+            {t("manager.expenses.description", {
+              month: formatMonth(cycle.year, cycle.month, locale),
+            })}
           </p>
         </div>
-        <CyclePicker messId={activeMessId} cycleId={cycle.id} />
+        <div className="flex flex-wrap items-center gap-2">
+          <CyclePicker messId={activeMessId} cycleId={cycle.id} />
+          <ExpenseExport cycleId={cycle.id} />
+          {cycle.status !== "CLOSED" && (
+            <ExpenseCreateDialog cycleId={cycle.id} messId={activeMessId} />
+          )}
+        </div>
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ExpenseList

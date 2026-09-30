@@ -4,7 +4,12 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { getCycleDeposits, getCycleExpenses, getExpenseSummary } from "@/api";
+import {
+  getCycleDeposits,
+  getCycleExpenses,
+  getExpenseSummary,
+  getMessMembers,
+} from "@/api";
 import CyclePicker from "@/components/modules/cycles/cycle-picker";
 import NoCycle from "@/components/modules/cycles/no-cycle";
 import DepositList from "@/components/modules/deposits/deposit-list";
@@ -16,6 +21,8 @@ import { getActiveCycle } from "@/lib/activeCycle";
 import { getActiveMess } from "@/lib/activeMess";
 import serverApi from "@/lib/serverApi";
 import {
+  ACTIVE_MEMBERS_PARAMS,
+  ALL_DEPOSITS_PARAMS,
   depositsParams,
   expensesParams,
   formatMonth,
@@ -74,6 +81,15 @@ export default async function page({
     queryClient.prefetchQuery({
       queryKey: ["expenses", cycle.id, expenseParams],
       queryFn: () => getCycleExpenses(cycle.id, expenseParams, client),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["members", activeMessId, ACTIVE_MEMBERS_PARAMS],
+      queryFn: () =>
+        getMessMembers(activeMessId, ACTIVE_MEMBERS_PARAMS, client),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["deposits", cycle.id, ALL_DEPOSITS_PARAMS],
+      queryFn: () => getCycleDeposits(cycle.id, ALL_DEPOSITS_PARAMS, client),
     }),
     queryClient.prefetchQuery({
       queryKey: ["deposits", cycle.id, depositParams],

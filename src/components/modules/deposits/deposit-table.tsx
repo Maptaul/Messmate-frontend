@@ -29,40 +29,37 @@ export default function DepositTable({
   const { data } = useSuspenseCycleDeposits(cycleId, params);
 
   const deposits = data?.data ?? [];
-  const totalPages = data?.meta?.totalPages ?? 0;
 
   const columns: Column<Deposit>[] = [
     {
       key: "date",
       header: t("manager.deposits.date"),
-      className: "whitespace-nowrap",
+      className: "whitespace-nowrap text-muted-foreground",
       cell: (deposit) => formatDate(deposit.createdAt, locale),
     },
     {
       key: "member",
       header: t("manager.deposits.member"),
-      cell: (deposit) => (
-        <div className="min-w-0">
-          <p className="truncate font-medium">{deposit.member.user.name}</p>
-          {deposit.note && (
-            <p className="max-w-56 truncate text-xs text-muted-foreground">
-              {deposit.note}
-            </p>
-          )}
-        </div>
-      ),
+      className: "font-medium",
+      cell: (deposit) => deposit.member.user.name,
     },
     {
       key: "amount",
       header: t("manager.deposits.amount"),
-      className: "tabular-nums",
+      className: "text-right font-semibold whitespace-nowrap tabular-nums",
       cell: (deposit) => formatBDT(deposit.amount, locale),
+    },
+    {
+      key: "note",
+      header: t("manager.deposits.note"),
+      className: "max-w-64 text-muted-foreground",
+      cell: (deposit) => deposit.note || "—",
     },
     {
       key: "by",
       header: t("manager.deposits.by"),
-      className: "hidden md:table-cell",
-      cell: (deposit) => deposit.createdBy.name,
+      className: "whitespace-nowrap text-muted-foreground",
+      cell: (deposit) => deposit.createdBy.name.split(" ")[0],
     },
     {
       key: "actions",
@@ -88,15 +85,13 @@ export default function DepositTable({
           description: t("manager.deposits.emptyHint"),
         }}
       />
-      {totalPages > 1 && (
-        <div className="my-5">
-          <TablePagination
-            page={params.page ?? 1}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        </div>
-      )}
+      <TablePagination
+        page={params.page ?? 1}
+        totalPages={data?.meta?.totalPages ?? 0}
+        total={data?.meta?.total}
+        limit={data?.meta?.limit}
+        handlePageChange={handlePageChange}
+      />
     </>
   );
 }

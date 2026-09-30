@@ -111,13 +111,7 @@ export default function DepositForm({
         )}
         <form.AppField name="amount">
           {(field) => (
-            <field.TextField
-              label={t("manager.deposits.formAmount")}
-              type="number"
-              inputMode="decimal"
-              min={0}
-              step="any"
-            />
+            <field.MoneyField label={t("manager.deposits.formAmount")} />
           )}
         </form.AppField>
         <form.AppField name="note">

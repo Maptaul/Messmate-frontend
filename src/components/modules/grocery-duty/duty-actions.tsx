@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import InlineConfirm from "@/components/ui/inline-confirm";
 import { useRemoveDuty } from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import type { GroceryDuty } from "@/types";
@@ -49,24 +50,13 @@ export default function DutyActions({
 
   if (confirmDelete) {
     return (
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setConfirmDelete(false)}
-        >
-          {t("manager.duty.cancel")}
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDelete}
-          disabled={isPending}
-          title={t("manager.duty.deleteBody")}
-        >
-          {t("manager.duty.deleteConfirm")}
-        </Button>
-      </div>
+      <InlineConfirm
+        hint={t("manager.duty.deleteBody")}
+        confirmLabel={t("manager.duty.deleteConfirm")}
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+        pending={isPending}
+      />
     );
   }
 
@@ -84,7 +74,7 @@ export default function DutyActions({
         <Button
           variant="ghost"
           size="icon-sm"
-          className="text-destructive hover:text-destructive"
+          className="text-destructive hover:bg-destructive-tint hover:text-destructive"
           aria-label={t("manager.duty.delete")}
           onClick={() => setConfirmDelete(true)}
         >

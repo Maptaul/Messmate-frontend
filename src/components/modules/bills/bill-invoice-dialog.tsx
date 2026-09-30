@@ -11,16 +11,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useT } from "@/i18n/i18n-provider";
 import type { BillMoney } from "@/types";
 import BillInvoice from "./bill-invoice";
 
+/**
+ * One member's bill, itemised. "PDF" opens it ready to print; "Breakdown"
+ * slides it in from the side to read.
+ */
 export default function BillInvoiceDialog({
   bill,
   messName,
   memberName,
   period,
   fileName,
+  variant = "pdf",
 }: {
   bill: BillMoney;
   messName: string;
@@ -28,6 +42,7 @@ export default function BillInvoiceDialog({
   period: string;
   /** Becomes the suggested PDF file name in the print window. */
   fileName: string;
+  variant?: "pdf" | "breakdown";
 }) {
   const t = useT();
 
@@ -38,12 +53,53 @@ export default function BillInvoiceDialog({
     document.title = title;
   };
 
+  const invoice = (
+    <BillInvoice
+      bill={bill}
+      messName={messName}
+      memberName={memberName}
+      period={period}
+    />
+  );
+  const download = (
+    <Button onClick={handleDownload}>
+      <FileDownIcon />
+      {t("invoice.download")}
+    </Button>
+  );
+
+  if (variant === "breakdown") {
+    return (
+      <Sheet>
+        <SheetTrigger
+          render={
+            <Button
+              variant="link"
+              size="sm"
+              aria-label={t("invoice.breakdownAria", { name: memberName })}
+            />
+          }
+        >
+          {t("invoice.breakdown")}
+        </SheetTrigger>
+        <SheetContent className="w-full overflow-y-auto sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle>{memberName}</SheetTitle>
+            <SheetDescription>{period}</SheetDescription>
+          </SheetHeader>
+          <div className="px-4">{invoice}</div>
+          <SheetFooter>{download}</SheetFooter>
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
   return (
     <Dialog>
       <DialogTrigger
         render={
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             aria-label={t("invoice.openAria", { period })}
           />
@@ -57,18 +113,8 @@ export default function BillInvoiceDialog({
           <DialogTitle>{t("invoice.title")}</DialogTitle>
           <DialogDescription>{t("invoice.hint")}</DialogDescription>
         </DialogHeader>
-        <BillInvoice
-          bill={bill}
-          messName={messName}
-          memberName={memberName}
-          period={period}
-        />
-        <DialogFooter>
-          <Button onClick={handleDownload}>
-            <FileDownIcon />
-            {t("invoice.download")}
-          </Button>
-        </DialogFooter>
+        {invoice}
+        <DialogFooter>{download}</DialogFooter>
       </DialogContent>
     </Dialog>
   );

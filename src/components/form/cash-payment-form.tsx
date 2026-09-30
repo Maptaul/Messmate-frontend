@@ -67,13 +67,7 @@ export default function CashPaymentForm({
       <FieldGroup>
         <form.AppField name="amount">
           {(field) => (
-            <field.TextField
-              label={t("manager.bills.cashAmount")}
-              type="number"
-              inputMode="decimal"
-              min={0}
-              step="any"
-            />
+            <field.MoneyField label={t("manager.bills.cashAmount")} />
           )}
         </form.AppField>
         <form.AppField name="note">

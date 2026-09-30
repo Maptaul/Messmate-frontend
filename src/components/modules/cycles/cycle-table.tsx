@@ -2,11 +2,11 @@
 
 import { CalendarRangeIcon } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import DataTable, { type Column } from "@/components/ui/data-table";
+import { Suspense } from "react";
+import EmptyState from "@/components/ui/empty-state";
 import StatusBadge from "@/components/ui/status-badge";
 import TablePagination from "@/components/ui/table-pagination";
-import { useSuspenseMessCycles } from "@/hooks";
+import { useSuspenseExpenseSummary, useSuspenseMessCycles } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { Cycle, CycleListParams } from "@/types";
 import { formatBDT, formatDate, formatMonth, formatNumber } from "@/utils";
@@ -16,8 +16,7 @@ interface Props extends CycleListParams {
   handlePageChange: (page: number) => void;
 }
 
-const dash = "—";
-
+/** One card per month: its meals, grocery and rate, and who closed it. */
 export default function CycleTable({
   messId,
   handlePageChange,
@@ -30,94 +29,117 @@ export default function CycleTable({
   const { data } = useSuspenseMessCycles(messId, params);
 
   const cycles = data?.data ?? [];
-  const totalPages = data?.meta?.totalPages ?? 0;
 
-  const columns: Column<Cycle>[] = [
-    {
-      key: "month",
-      header: t("manager.cycles.monthCol"),
-      cell: (cycle) => (
-        <span className="font-medium">
-          {formatMonth(cycle.year, cycle.month, locale)}
-        </span>
-      ),
-    },
-    {
-      key: "status",
-      header: t("manager.cycles.status"),
-      cell: (cycle) => <StatusBadge status={cycle.status} />,
-    },
-    {
-      key: "meals",
-      header: t("manager.cycles.meals"),
-      className: "hidden tabular-nums sm:table-cell",
-      cell: (cycle) =>
-        cycle.totalMeals === null
-          ? dash
-          : formatNumber(cycle.totalMeals, locale),
-    },
-    {
-      key: "grocery",
-      header: t("manager.cycles.grocery"),
-      className: "hidden tabular-nums md:table-cell",
-      cell: (cycle) =>
-        cycle.totalGrocery === null
-          ? dash
-          : formatBDT(cycle.totalGrocery, locale),
-    },
-    {
-      key: "rate",
-      header: t("manager.cycles.rate"),
-      className: "hidden tabular-nums md:table-cell",
-      cell: (cycle) =>
-        cycle.mealRate === null ? dash : formatBDT(cycle.mealRate, locale),
-    },
-    {
-      key: "closed",
-      header: t("manager.cycles.closedOn"),
-      className: "hidden lg:table-cell",
-      cell: (cycle) =>
-        cycle.closedAt ? formatDate(cycle.closedAt, locale) : dash,
-    },
-    {
-      key: "view",
-      header: <span className="sr-only">{t("manager.cycles.view")}</span>,
-      className: "text-right",
-      cell: (cycle) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          render={<Link href={href(`/manager/cycles/${cycle.id}`)} />}
-          nativeButton={false}
-        >
-          {t("manager.cycles.view")}
-        </Button>
-      ),
-    },
-  ];
+  const closedLine = (cycle: Cycle) => {
+    if (!cycle.closedAt) return t("manager.cycles.running");
+    const date = formatDate(cycle.closedAt, locale);
+    return cycle.closedBy
+      ? t("manager.cycles.closedBy", { date, name: cycle.closedBy.name })
+      : t("manager.cycles.closedOn", { date });
+  };
+
+  if (cycles.length === 0) {
+    return (
+      <EmptyState
+        icon={CalendarRangeIcon}
+        title={t("manager.cycles.empty")}
+        description={t("manager.cycles.emptyHint")}
+      />
+    );
+  }
 
   return (
     <>
-      <DataTable
-        columns={columns}
-        rows={cycles}
-        rowKey={(cycle) => cycle.id}
-        caption={t("manager.cycles.caption")}
-        empty={{
-          icon: CalendarRangeIcon,
-          title: t("manager.cycles.empty"),
-          description: t("manager.cycles.emptyHint"),
-        }}
+      <ul className="grid grid-cols-[repeat(auto-fill,minmax(16.25rem,1fr))] gap-4">
+        {cycles.map((cycle) => (
+          <li key={cycle.id}>
+            <Link
+              href={href(`/manager/cycles/${cycle.id}`)}
+              className="flex h-full flex-col gap-3 rounded-xl border bg-card px-5 py-4.5 shadow-1 transition-colors hover:border-ring"
+            >
+              <span className="flex items-center justify-between gap-2">
+                <span className="font-semibold">
+                  {formatMonth(cycle.year, cycle.month, locale)}
+                </span>
+                <StatusBadge status={cycle.status} />
+              </span>
+              {cycle.status === "OPEN" ? (
+                <Suspense fallback={<Figures />}>
+                  <RunningFigures cycleId={cycle.id} />
+                </Suspense>
+              ) : (
+                <Figures
+                  meals={cycle.totalMeals}
+                  grocery={cycle.totalGrocery}
+                  rate={cycle.mealRate}
+                />
+              )}
+              <span className="text-xs text-muted-foreground">
+                {closedLine(cycle)}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <TablePagination
+        page={params.page ?? 1}
+        totalPages={data?.meta?.totalPages ?? 0}
+        total={data?.meta?.total}
+        limit={data?.meta?.limit}
+        handlePageChange={handlePageChange}
       />
-      {totalPages > 1 && (
-        <div className="my-5">
-          <TablePagination
-            page={params.page ?? 1}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        </div>
-      )}
     </>
+  );
+}
+
+/** An open month has no stored totals yet; show the running ones. */
+function RunningFigures({ cycleId }: { cycleId: string }) {
+  const { data } = useSuspenseExpenseSummary(cycleId);
+  const summary = data.data;
+
+  return (
+    <Figures
+      meals={summary.totalMeals}
+      grocery={summary.grocery}
+      rate={summary.runningMealRate}
+    />
+  );
+}
+
+function Figures({
+  meals,
+  grocery,
+  rate,
+}: {
+  meals?: number | null;
+  grocery?: number | string | null;
+  rate?: number | string | null;
+}) {
+  const t = useT();
+  const locale = useLocale();
+  const dash = "—";
+
+  return (
+    <span className="grid grid-cols-3 gap-2 text-[13px]">
+      {[
+        [
+          t("manager.cycles.meals"),
+          meals == null ? dash : formatNumber(meals, locale),
+        ],
+        [
+          t("manager.cycles.grocery"),
+          grocery == null ? dash : formatBDT(grocery, locale),
+        ],
+        [
+          t("manager.cycles.rate"),
+          rate == null ? dash : formatBDT(rate, locale),
+        ],
+      ].map(([label, value]) => (
+        <span key={label} className="flex flex-col">
+          <span className="text-muted-foreground">{label}</span>
+          <span className="font-semibold tabular-nums">{value}</span>
+        </span>
+      ))}
+    </span>
   );
 }

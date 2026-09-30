@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import InlineConfirm from "@/components/ui/inline-confirm";
 import { useDeleteExpense } from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import type { Expense } from "@/types";
@@ -45,24 +46,13 @@ export default function ExpenseActions({
 
   if (confirmDelete) {
     return (
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setConfirmDelete(false)}
-        >
-          {t("manager.expenses.cancel")}
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDelete}
-          disabled={isPending}
-          title={t("manager.expenses.deleteBody")}
-        >
-          {t("manager.expenses.deleteConfirm")}
-        </Button>
-      </div>
+      <InlineConfirm
+        hint={t("manager.expenses.deleteBody")}
+        confirmLabel={t("manager.expenses.deleteConfirm")}
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+        pending={isPending}
+      />
     );
   }
 
@@ -80,7 +70,7 @@ export default function ExpenseActions({
         <Button
           variant="ghost"
           size="icon-sm"
-          className="text-destructive hover:text-destructive"
+          className="text-destructive hover:bg-destructive-tint hover:text-destructive"
           aria-label={t("manager.expenses.delete")}
           onClick={() => setConfirmDelete(true)}
         >

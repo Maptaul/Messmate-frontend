@@ -1,7 +1,6 @@
 "use client";
 
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
 import DepositForm from "@/components/form/deposit-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import useCreateDialog from "@/hooks/create-dialog.hook";
 import { useT } from "@/i18n/i18n-provider";
 
 export default function DepositCreateDialog({
@@ -21,7 +21,7 @@ export default function DepositCreateDialog({
   messId: string;
 }) {
   const t = useT();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useCreateDialog();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

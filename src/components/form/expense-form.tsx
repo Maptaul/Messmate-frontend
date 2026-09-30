@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { FieldGroup } from "@/components/ui/field";
 import FileUpload from "@/components/ui/file-upload";
+import RadioCards from "@/components/ui/radio-cards";
 import { useActiveMembers, useAddExpense, useUpdateExpense } from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import { EXPENSE_TYPES, type Expense, SPLIT_METHODS } from "@/types";
@@ -41,7 +42,7 @@ export default function ExpenseForm({
     defaultValues: {
       type: expense?.type ?? "GROCERY",
       amount: expense ? String(Number(expense.amount)) : "",
-      splitMethod: expense?.splitMethod ?? "EQUAL",
+      splitMethod: expense?.splitMethod ?? "BY_MEAL",
       paidByMemberId: expense?.paidByMember?.id ?? FUND,
       description: expense?.description ?? "",
       spentAt: expense?.spentAt.slice(0, 10) ?? todayInDhaka(),
@@ -91,7 +92,17 @@ export default function ExpenseForm({
     >
       <FieldGroup>
         <div className="grid gap-4 sm:grid-cols-2">
-          <form.AppField name="type">
+          <form.AppField
+            name="type"
+            listeners={{
+              // Groceries feed the meal rate; bills are shared equally.
+              onChange: ({ value }) =>
+                form.setFieldValue(
+                  "splitMethod",
+                  value === "GROCERY" ? "BY_MEAL" : "EQUAL",
+                ),
+            }}
+          >
             {(field) => (
               <field.SelectField
                 label={t("manager.expenses.formType")}
@@ -104,26 +115,7 @@ export default function ExpenseForm({
           </form.AppField>
           <form.AppField name="amount">
             {(field) => (
-              <field.TextField
-                label={t("manager.expenses.formAmount")}
-                type="number"
-                inputMode="decimal"
-                min={0}
-                step="any"
-              />
-            )}
-          </form.AppField>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <form.AppField name="splitMethod">
-            {(field) => (
-              <field.SelectField
-                label={t("manager.expenses.formSplit")}
-                options={SPLIT_METHODS.map((method) => ({
-                  value: method,
-                  label: t(`manager.expenses.splits.${method}`),
-                }))}
-              />
+              <field.MoneyField label={t("manager.expenses.formAmount")} />
             )}
           </form.AppField>
           <form.AppField name="spentAt">
@@ -135,25 +127,47 @@ export default function ExpenseForm({
               />
             )}
           </form.AppField>
+          <form.AppField name="paidByMemberId">
+            {(field) => (
+              <field.SelectField
+                label={t("manager.expenses.formPaidBy")}
+                options={[
+                  { value: FUND, label: t("manager.expenses.fundOption") },
+                  ...(members?.data ?? []).map((member) => ({
+                    value: member.id,
+                    label: member.user.name,
+                  })),
+                ]}
+              />
+            )}
+          </form.AppField>
         </div>
-        <form.AppField name="paidByMemberId">
+        <form.AppField name="splitMethod">
           {(field) => (
-            <field.SelectField
-              label={t("manager.expenses.formPaidBy")}
-              options={[
-                { value: FUND, label: t("manager.expenses.fundOption") },
-                ...(members?.data ?? []).map((member) => ({
-                  value: member.id,
-                  label: member.user.name,
-                })),
-              ]}
-            />
+            <div className="flex flex-col gap-2">
+              <span className="font-medium">
+                {t("manager.expenses.formSplit")}
+              </span>
+              <RadioCards
+                label={t("manager.expenses.formSplit")}
+                value={field.state.value}
+                onChange={field.handleChange}
+                className="grid sm:grid-cols-2"
+                options={SPLIT_METHODS.map((method) => ({
+                  value: method,
+                  label: t(`manager.expenses.splits.${method}`),
+                  hint: t(`manager.expenses.splitHints.${method}`),
+                }))}
+              />
+            </div>
           )}
         </form.AppField>
         <form.AppField name="description">
           {(field) => (
             <field.TextareaField
               label={t("manager.expenses.formDescription")}
+              description={`${field.state.value.length}/500`}
+              maxLength={500}
               rows={2}
             />
           )}
@@ -161,7 +175,8 @@ export default function ExpenseForm({
 
         <FileUpload
           label={t("manager.expenses.formReceipt")}
-          hint={t("upload.hintReceipt")}
+          prompt={t("manager.expenses.dropReceipt")}
+          hint={t("manager.expenses.receiptRules")}
           file={file}
           onChange={setFile}
           allowedTypes={RECEIPT_TYPES}

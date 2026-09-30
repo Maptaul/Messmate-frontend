@@ -117,15 +117,7 @@ export default function FinanceEntryForm({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <form.AppField name="amount">
-            {(field) => (
-              <field.TextField
-                label={t("finance.formAmount")}
-                type="number"
-                inputMode="decimal"
-                min={0}
-                step="0.01"
-              />
-            )}
+            {(field) => <field.MoneyField label={t("finance.formAmount")} />}
           </form.AppField>
           <form.AppField name="date">
             {(field) => (

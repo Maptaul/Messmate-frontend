@@ -3,11 +3,12 @@
 import { Suspense } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import FilterSelect from "@/components/ui/filter-select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveMembers } from "@/hooks";
 import useQueryParams from "@/hooks/query-params.hook";
 import { useT } from "@/i18n/i18n-provider";
 import { depositsParams } from "@/utils";
-import DepositCreateDialog from "./deposit-create-dialog";
+import DepositSummary from "./deposit-summary";
 import DepositTable from "./deposit-table";
 import DepositTableLoading from "./deposit-table-loading";
 
@@ -31,14 +32,18 @@ export default function DepositList({
   const canEdit = !locked && !readOnly;
 
   return (
-    <div className="space-y-4">
+    <>
+      <Suspense fallback={<Skeleton className="h-60 rounded-xl md:h-28" />}>
+        <DepositSummary cycleId={cycleId} messId={messId} />
+      </Suspense>
+
       {locked && (
         <Alert>
           <AlertDescription>{t("manager.closedNote")}</AlertDescription>
         </Alert>
       )}
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex">
         <FilterSelect
           label={t("manager.deposits.memberFilter")}
           allLabel={t("manager.deposits.allMembers")}
@@ -49,7 +54,6 @@ export default function DepositList({
           }))}
           onChange={(memberId) => set({ memberId })}
         />
-        {canEdit && <DepositCreateDialog cycleId={cycleId} messId={messId} />}
       </div>
 
       <Suspense fallback={<DepositTableLoading />}>
@@ -61,6 +65,6 @@ export default function DepositList({
           handlePageChange={(page) => set({ page })}
         />
       </Suspense>
-    </div>
+    </>
   );
 }
