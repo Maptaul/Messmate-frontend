@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+# Only the backend URL for each mode — no secrets.
+!.env.development
+!.env.production
 
 # vercel
 .vercel

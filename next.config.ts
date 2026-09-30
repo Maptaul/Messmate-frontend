@@ -3,7 +3,9 @@ import type { NextConfig } from "next";
 const backendUrl = process.env.BACKEND_URL;
 
 if (!backendUrl) {
-  throw new Error("BACKEND_URL is not set. Copy .env.example to .env.local.");
+  throw new Error(
+    "BACKEND_URL is not set. It comes from .env.development / .env.production.",
+  );
 }
 
 const nextConfig: NextConfig = {
