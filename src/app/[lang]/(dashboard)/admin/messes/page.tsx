@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { getAllMesses } from "@/api";
+import MessExport from "@/components/modules/mess-management/mess-export";
 import MessList from "@/components/modules/mess-management/mess-list";
 import { getT } from "@/i18n/get-dictionary";
 import { alternates } from "@/i18n/metadata";
@@ -32,10 +33,15 @@ export default async function page({
   });
 
   return (
-    <section className="p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("admin.messes.title")}</h1>
-        <p className="text-muted-foreground">{t("admin.messes.description")}</p>
+    <section className="page-frame">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("admin.messes.title")}</h1>
+          <p className="text-muted-foreground">
+            {t("admin.messes.description")}
+          </p>
+        </div>
+        <MessExport />
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <MessList />

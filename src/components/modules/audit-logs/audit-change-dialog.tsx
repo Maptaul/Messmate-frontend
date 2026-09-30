@@ -2,32 +2,36 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useT } from "@/i18n/i18n-provider";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useLocale, useT } from "@/i18n/i18n-provider";
+import { cn } from "@/lib/utils";
 import type { AuditLog } from "@/types";
+import { formatDateTime } from "@/utils";
 
 const show = (value: unknown) => {
   if (value === undefined || value === null) return "—";
   return typeof value === "object" ? JSON.stringify(value) : String(value);
 };
 
-/** Before/after of one audit entry, one row per field that was recorded. */
-export default function AuditChangeDialog({ log }: { log: AuditLog }) {
+/**
+ * "View change": a side sheet with the entity and a before/after row per
+ * recorded field — the old value struck through, the new one in green.
+ */
+export default function AuditChangeDialog({
+  log,
+  variant = "ghost",
+}: {
+  log: AuditLog;
+  variant?: "ghost" | "outline" | "link";
+}) {
   const t = useT();
+  const locale = useLocale();
   const fields = [
     ...new Set([
       ...Object.keys(log.before ?? {}),
@@ -36,52 +40,79 @@ export default function AuditChangeDialog({ log }: { log: AuditLog }) {
   ];
 
   return (
-    <Dialog>
-      <DialogTrigger render={<Button variant="ghost" size="sm" />}>
+    <Sheet>
+      <SheetTrigger
+        render={
+          <Button
+            variant={variant}
+            size="sm"
+            className={cn(variant === "link" && "h-auto px-0")}
+          />
+        }
+      >
         {t("audit.viewChange")}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{t("audit.changeTitle")}</DialogTitle>
-          <DialogDescription>
+      </SheetTrigger>
+      <SheetContent className="w-full gap-4 overflow-y-auto p-6 sm:max-w-115">
+        <SheetHeader className="p-0">
+          <SheetTitle className="text-lg">
             {t(`audit.actions.${log.action}`)}
-            {log.subjectMember
-              ? ` · ${t("audit.about", { name: log.subjectMember.user.name })}`
-              : ""}
-          </DialogDescription>
-        </DialogHeader>
+          </SheetTitle>
+          <SheetDescription>
+            {log.actor.name} · {formatDateTime(log.createdAt, locale)}
+          </SheetDescription>
+        </SheetHeader>
+
+        <p className="flex flex-wrap gap-2 text-[13px]">
+          <span className="text-muted-foreground">
+            {t("admin.auditPage.entity")}
+          </span>
+          <b>{log.entity}</b>
+          <span className="font-mono text-muted-foreground">
+            {log.entityId.slice(0, 4)}…{log.entityId.slice(-4)}
+          </span>
+          {log.subjectMember && (
+            <span className="text-muted-foreground">
+              · {t("audit.about", { name: log.subjectMember.user.name })}
+            </span>
+          )}
+        </p>
 
         {fields.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            {t("audit.noDetails")}
-          </p>
+          <p className="text-muted-foreground">{t("audit.noDetails")}</p>
         ) : (
-          <div className="max-h-80 overflow-auto rounded-lg border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("audit.field")}</TableHead>
-                  <TableHead>{t("audit.before")}</TableHead>
-                  <TableHead>{t("audit.after")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {fields.map((field) => (
-                  <TableRow key={field}>
-                    <TableCell className="font-medium">{field}</TableCell>
-                    <TableCell className="break-all text-muted-foreground">
-                      {show(log.before?.[field])}
-                    </TableCell>
-                    <TableCell className="break-all">
-                      {show(log.after?.[field])}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="overflow-hidden rounded-xl border">
+            <div className="grid grid-cols-[110px_1fr_1fr] bg-muted px-3 py-2 text-xs font-medium text-muted-foreground">
+              <span>{t("audit.field")}</span>
+              <span>{t("audit.before")}</span>
+              <span>{t("audit.after")}</span>
+            </div>
+            {fields.map((field) => {
+              const before = show(log.before?.[field]);
+              return (
+                <div
+                  key={field}
+                  className="grid grid-cols-[110px_1fr_1fr] gap-2 border-t px-3 py-2.5"
+                >
+                  <span className="font-mono text-xs break-all text-muted-foreground">
+                    {field}
+                  </span>
+                  <span
+                    className={cn(
+                      "break-all text-(--tone-r-fg)",
+                      before !== "—" && "line-through",
+                    )}
+                  >
+                    {before}
+                  </span>
+                  <span className="font-medium break-all text-(--tone-g-fg)">
+                    {show(log.after?.[field])}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

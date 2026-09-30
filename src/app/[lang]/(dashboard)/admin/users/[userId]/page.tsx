@@ -11,7 +11,6 @@ import { Suspense } from "react";
 import { getUser } from "@/api";
 import UserDetail from "@/components/modules/users/user-detail";
 import UserDetailLoading from "@/components/modules/users/user-detail-loading";
-import { Button } from "@/components/ui/button";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 import serverApi from "@/lib/serverApi";
@@ -44,21 +43,14 @@ export default async function page({
   if (!user) notFound();
 
   return (
-    <section className="space-y-6 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">{user.name}</h1>
-          <p className="text-muted-foreground">{user.email}</p>
-        </div>
-        <Button
-          variant="outline"
-          render={<Link href={localePath(locale, "/admin/users")} />}
-          nativeButton={false}
-        >
-          <ArrowLeftIcon />
-          {t("admin.userDetail.back")}
-        </Button>
-      </div>
+    <section className="page-frame">
+      <Link
+        href={localePath(locale, "/admin/users")}
+        className="flex w-fit items-center gap-1.5 font-medium text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeftIcon className="size-4" />
+        {t("admin.users.title")}
+      </Link>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<UserDetailLoading />}>
           <UserDetail userId={userId} />

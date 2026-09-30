@@ -1,6 +1,13 @@
 "use client";
 
-import { MoreHorizontalIcon } from "lucide-react";
+import {
+  BanIcon,
+  EllipsisIcon,
+  EyeIcon,
+  LockOpenIcon,
+  UserCogIcon,
+} from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,46 +18,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUpdateUserRole, useUpdateUserStatus } from "@/hooks";
-import { useT } from "@/i18n/i18n-provider";
-import type { User, UserRole } from "@/types";
+import InlineConfirm from "@/components/ui/inline-confirm";
+import { useUpdateUserStatus } from "@/hooks";
+import { useLocalePath, useT } from "@/i18n/i18n-provider";
+import type { User } from "@/types";
 import { getErrorMessage } from "@/utils";
+import ChangeRoleDialog from "./change-role-dialog";
 
-const roles: UserRole[] = ["ADMIN", "MESS_MANAGER", "MEMBER"];
-
+/**
+ * Row menu: view, change role, block. Blocking asks in the row itself
+ * (Cancel · Block user); unblocking needs no second look.
+ */
 export default function UserActions({ user }: { user: User }) {
   const t = useT();
-  const [confirmStatus, setConfirmStatus] = useState(false);
+  const href = useLocalePath();
+  const [confirmBlock, setConfirmBlock] = useState(false);
+  const [roleOpen, setRoleOpen] = useState(false);
 
-  const { mutate: updateRole, isPending: rolePending } = useUpdateUserRole();
-  const { mutate: updateStatus, isPending: statusPending } =
-    useUpdateUserStatus();
+  const { mutate: updateStatus, isPending } = useUpdateUserStatus();
 
-  const isBlocking = user.status === "ACTIVE";
-
-  const handleRole = (role: UserRole) => {
-    updateRole(
-      { userId: user.id, role },
-      {
-        onSuccess: (res) => {
-          toast.success(
-            t("admin.toast.roleChanged", {
-              name: res.data.name,
-              role: t(`roles.${res.data.role}`),
-            }),
-          );
-        },
-        onError: (err) => {
-          toast.error(t.dynamic(getErrorMessage(err)));
-        },
-      },
-    );
-  };
+  const isBlocked = user.status === "BLOCKED";
 
   // Optimistic: the badge flips at once and flips back if the API refuses.
   const handleStatus = () => {
     updateStatus(
-      { userId: user.id, status: isBlocking ? "BLOCKED" : "ACTIVE" },
+      { userId: user.id, status: isBlocked ? "ACTIVE" : "BLOCKED" },
       {
         onSuccess: (res) => {
           toast.success(
@@ -67,61 +59,60 @@ export default function UserActions({ user }: { user: User }) {
         },
       },
     );
-    setConfirmStatus(false);
+    setConfirmBlock(false);
   };
 
-  if (confirmStatus) {
+  if (confirmBlock) {
     return (
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setConfirmStatus(false)}
-        >
-          {t("admin.users.cancel")}
-        </Button>
-        <Button
-          variant={isBlocking ? "destructive" : "default"}
-          size="sm"
-          onClick={handleStatus}
-          disabled={statusPending}
-        >
-          {t(isBlocking ? "admin.users.block" : "admin.users.unblock")}
-        </Button>
-      </div>
+      <InlineConfirm
+        confirmLabel={t("admin.users.block")}
+        onConfirm={handleStatus}
+        onCancel={() => setConfirmBlock(false)}
+        pending={isPending}
+      />
     );
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            disabled={rolePending}
-            aria-label={t("admin.users.openActions", { name: user.name })}
-          />
-        }
-      >
-        <MoreHorizontalIcon />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {roles
-          .filter((role) => role !== user.role)
-          .map((role) => (
-            <DropdownMenuItem key={role} onClick={() => handleRole(role)}>
-              {t("admin.users.makeRole", { role: t(`roles.${role}`) })}
-            </DropdownMenuItem>
-          ))}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          variant={isBlocking ? "destructive" : "default"}
-          onClick={() => setConfirmStatus(true)}
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={t("admin.users.openActions", { name: user.name })}
+            />
+          }
         >
-          {t(isBlocking ? "admin.users.block" : "admin.users.unblock")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <EllipsisIcon />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-55">
+          <DropdownMenuItem
+            render={<Link href={href(`/admin/users/${user.id}`)} />}
+          >
+            <EyeIcon />
+            {t("admin.users.viewDetails")}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setRoleOpen(true)}>
+            <UserCogIcon />
+            {t("admin.users.changeRoleMenu")}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => (isBlocked ? handleStatus() : setConfirmBlock(true))}
+          >
+            {isBlocked ? <LockOpenIcon /> : <BanIcon />}
+            {t(isBlocked ? "admin.users.unblock" : "admin.users.block")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ChangeRoleDialog
+        user={user}
+        open={roleOpen}
+        onOpenChange={setRoleOpen}
+      />
+    </>
   );
 }

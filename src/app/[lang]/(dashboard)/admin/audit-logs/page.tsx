@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { getAuditLogs } from "@/api";
+import AuditLogExport from "@/components/modules/audit-logs/audit-log-export";
 import AuditLogList from "@/components/modules/audit-logs/audit-log-list";
 import { getT } from "@/i18n/get-dictionary";
 import { alternates } from "@/i18n/metadata";
@@ -32,12 +33,15 @@ export default async function page({
   });
 
   return (
-    <section className="p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("admin.auditPage.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("admin.auditPage.description")}
-        </p>
+    <section className="page-frame">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("admin.auditPage.title")}</h1>
+          <p className="text-muted-foreground">
+            {t("admin.auditPage.description")}
+          </p>
+        </div>
+        <AuditLogExport />
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <AuditLogList />

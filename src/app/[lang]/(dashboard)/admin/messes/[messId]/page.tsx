@@ -8,14 +8,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getMess, getMessMembers } from "@/api";
+import { getMess, getMessAuditLogs, getMessMembers } from "@/api";
 import MessDetail from "@/components/modules/mess-management/mess-detail";
 import MessDetailLoading from "@/components/modules/mess-management/mess-detail-loading";
-import { Button } from "@/components/ui/button";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 import serverApi from "@/lib/serverApi";
-import { ACTIVE_MEMBERS_PARAMS } from "@/utils";
+import { ALL_MEMBERS_PARAMS, MESS_ACTIVITY_PARAMS } from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -39,8 +38,12 @@ export default async function page({
       queryFn: () => getMess(messId, client),
     }),
     queryClient.prefetchQuery({
-      queryKey: ["members", messId, ACTIVE_MEMBERS_PARAMS],
-      queryFn: () => getMessMembers(messId, ACTIVE_MEMBERS_PARAMS, client),
+      queryKey: ["members", messId, ALL_MEMBERS_PARAMS],
+      queryFn: () => getMessMembers(messId, ALL_MEMBERS_PARAMS, client),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["mess-audit", messId, MESS_ACTIVITY_PARAMS],
+      queryFn: () => getMessAuditLogs(messId, MESS_ACTIVITY_PARAMS, client),
     }),
   ]);
 
@@ -51,20 +54,17 @@ export default async function page({
   if (!mess) notFound();
 
   return (
-    <section className="space-y-6 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">{mess.name}</h1>
-          <p className="text-muted-foreground">{mess.address}</p>
-        </div>
-        <Button
-          variant="outline"
-          render={<Link href={localePath(locale, "/admin/messes")} />}
-          nativeButton={false}
-        >
-          <ArrowLeftIcon />
-          {t("admin.messDetail.back")}
-        </Button>
+    <section className="page-frame">
+      <Link
+        href={localePath(locale, "/admin/messes")}
+        className="flex w-fit items-center gap-1.5 font-medium text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeftIcon className="size-4" />
+        {t("admin.messDetail.back")}
+      </Link>
+      <div className="flex flex-col gap-1">
+        <h1 className="page-title">{mess.name}</h1>
+        <p className="text-muted-foreground">{mess.address}</p>
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<MessDetailLoading />}>

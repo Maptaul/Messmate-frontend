@@ -7,7 +7,7 @@ import TablePagination from "@/components/ui/table-pagination";
 import { useSuspenseAuditLogs } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { AuditLog, AuditLogParams } from "@/types";
-import { formatDateTime } from "@/utils";
+import { auditTone, formatDateTime } from "@/utils";
 import AuditChangeDialog from "./audit-change-dialog";
 
 interface Props extends AuditLogParams {
@@ -21,25 +21,25 @@ export default function AuditLogTable({ handlePageChange, ...params }: Props) {
   const { data } = useSuspenseAuditLogs(params);
 
   const logs = data?.data ?? [];
-  const totalPages = data?.meta?.totalPages ?? 0;
 
   const columns: Column<AuditLog>[] = [
     {
       key: "when",
       header: t("admin.auditPage.when"),
-      className: "whitespace-nowrap",
+      className: "whitespace-nowrap text-muted-foreground",
       cell: (log) => formatDateTime(log.createdAt, locale),
     },
     {
       key: "actor",
       header: t("admin.auditPage.actor"),
       cell: (log) => (
-        <div className="min-w-0">
-          <p className="truncate font-medium">{log.actor.name}</p>
-          <p className="truncate text-xs text-muted-foreground">
-            {t(`roles.${log.actor.role}`)}
-          </p>
-        </div>
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="font-medium">{log.actor.name}</span>
+          <StatusBadge
+            status={log.actor.role}
+            className="h-5 px-1.5 text-[11px]"
+          />
+        </span>
       ),
     },
     {
@@ -49,20 +49,34 @@ export default function AuditLogTable({ handlePageChange, ...params }: Props) {
         <StatusBadge
           status={log.action}
           label={t(`audit.actions.${log.action}`)}
+          tone={auditTone(log.action)}
         />
       ),
     },
     {
       key: "entity",
       header: t("admin.auditPage.entity"),
-      className: "hidden md:table-cell",
-      cell: (log) => t.dynamic(`audit.entities.${log.entity}`),
+      cell: (log) => (
+        <span className="grid leading-tight">
+          <span>
+            {t.dynamic(`audit.entities.${log.entity}`)}{" "}
+            <span className="font-mono text-xs text-muted-foreground">
+              {log.entityId.slice(0, 4)}…{log.entityId.slice(-4)}
+            </span>
+          </span>
+          {log.subjectMember && (
+            <span className="text-xs text-muted-foreground">
+              {log.subjectMember.user.name}
+            </span>
+          )}
+        </span>
+      ),
     },
     {
       key: "details",
       header: <span className="sr-only">{t("admin.auditPage.details")}</span>,
       className: "text-right",
-      cell: (log) => <AuditChangeDialog log={log} />,
+      cell: (log) => <AuditChangeDialog log={log} variant="outline" />,
     },
   ];
 
@@ -79,15 +93,13 @@ export default function AuditLogTable({ handlePageChange, ...params }: Props) {
           description: t("admin.auditPage.emptyHint"),
         }}
       />
-      {totalPages > 1 && (
-        <div className="my-5">
-          <TablePagination
-            page={params.page ?? 1}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        </div>
-      )}
+      <TablePagination
+        page={params.page ?? 1}
+        totalPages={data?.meta?.totalPages ?? 0}
+        total={data?.meta?.total}
+        limit={data?.meta?.limit}
+        handlePageChange={handlePageChange}
+      />
     </>
   );
 }

@@ -3,6 +3,7 @@
 import { Building2Icon } from "lucide-react";
 import Link from "next/link";
 import DataTable, { type Column } from "@/components/ui/data-table";
+import StatusBadge from "@/components/ui/status-badge";
 import TablePagination from "@/components/ui/table-pagination";
 import { useSuspenseAllMesses } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
@@ -22,61 +23,68 @@ export default function MessTable({ handlePageChange, ...params }: Props) {
   const { data } = useSuspenseAllMesses(params);
 
   const messes = data?.data ?? [];
-  const totalPages = data?.meta?.totalPages ?? 0;
 
   const columns: Column<Mess>[] = [
     {
       key: "mess",
       header: t("admin.messes.mess"),
       cell: (mess) => (
-        <div className="min-w-0">
-          <Link
-            href={href(`/admin/messes/${mess.id}`)}
-            className="block truncate font-medium underline-offset-4 hover:underline"
-          >
-            {mess.name}
-          </Link>
-          <p className="truncate text-xs text-muted-foreground">
+        <Link
+          href={href(`/admin/messes/${mess.id}`)}
+          className="grid min-w-0 leading-tight text-foreground"
+        >
+          <span className="flex items-center gap-1.5 font-medium">
+            <span className="truncate">{mess.name}</span>
+            {mess.cycles?.length ? (
+              <StatusBadge status="OPEN" className="h-5 px-1.5 text-[11px]" />
+            ) : null}
+          </span>
+          <span className="truncate text-xs text-muted-foreground">
             {mess.address}
-          </p>
-        </div>
+          </span>
+        </Link>
       ),
     },
     {
       key: "manager",
       header: t("admin.messes.manager"),
-      className: "hidden md:table-cell",
       cell: (mess) => (
-        <div className="min-w-0">
-          <p className="truncate">{mess.manager.name}</p>
-          <p className="truncate text-xs text-muted-foreground">
+        <span className="grid min-w-0 leading-tight">
+          <span className="truncate">{mess.manager.name}</span>
+          <span className="truncate text-xs text-muted-foreground">
             {mess.manager.email}
-          </p>
-        </div>
+          </span>
+        </span>
       ),
     },
     {
       key: "members",
       header: t("admin.messes.members"),
-      className: "tabular-nums",
+      className: "text-right tabular-nums",
       cell: (mess) => formatNumber(mess._count.members, locale),
     },
     {
       key: "cycles",
       header: t("admin.messes.cycles"),
-      className: "hidden tabular-nums lg:table-cell",
+      className: "text-right tabular-nums",
       cell: (mess) => formatNumber(mess._count.cycles, locale),
     },
     {
       key: "rent",
       header: t("admin.messes.rent"),
-      className: "hidden tabular-nums sm:table-cell",
+      className: "text-right tabular-nums",
       cell: (mess) => formatBDT(mess.monthlyRent, locale),
+    },
+    {
+      key: "advance",
+      header: t("admin.messes.advance"),
+      className: "text-right tabular-nums",
+      cell: (mess) => formatBDT(mess.monthlyDeposit, locale),
     },
     {
       key: "created",
       header: t("admin.messes.created"),
-      className: "hidden lg:table-cell",
+      className: "text-muted-foreground",
       cell: (mess) => formatDate(mess.createdAt, locale),
     },
     {
@@ -100,15 +108,13 @@ export default function MessTable({ handlePageChange, ...params }: Props) {
           description: t("admin.messes.emptyHint"),
         }}
       />
-      {totalPages > 1 && (
-        <div className="my-5">
-          <TablePagination
-            page={params.page ?? 1}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        </div>
-      )}
+      <TablePagination
+        page={params.page ?? 1}
+        totalPages={data?.meta?.totalPages ?? 0}
+        total={data?.meta?.total}
+        limit={data?.meta?.limit}
+        handlePageChange={handlePageChange}
+      />
     </>
   );
 }

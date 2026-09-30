@@ -1,16 +1,20 @@
 "use client";
 
 import { Trash2Icon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import InlineConfirm from "@/components/ui/inline-confirm";
 import { useDeleteMess } from "@/hooks";
-import { useT } from "@/i18n/i18n-provider";
+import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { Mess } from "@/types";
 import { getErrorMessage } from "@/utils";
 
+/** View, and delete with an in-row confirm; the API refuses while a month is open. */
 export default function MessActions({ mess }: { mess: Mess }) {
   const t = useT();
+  const href = useLocalePath();
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { mutate: remove, isPending } = useDeleteMess();
@@ -23,42 +27,41 @@ export default function MessActions({ mess }: { mess: Mess }) {
       },
       onError: (err) => {
         toast.error(t.dynamic(getErrorMessage(err)));
+        setConfirmDelete(false);
       },
     });
   };
 
   if (confirmDelete) {
     return (
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setConfirmDelete(false)}
-        >
-          {t("admin.messes.cancel")}
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDelete}
-          disabled={isPending}
-          title={t("admin.messes.deleteBody")}
-        >
-          {t("admin.messes.confirm")}
-        </Button>
-      </div>
+      <InlineConfirm
+        confirmLabel={t("admin.messes.confirm")}
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+        pending={isPending}
+      />
     );
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="icon-sm"
-      className="text-destructive hover:text-destructive"
-      aria-label={`${t("admin.messes.delete")}: ${mess.name}`}
-      onClick={() => setConfirmDelete(true)}
-    >
-      <Trash2Icon />
-    </Button>
+    <div className="flex items-center justify-end gap-0.5">
+      <Button
+        variant="ghost"
+        size="sm"
+        render={<Link href={href(`/admin/messes/${mess.id}`)} />}
+        nativeButton={false}
+      >
+        {t("admin.messes.view")}
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="text-destructive hover:bg-destructive-tint hover:text-destructive"
+        aria-label={`${t("admin.messes.delete")}: ${mess.name}`}
+        onClick={() => setConfirmDelete(true)}
+      >
+        <Trash2Icon />
+      </Button>
+    </div>
   );
 }

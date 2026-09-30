@@ -4,11 +4,15 @@ import { RotateCcwIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import InlineConfirm from "@/components/ui/inline-confirm";
 import { useReopenCycle } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatMonth, getErrorMessage } from "@/utils";
 
-/** Admin only: withdraws a closed month's bills so the manager can fix it. */
+/**
+ * Admin only: withdraws a closed month's bills so the manager can fix it.
+ * The API refuses once anyone has paid; its message says so.
+ */
 export default function CycleReopenActions({
   cycleId,
   year,
@@ -34,30 +38,21 @@ export default function CycleReopenActions({
       },
       onError: (err) => {
         toast.error(t.dynamic(getErrorMessage(err)));
+        setConfirmReopen(false);
       },
     });
   };
 
   if (confirmReopen) {
     return (
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setConfirmReopen(false)}
-        >
-          {t("admin.messDetail.cancel")}
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleReopen}
-          disabled={isPending}
-          title={t("admin.messDetail.reopenHint")}
-        >
-          {t("admin.messDetail.reopenConfirm")}
-        </Button>
-      </div>
+      <InlineConfirm
+        tone="primary"
+        hint={t("admin.messDetail.reopenHint")}
+        confirmLabel={t("admin.messDetail.reopenConfirm")}
+        onConfirm={handleReopen}
+        onCancel={() => setConfirmReopen(false)}
+        pending={isPending}
+      />
     );
   }
 

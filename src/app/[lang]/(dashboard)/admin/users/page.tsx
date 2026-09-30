@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { getUsers } from "@/api";
+import UserExport from "@/components/modules/users/user-export";
 import UserList from "@/components/modules/users/user-list";
 import { getT } from "@/i18n/get-dictionary";
 import { alternates } from "@/i18n/metadata";
@@ -33,10 +34,15 @@ export default async function page({
   });
 
   return (
-    <section className="p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("admin.users.title")}</h1>
-        <p className="text-muted-foreground">{t("admin.users.description")}</p>
+    <section className="page-frame">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("admin.users.title")}</h1>
+          <p className="text-muted-foreground">
+            {t("admin.users.description")}
+          </p>
+        </div>
+        <UserExport />
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <UserList />

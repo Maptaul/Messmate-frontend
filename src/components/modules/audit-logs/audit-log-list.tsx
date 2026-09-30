@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/ui/filter-select";
 import useQueryParams from "@/hooks/query-params.hook";
 import { useT } from "@/i18n/i18n-provider";
@@ -14,10 +15,11 @@ export default function AuditLogList() {
   const { get, set } = useQueryParams();
 
   const queryParams = auditParams(get);
+  const filtered = Boolean(queryParams.action || queryParams.entity);
 
   return (
     <>
-      <div className="my-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <FilterSelect
           label={t("admin.auditPage.actionFilter")}
           allLabel={t("admin.auditPage.allActions")}
@@ -38,6 +40,22 @@ export default function AuditLogList() {
           }))}
           onChange={(entity) => set({ entity })}
         />
+        <FilterSelect
+          label={t("admin.auditPage.sortLabel")}
+          allLabel={t("admin.auditPage.newest")}
+          value={queryParams.sortOrder}
+          options={[{ value: "asc", label: t("admin.auditPage.oldest") }]}
+          onChange={(sortOrder) => set({ sortOrder })}
+        />
+        {filtered && (
+          <Button
+            variant="link"
+            className="self-start px-2 sm:self-auto"
+            onClick={() => set({ action: undefined, entity: undefined })}
+          >
+            {t("common.clearFilters")}
+          </Button>
+        )}
       </div>
 
       <Suspense fallback={<AuditLogTableLoading />}>

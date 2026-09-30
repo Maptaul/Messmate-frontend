@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/ui/filter-select";
 import SearchInput from "@/components/ui/search-input";
 import useQueryParams from "@/hooks/query-params.hook";
@@ -18,10 +19,15 @@ export default function UserList() {
   const { get, set } = useQueryParams();
 
   const queryParams = usersParams(get);
+  const filtered = Boolean(
+    queryParams.searchTerm || queryParams.role || queryParams.status,
+  );
+  const clearFilters = () =>
+    set({ searchTerm: undefined, role: undefined, status: undefined });
 
   return (
     <>
-      <div className="my-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <SearchInput
           value={queryParams.searchTerm ?? ""}
           onSearch={(searchTerm) => set({ searchTerm })}
@@ -34,7 +40,7 @@ export default function UserList() {
           value={queryParams.role}
           options={roles.map((role) => ({
             value: role,
-            label: t(`roles.${role}`),
+            label: t(`status.${role}`),
           }))}
           onChange={(role) => set({ role })}
         />
@@ -48,11 +54,21 @@ export default function UserList() {
           }))}
           onChange={(status) => set({ status })}
         />
+        {filtered && (
+          <Button
+            variant="link"
+            className="self-start px-2 sm:self-auto"
+            onClick={clearFilters}
+          >
+            {t("common.clearFilters")}
+          </Button>
+        )}
       </div>
 
       <Suspense fallback={<UserTableLoading />}>
         <UserTable
           {...queryParams}
+          onClearFilters={filtered ? clearFilters : undefined}
           handlePageChange={(page) => set({ page })}
         />
       </Suspense>
