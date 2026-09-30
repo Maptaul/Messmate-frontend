@@ -9,7 +9,7 @@ export type PaymentStatus =
   | "REFUNDED";
 export type PaymentGateway = "bkash" | "stripe" | "cash";
 
-interface BillMoney {
+export interface BillMoney {
   id: string;
   mealCount: number;
   mealCost: Money;

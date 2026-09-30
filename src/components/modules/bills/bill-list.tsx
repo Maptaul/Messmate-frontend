@@ -11,7 +11,17 @@ import BillTableLoading from "./bill-table-loading";
 
 const statuses: BillStatus[] = ["UNPAID", "PARTIAL", "PAID"];
 
-export default function BillList({ cycleId }: { cycleId: string }) {
+export default function BillList({
+  cycleId,
+  messName,
+  period,
+  periodKey,
+}: {
+  cycleId: string;
+  messName: string;
+  period: string;
+  periodKey: string;
+}) {
   const t = useT();
   const { get, set } = useQueryParams();
 
@@ -35,6 +45,9 @@ export default function BillList({ cycleId }: { cycleId: string }) {
       <Suspense fallback={<BillTableLoading />}>
         <BillTable
           cycleId={cycleId}
+          messName={messName}
+          period={period}
+          periodKey={periodKey}
           {...queryParams}
           handlePageChange={(page) => set({ page })}
         />

@@ -34,7 +34,7 @@ export default async function page({
     searchParams,
   ]);
 
-  const { activeMessId } = await getActiveMess();
+  const { activeMessId, choices } = await getActiveMess();
   if (!activeMessId) {
     return (
       <section className="p-5">
@@ -78,7 +78,14 @@ export default async function page({
         <CyclePicker messId={activeMessId} cycleId={cycle.id} />
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <BillList cycleId={cycle.id} />
+        <BillList
+          cycleId={cycle.id}
+          messName={
+            choices.find((choice) => choice.id === activeMessId)?.name ?? ""
+          }
+          period={formatMonth(cycle.year, cycle.month, locale)}
+          periodKey={`${cycle.year}-${String(cycle.month).padStart(2, "0")}`}
+        />
       </HydrationBoundary>
     </section>
   );

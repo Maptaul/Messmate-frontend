@@ -1,10 +1,11 @@
 "use client";
 
 import { BanknoteIcon } from "lucide-react";
+import BillInvoiceDialog from "@/components/modules/bills/bill-invoice-dialog";
 import DataTable, { type Column } from "@/components/ui/data-table";
 import StatusBadge from "@/components/ui/status-badge";
 import TablePagination from "@/components/ui/table-pagination";
-import { useSuspenseMyBills } from "@/hooks";
+import { useGetMe, useSuspenseMyBills } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { BillListParams, MyBill } from "@/types";
 import { formatBDT, formatMonth, toNumber } from "@/utils";
@@ -19,6 +20,7 @@ export default function MyBillTable({ handlePageChange, ...params }: Props) {
   const locale = useLocale();
 
   const { data } = useSuspenseMyBills(params);
+  const { data: me } = useGetMe();
 
   const bills = data?.data ?? [];
   const totalPages = data?.meta?.totalPages ?? 0;
@@ -74,10 +76,18 @@ export default function MyBillTable({ handlePageChange, ...params }: Props) {
       key: "pay",
       header: <span className="sr-only">{t("resident.bills.actions")}</span>,
       className: "text-right",
-      cell: (bill) =>
-        toNumber(bill.dueAmount) > 0 ? (
-          <MyBillActions billId={bill.id} />
-        ) : null,
+      cell: (bill) => (
+        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:justify-end">
+          <BillInvoiceDialog
+            bill={bill}
+            messName={bill.cycle.mess.name}
+            memberName={me?.data.name ?? ""}
+            period={formatMonth(bill.cycle.year, bill.cycle.month, locale)}
+            fileName={`messmate-bill-${bill.cycle.year}-${String(bill.cycle.month).padStart(2, "0")}`}
+          />
+          {toNumber(bill.dueAmount) > 0 && <MyBillActions billId={bill.id} />}
+        </div>
+      ),
     },
   ];
 

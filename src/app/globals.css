@@ -134,3 +134,31 @@
     letter-spacing: normal;
   }
 }
+
+/* "Download PDF" prints only the invoice: the browser's Save as PDF keeps Bangla
+   shaping intact, which PDF libraries in the browser do not. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  [data-print-area],
+  [data-print-area] * {
+    visibility: visible;
+  }
+  /* The dialog is centred with a transform and scrolls; neither may clip the page. */
+  [data-slot="dialog-content"] {
+    position: static !important;
+    transform: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  [data-print-area] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem;
+    background: white;
+    color: black;
+  }
+}
