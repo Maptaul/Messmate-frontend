@@ -50,9 +50,9 @@ One click on `/login` signs in as any of them. They hold demo data only.
 | Role             | Pages                                                                                                                                  |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Admin**        | `/admin` platform overview with charts, `/admin/users` (search, filters, role change, optimistic block/unblock) and each user's detail, `/admin/messes` and each mess's detail (members, recent months, reopen a closed month), `/admin/audit-logs` |
-| **Mess manager** | `/manager` month at a glance, meal register (edit or delete a single entry), headcount, expenses with receipt upload, deposits, bazar duty, billing months with settlement preview and close, bills with cash payments, members, activity log, mess settings, a four-step create-mess wizard |
-| **Member**       | `/dashboard` today, meal plan (optimistic, locks at the 11 PM cutoff), the mess ledger, bills with Stripe or bKash, payment history, activity |
-| **Everyone**     | `/profile` (photo upload with progress), `/finance` personal income and spending with charts                                         |
+| **Mess manager** | `/manager` month at a glance, meal register (edit or delete a single entry), headcount, expenses with receipt upload, deposits, bazar duty, billing months with settlement preview and close, bills with cash payments and a PDF of each bill, members, activity log, mess settings, a four-step create-mess wizard |
+| **Member**       | `/dashboard` today, meal plan (optimistic, locks at the 11 PM cutoff), the mess ledger, bills with Stripe or bKash and a PDF of each bill, payment history, activity |
+| **Everyone**     | `/profile` (photo upload with progress), `/finance` personal income and spending with charts and CSV export                                         |
 | **Public**       | Home, features, about us, FAQ, contact, login (three demo accounts + Google), register with email OTP, forgot password               |
 
 A manager also eats and pays like a member, so the manager sidebar carries the
@@ -76,6 +76,9 @@ number of changes since they last opened the feed.
 - **Bilingual.** Every route sits under `app/[lang]`. English has no prefix, Bangla is
   `/bn/...`; a `NEXT_LOCALE` cookie remembers the choice. Strings live in
   `src/i18n/dictionaries/en.json` and `bn.json`.
+- **Exports.** A bill's PDF is the browser's own "Save as PDF" of a print-only invoice,
+  so Bangla keeps its conjuncts; the finance CSV holds every entry for the current
+  filters, with a BOM so Excel opens Bangla correctly.
 - **Payments.** Card payments open Stripe Checkout; `/payment/success` confirms the
   session with the API on the server before showing a result. bKash returns to the same
   page with its own status.
@@ -112,13 +115,23 @@ pnpm install
 # 2. Configure
 cp .env.example .env.local   # then fill in the values below
 
-# 3. Run
+# 3. Run — with the MessMate API running locally on port 5000
 pnpm dev                     # http://localhost:3000
 ```
 
-| Variable                       | Value                                                                        |
+**Which API?** The backend URL is picked by mode, from two committed files that hold
+nothing secret:
+
+| Mode                                  | File               | `BACKEND_URL`                        |
+| ------------------------------------- | ------------------ | ------------------------------------ |
+| `pnpm dev`                            | `.env.development` | `http://localhost:5000` (local API)  |
+| `pnpm build`, `pnpm start`, Vercel    | `.env.production`  | `https://messmatebackend.vercel.app` |
+
+To develop against the live API without running the backend, put
+`BACKEND_URL=https://messmatebackend.vercel.app` in `.env.local`; it overrides both.
+
+| Variable (`.env.local`)        | Value                                                                        |
 | ------------------------------ | ---------------------------------------------------------------------------- |
-| `BACKEND_URL`                  | `https://messmatebackend.vercel.app` (or `http://localhost:5000` for a local API) |
 | `JWT_ACCESS_SECRET`            | the API's `JWT_ACCESS_SECRET` — used only on the server, by `proxy.ts`        |
 | `NEXT_PUBLIC_APP_URL`          | this app's origin, e.g. `http://localhost:3000`                              |
 | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | the API's Google OAuth client id; the Google button hides when it is empty   |
@@ -143,7 +156,8 @@ every push.
 
 ## Deployment (Vercel)
 
-Import the repository in Vercel and set the five variables above, with
+Import the repository in Vercel and set the four variables above (`BACKEND_URL`
+comes from `.env.production`), with
 `NEXT_PUBLIC_APP_URL` set to the deployed origin. Then, on the API:
 
 | API variable         | Value                                   | Why                                     |
