@@ -425,7 +425,8 @@
     "codeSent": "{email}-এ রিসেট কোড পাঠানো হয়েছে",
     "googleFailed": "Google দিয়ে সাইন ইন হয়নি। আবার চেষ্টা করুন।",
     "mealUpdated": "{name}-এর মিল আপডেট হয়েছে",
-    "mealDeleted": "এন্ট্রি মুছে ফেলা হয়েছে"
+    "mealDeleted": "এন্ট্রি মুছে ফেলা হয়েছে",
+    "exported": "{count}টি এন্ট্রি এক্সপোর্ট হয়েছে"
   },
   "messSwitcher": {
     "label": "মেস বদলান",
@@ -1081,7 +1082,9 @@
       "HEALTH": "স্বাস্থ্য",
       "SHOPPING": "কেনাকাটা",
       "ENTERTAINMENT": "বিনোদন"
-    }
+    },
+    "export": "CSV এক্সপোর্ট",
+    "exporting": "এক্সপোর্ট হচ্ছে…"
   },
   "marketing": {
     "nav": {
@@ -1298,5 +1301,30 @@
   "activityBell": {
     "label": "কার্যকলাপ",
     "unread": "{count}টি নতুন"
+  },
+  "invoice": {
+    "open": "PDF",
+    "openAria": "{period}-এর বিল PDF হিসেবে",
+    "title": "মাসিক বিল",
+    "download": "PDF ডাউনলোড",
+    "hint": "প্রিন্ট উইন্ডোতে “Save as PDF” বেছে নিন।",
+    "close": "বন্ধ",
+    "mess": "মেস",
+    "member": "সদস্য",
+    "period": "মাস",
+    "status": "অবস্থা",
+    "issued": "{date} তারিখে",
+    "item": "বিবরণ",
+    "amount": "পরিমাণ",
+    "meals": "খাওয়া মিল ({count})",
+    "shared": "ইউটিলিটি ও যৌথ বিল",
+    "rent": "ভাড়ার ভাগ",
+    "other": "আগের মাসের ব্যালান্স ও পরের মাসের অগ্রিম",
+    "total": "মোট দেয়",
+    "credit": "বাদ: জমা ও নিজে করা বাজার",
+    "paid": "এ পর্যন্ত পরিশোধ",
+    "due": "বাকি",
+    "inCredit": "পাওনা",
+    "settled": "পরিশোধিত"
   }
 }

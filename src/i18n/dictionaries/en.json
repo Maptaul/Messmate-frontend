@@ -425,7 +425,8 @@
     "codeSent": "We sent a reset code to {email}",
     "googleFailed": "Google sign-in failed. Please try again.",
     "mealUpdated": "Meals updated for {name}",
-    "mealDeleted": "Entry removed"
+    "mealDeleted": "Entry removed",
+    "exported": "{count} entries exported"
   },
   "messSwitcher": {
     "label": "Switch mess",
@@ -1081,7 +1082,9 @@
       "HEALTH": "Health",
       "SHOPPING": "Shopping",
       "ENTERTAINMENT": "Entertainment"
-    }
+    },
+    "export": "Export CSV",
+    "exporting": "Exporting…"
   },
   "marketing": {
     "nav": {
@@ -1298,5 +1301,30 @@
   "activityBell": {
     "label": "Activity",
     "unread": "{count} new"
+  },
+  "invoice": {
+    "open": "PDF",
+    "openAria": "Bill for {period} as PDF",
+    "title": "Monthly bill",
+    "download": "Download PDF",
+    "hint": "In the print window, choose “Save as PDF”.",
+    "close": "Close",
+    "mess": "Mess",
+    "member": "Member",
+    "period": "Month",
+    "status": "Status",
+    "issued": "Issued {date}",
+    "item": "Item",
+    "amount": "Amount",
+    "meals": "Meals eaten ({count})",
+    "shared": "Utilities and shared bills",
+    "rent": "Rent share",
+    "other": "Carried balance and next month’s deposit",
+    "total": "Total payable",
+    "credit": "Less deposits and bazaar paid",
+    "paid": "Paid so far",
+    "due": "Due",
+    "inCredit": "In credit",
+    "settled": "Settled"
   }
 }
