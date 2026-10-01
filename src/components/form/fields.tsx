@@ -1,7 +1,7 @@
 "use client";
 
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { type ComponentProps, type ReactNode, useState } from "react";
+import { CheckIcon, CircleIcon, EyeIcon, EyeOffIcon } from "lucide-react";
+import { type ComponentProps, Fragment, type ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -28,6 +28,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useT } from "@/i18n/i18n-provider";
+import { cn } from "@/lib/utils";
 import { useFieldContext, useFormContext } from "./form-context";
 
 /**
@@ -53,22 +54,42 @@ function TranslatedErrors({ errors }: { errors: unknown[] }) {
 interface FieldShellProps {
   label: string;
   description?: ReactNode;
+  /** Sits at the end of the label row, e.g. a "Forgot password?" link. */
+  action?: ReactNode;
+  /** Shown under the control instead of errors: it already says what is wrong. */
+  checklist?: ReactNode;
   children: (props: { id: string; invalid: boolean }) => ReactNode;
 }
 
 /** Label, control, then the first error — once the field has been touched. */
-function FieldShell({ label, description, children }: FieldShellProps) {
+function FieldShell({
+  label,
+  description,
+  action,
+  checklist,
+  children,
+}: FieldShellProps) {
   const field = useFieldContext<unknown>();
   const invalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
     <Field data-invalid={invalid}>
-      <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+      {action ? (
+        <div className="flex items-center justify-between gap-2">
+          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          {action}
+        </div>
+      ) : (
+        <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+      )}
       {children({ id: field.name, invalid })}
       {description && !invalid && (
         <FieldDescription>{description}</FieldDescription>
       )}
-      {invalid && <TranslatedErrors errors={field.state.meta.errors} />}
+      {checklist}
+      {invalid && !checklist && (
+        <TranslatedErrors errors={field.state.meta.errors} />
+      )}
     </Field>
   );
 }
@@ -140,13 +161,58 @@ export function MoneyField({
   );
 }
 
+/** The new-password rules, each ticked off as the typed value meets it. */
+const PASSWORD_RULES = [
+  ["min", (value: string) => value.length >= 8],
+  ["lower", (value: string) => /[a-z]/.test(value)],
+  ["upper", (value: string) => /[A-Z]/.test(value)],
+  ["number", (value: string) => /[0-9]/.test(value)],
+  ["symbol", (value: string) => /[^A-Za-z0-9]/.test(value)],
+] as const;
+
+function PasswordRules({ value }: { value: string }) {
+  const t = useT();
+
+  return (
+    <ul
+      aria-label={t("auth.rules.label")}
+      className="grid grid-cols-2 gap-x-3 gap-y-1 text-[12.5px]"
+    >
+      {PASSWORD_RULES.map(([key, met]) => {
+        const ok = met(value);
+        return (
+          <li
+            key={key}
+            className={cn(
+              "flex items-center gap-1.5",
+              ok ? "text-(--tone-g-fg)" : "text-muted-foreground",
+            )}
+          >
+            {ok ? (
+              <CheckIcon className="size-3.5" />
+            ) : (
+              <CircleIcon className="size-3.5" />
+            )}
+            {t(`auth.rules.${key}`)}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 export function PasswordField({
   label,
   description,
+  action,
+  rules,
   autoComplete = "current-password",
 }: {
   label: string;
   description?: ReactNode;
+  action?: ReactNode;
+  /** Show the new-password rules under the input, ticking as they are met. */
+  rules?: boolean;
   autoComplete?: string;
 }) {
   const field = useFieldContext<string>();
@@ -154,7 +220,14 @@ export function PasswordField({
   const [visible, setVisible] = useState(false);
 
   return (
-    <FieldShell label={label} description={description}>
+    <FieldShell
+      label={label}
+      action={action}
+      description={description}
+      checklist={
+        rules ? <PasswordRules value={field.state.value} /> : undefined
+      }
+    >
       {({ id, invalid }) => (
         <div className="relative">
           <Input
@@ -263,6 +336,7 @@ export interface RadioCardOption {
   value: string;
   title: string;
   description: string;
+  icon?: ReactNode;
 }
 
 /** A radio group drawn as selectable cards, for small either/or choices. */
@@ -293,6 +367,11 @@ export function RadioCardsField({
           return (
             <FieldLabel key={option.value} htmlFor={id}>
               <Field orientation="horizontal">
+                {option.icon && (
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg border bg-card [&_svg]:size-4">
+                    {option.icon}
+                  </span>
+                )}
                 <FieldContent>
                   <FieldTitle>{option.title}</FieldTitle>
                   <FieldDescription>{option.description}</FieldDescription>
@@ -333,17 +412,34 @@ export function OtpField({
           onChange={(value) => field.handleChange(value)}
           onBlur={field.handleBlur}
           aria-invalid={invalid}
-          containerClassName="justify-center"
+          containerClassName="gap-2"
         >
-          <InputOTPGroup>
-            {Array.from({ length }, (_, position) => position).map((slot) => (
-              <InputOTPSlot
-                key={slot}
-                index={slot}
-                className="size-11 text-lg"
-              />
-            ))}
-          </InputOTPGroup>
+          {[0, Math.ceil(length / 2)].map((start, group) => (
+            <Fragment key={start}>
+              {group > 0 && (
+                <span aria-hidden className="text-muted-foreground">
+                  –
+                </span>
+              )}
+              <InputOTPGroup className="gap-2">
+                {Array.from(
+                  {
+                    length:
+                      group === 0
+                        ? Math.ceil(length / 2)
+                        : length - Math.ceil(length / 2),
+                  },
+                  (_, offset) => start + offset,
+                ).map((slot) => (
+                  <InputOTPSlot
+                    key={slot}
+                    index={slot}
+                    className="h-14 w-12 rounded-lg border font-mono text-2xl font-semibold first:rounded-lg last:rounded-lg"
+                  />
+                ))}
+              </InputOTPGroup>
+            </Fragment>
+          ))}
         </InputOTP>
       )}
     </FieldShell>

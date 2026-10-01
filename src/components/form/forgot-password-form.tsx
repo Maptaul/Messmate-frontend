@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyRoundIcon } from "lucide-react";
+import { ArrowLeftIcon, KeyRoundIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,15 +19,15 @@ export default function ForgotPasswordForm() {
   const [email, setEmail] = useState<string | null>(null);
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-2 text-center">
-        <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <KeyRoundIcon className="size-6" aria-hidden />
+    <div className="flex flex-col gap-4.5">
+      <div className="flex flex-col gap-3">
+        <span className="grid size-12 place-items-center rounded-xl border bg-muted">
+          <KeyRoundIcon className="size-5.5" aria-hidden />
         </span>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-[28px] leading-tight font-semibold tracking-tight">
           {email ? t("auth.forgot.resetTitle") : t("auth.forgot.title")}
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-foreground-2">
           {email
             ? t("auth.forgot.resetSubtitle", { email })
             : t("auth.forgot.subtitle")}
@@ -40,15 +40,13 @@ export default function ForgotPasswordForm() {
         <EmailStep onSent={setEmail} />
       )}
 
-      <p className="text-center text-sm text-muted-foreground">
-        {t("auth.forgot.remembered")}{" "}
-        <Link
-          href={href("/login")}
-          className="font-medium text-primary underline-offset-4 hover:underline"
-        >
-          {t("auth.forgot.backToLogin")}
-        </Link>
-      </p>
+      <Link
+        href={href("/login")}
+        className="flex w-fit items-center gap-1.5 font-medium text-foreground-2 hover:text-foreground"
+      >
+        <ArrowLeftIcon className="size-4" />
+        {t("auth.forgot.backToLogin")}
+      </Link>
     </div>
   );
 }
@@ -151,7 +149,7 @@ function ResetStep({ email, onBack }: { email: string; onBack: () => void }) {
             <field.PasswordField
               label={t("auth.forgot.newPassword")}
               autoComplete="new-password"
-              description={t("auth.register.passwordHint")}
+              rules
             />
           )}
         </form.AppField>
@@ -176,7 +174,7 @@ function ResetStep({ email, onBack }: { email: string; onBack: () => void }) {
         <button
           type="button"
           onClick={onBack}
-          className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          className="font-medium text-primary hover:underline"
         >
           {t("auth.forgot.differentEmail")}
         </button>

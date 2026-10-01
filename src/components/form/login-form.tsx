@@ -1,7 +1,14 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { LogInIcon, ShieldCheckIcon, UserIcon, UsersIcon } from "lucide-react";
+import {
+  LockIcon,
+  LogInIcon,
+  RocketIcon,
+  ShieldCheckIcon,
+  UserIcon,
+  UsersIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,6 +20,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { MessageKey } from "@/i18n/translate";
+import { cn } from "@/lib/utils";
 import type { AuthTokens, LoginPayload, UserRole } from "@/types";
 import {
   getErrorMessage,
@@ -31,6 +39,8 @@ const DEMO_ACCOUNTS: {
   password: string;
   blurbKey: MessageKey;
   icon: typeof UserIcon;
+  /** The role's tile colours on its demo card. */
+  tile: string;
 }[] = [
   {
     role: "ADMIN",
@@ -38,6 +48,7 @@ const DEMO_ACCOUNTS: {
     password: "Admin@messmate12345",
     blurbKey: "auth.login.demoAdmin",
     icon: ShieldCheckIcon,
+    tile: "bg-foreground text-background",
   },
   {
     role: "MESS_MANAGER",
@@ -45,6 +56,7 @@ const DEMO_ACCOUNTS: {
     password: "Manager@messmate12345",
     blurbKey: "auth.login.demoManager",
     icon: UsersIcon,
+    tile: "tone-b",
   },
   {
     role: "MEMBER",
@@ -52,6 +64,7 @@ const DEMO_ACCOUNTS: {
     password: "Member@messmate12345",
     blurbKey: "auth.login.demoMember",
     icon: UserIcon,
+    tile: "tone-g",
   },
 ];
 
@@ -109,15 +122,19 @@ export default function LoginForm({
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold tracking-tight">
+    <div className="flex flex-col gap-4.5">
+      <div>
+        <h1 className="text-[28px] leading-tight font-semibold tracking-tight">
           {t("auth.login.title")}
         </h1>
-        <p className="text-balance text-sm text-muted-foreground">
-          {t("auth.login.subtitle")}
-        </p>
+        <p className="mt-1.5 text-foreground-2">{t("auth.login.subtitle")}</p>
       </div>
+      {redirect && (
+        <output className="tone-b flex items-center gap-2 rounded-lg border px-3 py-2.5 text-[13.5px]">
+          <LockIcon className="size-4 shrink-0" />
+          {t("auth.login.redirectNote")}
+        </output>
+      )}
 
       <form
         noValidate
@@ -139,17 +156,19 @@ export default function LoginForm({
           </form.AppField>
           <form.AppField name="password">
             {(field) => (
-              <field.PasswordField label={t("auth.login.password")} />
+              <field.PasswordField
+                label={t("auth.login.password")}
+                action={
+                  <Link
+                    href={href("/forgot-password")}
+                    className="text-[13px] font-medium text-primary hover:underline"
+                  >
+                    {t("auth.login.forgot")}
+                  </Link>
+                }
+              />
             )}
           </form.AppField>
-          <div className="-mt-3 text-right">
-            <Link
-              href={href("/forgot-password")}
-              className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-            >
-              {t("auth.login.forgot")}
-            </Link>
-          </div>
           <form.AppForm>
             <form.SubmitButton
               size="lg"
@@ -168,29 +187,40 @@ export default function LoginForm({
 
       <FieldSeparator>{t("auth.login.orDemo")}</FieldSeparator>
 
-      <section aria-labelledby="demo-login" className="space-y-3">
-        <h2 id="demo-login" className="text-center text-sm font-medium">
+      <section aria-labelledby="demo-login" className="flex flex-col gap-2.5">
+        <h2 id="demo-login" className="flex items-center gap-2 font-semibold">
+          <RocketIcon className="size-4 text-primary" />
           {t("auth.login.demoTitle")}
         </h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-2.5 sm:grid-cols-3">
           {DEMO_ACCOUNTS.map((demo) => (
             <div
               key={demo.role}
-              className="flex flex-col items-center gap-2 rounded-xl border bg-card p-4 text-center"
+              className={cn(
+                "flex flex-col gap-2.5 rounded-xl border bg-card p-3.5 shadow-1",
+                demoRole === demo.role && "border-ring",
+              )}
             >
-              <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <demo.icon className="size-5" aria-hidden />
+              <span
+                className={cn(
+                  "grid size-8 shrink-0 place-items-center rounded-lg",
+                  demo.tile,
+                )}
+              >
+                <demo.icon className="size-4" aria-hidden />
               </span>
-              <p className="text-sm font-medium">
-                {t(ROLE_LABEL_KEY[demo.role])}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {t(demo.blurbKey)}
-              </p>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13.5px] font-semibold">
+                  {t(ROLE_LABEL_KEY[demo.role])}
+                </p>
+                <p className="text-xs leading-snug text-muted-foreground">
+                  {t(demo.blurbKey)}
+                </p>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
-                className="mt-auto w-full"
+                className="w-full"
                 disabled={loginPending}
                 onClick={() => demoLogin(demo)}
                 aria-label={t("auth.login.demoAria", {
@@ -205,11 +235,11 @@ export default function LoginForm({
         </div>
       </section>
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-center text-foreground-2">
         {t("auth.login.newHere")}{" "}
         <Link
           href={href("/register")}
-          className="font-medium underline underline-offset-4 hover:text-primary"
+          className="font-medium text-primary hover:underline"
         >
           {t("auth.login.createAccount")}
         </Link>

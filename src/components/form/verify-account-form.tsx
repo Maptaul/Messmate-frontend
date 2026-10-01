@@ -60,15 +60,15 @@ export default function VerifyAccountForm({ email }: { email: string }) {
   const canResend = pending?.email === email;
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-2 text-center">
-        <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <MailCheckIcon className="size-6" aria-hidden />
+    <div className="flex flex-col gap-4.5">
+      <div className="flex flex-col gap-3">
+        <span className="grid size-12 place-items-center rounded-xl bg-primary-tint text-primary">
+          <MailCheckIcon className="size-5.5" aria-hidden />
         </span>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-[28px] leading-tight font-semibold tracking-tight">
           {t("auth.verify.title")}
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="leading-relaxed text-foreground-2">
           {t("auth.verify.sentTo", { email })}
         </p>
       </div>
@@ -97,7 +97,7 @@ export default function VerifyAccountForm({ email }: { email: string }) {
         </FieldGroup>
       </form>
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-[13.5px] text-muted-foreground">
         {canResend ? (
           <Button
             variant="link"

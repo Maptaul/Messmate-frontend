@@ -130,7 +130,7 @@
       "submit": "Log in",
       "submitting": "Logging in…",
       "orDemo": "Or try a demo account",
-      "demoTitle": "🚀 Quick demo login",
+      "demoTitle": "Quick demo login",
       "demoButton": "Demo login",
       "demoAria": "Demo login as {role}",
       "demoAdmin": "Users, messes, platform audit log",
@@ -138,7 +138,8 @@
       "demoMember": "Meal plan, bills, card payment",
       "newHere": "New to MessMate?",
       "createAccount": "Create an account",
-      "orGoogle": "Or continue with"
+      "orGoogle": "Or continue with",
+      "redirectNote": "Log in to continue where you were going."
     },
     "register": {
       "metaTitle": "Create an account",
@@ -197,6 +198,14 @@
       "remembered": "Remembered it?",
       "backToLogin": "Back to log in",
       "changed": "Password changed. Log in with your new password."
+    },
+    "rules": {
+      "label": "Password rules",
+      "min": "8+ characters",
+      "lower": "A lowercase letter",
+      "upper": "An uppercase letter",
+      "number": "A number",
+      "symbol": "A symbol"
     }
   },
   "validation": {

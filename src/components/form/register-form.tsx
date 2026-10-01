@@ -1,10 +1,11 @@
 "use client";
 
-import { UserPlusIcon } from "lucide-react";
+import { ClipboardListIcon, HomeIcon, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { applyServerErrors, useAppForm } from "@/components/form";
+import GoogleLoginComponent from "@/components/modules/google-login/GoogleLogin";
 import { FieldGroup } from "@/components/ui/field";
 import { useRegistration } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
@@ -57,12 +58,12 @@ export default function RegisterForm() {
   });
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-1.5 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">
+    <div className="flex flex-col gap-4.5">
+      <div>
+        <h1 className="text-[28px] leading-tight font-semibold tracking-tight">
           {t("auth.register.title")}
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="mt-1.5 text-foreground-2">
           {t("auth.register.subtitle")}
         </p>
       </div>
@@ -84,11 +85,13 @@ export default function RegisterForm() {
                     value: "MEMBER",
                     title: t("auth.register.memberTitle"),
                     description: t("auth.register.memberDescription"),
+                    icon: <HomeIcon />,
                   },
                   {
                     value: "MESS_MANAGER",
                     title: t("auth.register.managerTitle"),
                     description: t("auth.register.managerDescription"),
+                    icon: <ClipboardListIcon />,
                   },
                 ]}
               />
@@ -102,7 +105,7 @@ export default function RegisterForm() {
               />
             )}
           </form.AppField>
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <form.AppField name="email">
               {(field) => (
                 <field.TextField
@@ -129,7 +132,7 @@ export default function RegisterForm() {
               <field.PasswordField
                 label={t("auth.register.password")}
                 autoComplete="new-password"
-                description={t("auth.register.passwordHint")}
+                rules
               />
             )}
           </form.AppField>
@@ -155,11 +158,13 @@ export default function RegisterForm() {
         </FieldGroup>
       </form>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <GoogleLoginComponent />
+
+      <p className="text-center text-foreground-2">
         {t("auth.register.haveAccount")}{" "}
         <Link
           href={href("/login")}
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="font-medium text-primary hover:underline"
         >
           {t("auth.register.login")}
         </Link>
