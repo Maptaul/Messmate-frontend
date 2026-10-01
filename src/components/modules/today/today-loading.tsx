@@ -2,17 +2,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TodayLoading() {
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {[1, 2, 3].map((item) => (
-          <Skeleton key={item} className="h-28 rounded-xl" />
-        ))}
+    <>
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-3 w-64" />
+        <Skeleton className="h-7 w-32" />
       </div>
-      <Skeleton className="h-56 rounded-xl" />
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Skeleton className="h-40 rounded-xl" />
-        <Skeleton className="h-40 rounded-xl" />
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <Skeleton className="h-72 rounded-xl" />
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-44 rounded-xl" />
+          <Skeleton className="h-20 rounded-xl" />
+        </div>
       </div>
-    </div>
+      <Skeleton className="h-48 rounded-xl md:h-28" />
+      <Skeleton className="h-48 rounded-xl" />
+    </>
   );
 }

@@ -1,30 +1,36 @@
 "use client";
 
+import { SlidersHorizontalIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import MealStepper from "@/components/ui/meal-stepper";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { useSetDefaultMeals } from "@/hooks";
-import { useT } from "@/i18n/i18n-provider";
-import type { MealCounts } from "@/types";
-import { getErrorMessage } from "@/utils";
+import { useLocale, useT } from "@/i18n/i18n-provider";
+import type { MealCounts as Counts } from "@/types";
+import { formatNumber, getErrorMessage } from "@/utils";
+import MealCounts from "./meal-counts";
 
+/** What an unplanned day counts as, with a dialog to change it. */
 export default function DefaultMealsCard({
   messId,
   defaults,
 }: {
   messId: string;
-  defaults: MealCounts;
+  defaults: Counts;
 }) {
   const t = useT();
+  const locale = useLocale();
+  const [open, setOpen] = useState(false);
   const [counts, setCounts] = useState(defaults);
 
   const { mutate: setDefaultMeals, isPending } = useSetDefaultMeals();
@@ -38,6 +44,7 @@ export default function DefaultMealsCard({
       {
         onSuccess: () => {
           toast.success(t("toast.defaultsSaved"));
+          setOpen(false);
         },
         onError: (err) => {
           toast.error(t.dynamic(getErrorMessage(err)));
@@ -47,36 +54,48 @@ export default function DefaultMealsCard({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("resident.mealPlan.defaultsTitle")}</CardTitle>
-        <CardDescription>{t("resident.mealPlan.defaultsBody")}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-wrap items-center gap-x-8 gap-y-3">
-        {(["lunch", "dinner"] as const).map((meal) => (
-          <div key={meal} className="flex items-center gap-3">
-            <span className="w-16 text-sm">
-              {t(`resident.mealPlan.${meal}`)}
-            </span>
-            <MealStepper
-              value={counts[meal]}
-              onChange={(value) =>
-                setCounts((current) => ({ ...current, [meal]: value }))
-              }
-              decreaseLabel={`${t(`resident.mealPlan.${meal}`)} −`}
-              increaseLabel={`${t(`resident.mealPlan.${meal}`)} +`}
-            />
-          </div>
-        ))}
-        <Button
-          type="button"
-          disabled={unchanged || isPending}
-          onClick={handleSave}
-        >
-          {isPending && <Spinner />}
-          {t("resident.mealPlan.saveDefaults")}
-        </Button>
-      </CardContent>
-    </Card>
+    <div className="flex items-center gap-3 rounded-xl border bg-card p-4 shadow-1">
+      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary-tint text-primary">
+        <SlidersHorizontalIcon className="size-4" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="font-semibold">{t("resident.mealPlan.defaultsTitle")}</p>
+        <p className="text-[13px] text-muted-foreground">
+          {t("resident.mealPlan.defaultsText", {
+            lunch: formatNumber(defaults.lunch, locale),
+            dinner: formatNumber(defaults.dinner, locale),
+          })}
+        </p>
+      </div>
+      <Dialog
+        open={open}
+        onOpenChange={(next) => {
+          setOpen(next);
+          if (next) setCounts(defaults);
+        }}
+      >
+        <DialogTrigger render={<Button variant="outline" size="sm" />}>
+          {t("resident.mealPlan.edit")}
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("resident.mealPlan.defaultsTitle")}</DialogTitle>
+            <DialogDescription>
+              {t("resident.mealPlan.defaultsHint")}
+            </DialogDescription>
+          </DialogHeader>
+          <MealCounts value={counts} onChange={setCounts} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              {t("resident.mealPlan.cancel")}
+            </Button>
+            <Button disabled={unchanged || isPending} onClick={handleSave}>
+              {isPending && <Spinner />}
+              {t("resident.mealPlan.save")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

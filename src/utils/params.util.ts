@@ -14,6 +14,7 @@ import {
   type ExpenseType,
   type FinanceEntryParams,
   INCOME_CATEGORIES,
+  type MealListParams,
   type MemberListParams,
   type MembershipStatus,
   type MessAuditParams,
@@ -128,6 +129,27 @@ export function expensesParams(get: Get): ExpenseListParams {
     paidByMemberId: get("paidBy") || undefined,
     searchTerm: get("searchTerm") || undefined,
   };
+}
+
+/** The read-only ledger's sections; the first is the default. */
+export const LEDGER_TABS = [
+  "meals",
+  "expenses",
+  "deposits",
+  "duty",
+  "members",
+  "cycles",
+  "summary",
+] as const;
+export type LedgerTab = (typeof LEDGER_TABS)[number];
+
+export function ledgerTab(get: Get): LedgerTab {
+  return oneOf(LEDGER_TABS, get("tab")) ?? "meals";
+}
+
+/** Every meal entry of the month, a page at a time (the ledger's meals tab). */
+export function ledgerMealsParams(get: Get): MealListParams {
+  return { page: pageOf(get), limit: PAGE_SIZE };
 }
 
 export function depositsParams(get: Get): DepositListParams {

@@ -4,7 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { getMessAuditLogs } from "@/api";
+import { getActivityUnread, getMessAuditLogs } from "@/api";
 import ActivityExport from "@/components/modules/activity/activity-export";
 import ActivityList from "@/components/modules/activity/activity-list";
 import NoMess from "@/components/modules/my-messes/no-mess";
@@ -39,10 +39,17 @@ export default async function page({
   const params = messAuditParams(fromSearchParams(await searchParams));
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["mess-audit", activeMessId, params],
-    queryFn: () => getMessAuditLogs(activeMessId, params, client),
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["mess-audit", activeMessId, params],
+      queryFn: () => getMessAuditLogs(activeMessId, params, client),
+    }),
+    // What was new when the page opened, before it marks everything seen.
+    queryClient.prefetchQuery({
+      queryKey: ["activity-unread", activeMessId],
+      queryFn: () => getActivityUnread(activeMessId, client),
+    }),
+  ]);
 
   return (
     <section className="page-frame">

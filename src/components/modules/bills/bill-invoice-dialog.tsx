@@ -35,6 +35,8 @@ export default function BillInvoiceDialog({
   period,
   fileName,
   variant = "pdf",
+  label,
+  className,
 }: {
   bill: BillMoney;
   messName: string;
@@ -43,6 +45,9 @@ export default function BillInvoiceDialog({
   /** Becomes the suggested PDF file name in the print window. */
   fileName: string;
   variant?: "pdf" | "breakdown";
+  /** The trigger's text, when the default ("PDF", "Breakdown") is too short. */
+  label?: string;
+  className?: string;
 }) {
   const t = useT();
 
@@ -76,11 +81,12 @@ export default function BillInvoiceDialog({
             <Button
               variant="link"
               size="sm"
+              className={className}
               aria-label={t("invoice.breakdownAria", { name: memberName })}
             />
           }
         >
-          {t("invoice.breakdown")}
+          {label ?? t("invoice.breakdown")}
         </SheetTrigger>
         <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
@@ -101,12 +107,13 @@ export default function BillInvoiceDialog({
           <Button
             variant="outline"
             size="sm"
+            className={className}
             aria-label={t("invoice.openAria", { period })}
           />
         }
       >
         <FileDownIcon />
-        {t("invoice.open")}
+        {label ?? t("invoice.open")}
       </DialogTrigger>
       <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>

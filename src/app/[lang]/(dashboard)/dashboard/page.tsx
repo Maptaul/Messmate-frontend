@@ -5,7 +5,15 @@ import {
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getMyBills, getMyCalendar, getMyDutyDays } from "@/api";
+import {
+  getCycleTrends,
+  getMe,
+  getMessAuditLogs,
+  getMyBills,
+  getMyCalendar,
+  getMyDutyDays,
+  getSettlementPreview,
+} from "@/api";
 import ResidentEmpty from "@/components/modules/today/resident-empty";
 import Today from "@/components/modules/today/today";
 import TodayLoading from "@/components/modules/today/today-loading";
@@ -14,7 +22,7 @@ import { alternates } from "@/i18n/metadata";
 import { getActiveCycle } from "@/lib/activeCycle";
 import { getActiveMess } from "@/lib/activeMess";
 import serverApi from "@/lib/serverApi";
-import { LATEST_BILL_PARAMS } from "@/utils";
+import { LATEST_BILL_PARAMS, RECENT_ACTIVITY_PARAMS } from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -25,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function page() {
-  const [t, client] = await Promise.all([getT(), serverApi()]);
+  const client = await serverApi();
 
   const { activeMessId } = await getActiveMess();
   if (!activeMessId) {
@@ -59,19 +67,30 @@ export default async function page() {
       queryKey: ["my-bills", LATEST_BILL_PARAMS],
       queryFn: () => getMyBills(LATEST_BILL_PARAMS, client),
     }),
+    queryClient.prefetchQuery({
+      queryKey: ["settlement", cycle.id],
+      queryFn: () => getSettlementPreview(cycle.id, client),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["cycle-trends", cycle.id],
+      queryFn: () => getCycleTrends(cycle.id, client),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["mess-audit", activeMessId, RECENT_ACTIVITY_PARAMS],
+      queryFn: () =>
+        getMessAuditLogs(activeMessId, RECENT_ACTIVITY_PARAMS, client),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["user"],
+      queryFn: () => getMe(client),
+    }),
   ]);
 
   return (
-    <section className="space-y-6 p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("resident.today.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("resident.today.description")}
-        </p>
-      </div>
+    <section className="page-frame">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<TodayLoading />}>
-          <Today cycleId={cycle.id} />
+          <Today cycleId={cycle.id} messId={activeMessId} />
         </Suspense>
       </HydrationBoundary>
     </section>

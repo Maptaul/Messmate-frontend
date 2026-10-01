@@ -60,6 +60,14 @@ export const weekdayNames = (locale: Locale = "en") =>
     }).format(new Date(Date.UTC(2026, 8, 6 + day))),
   );
 
+/** "7:50 PM" — a time of day in Dhaka. */
+export const formatTime = (value: string | Date, locale: Locale = "en") =>
+  new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    timeZone: DHAKA,
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
+
 export const formatDateTime = (value: string | Date, locale: Locale = "en") =>
   new Intl.DateTimeFormat(INTL_LOCALE[locale], {
     timeZone: DHAKA,

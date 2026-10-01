@@ -4,29 +4,33 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   getCycleDeposits,
+  getCycleDuties,
   getCycleExpenses,
-  getExpenseSummary,
+  getCycleMeals,
+  getDutyCalendar,
+  getMealSummary,
+  getMess,
   getMessMembers,
 } from "@/api";
-import CyclePicker from "@/components/modules/cycles/cycle-picker";
 import NoCycle from "@/components/modules/cycles/no-cycle";
-import DepositList from "@/components/modules/deposits/deposit-list";
-import ExpenseList from "@/components/modules/expenses/expense-list";
+import Ledger from "@/components/modules/ledger/ledger";
 import ResidentEmpty from "@/components/modules/today/resident-empty";
-import { getLocale, getT } from "@/i18n/get-dictionary";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getT } from "@/i18n/get-dictionary";
 import { alternates } from "@/i18n/metadata";
 import { getActiveCycle } from "@/lib/activeCycle";
 import { getActiveMess } from "@/lib/activeMess";
 import serverApi from "@/lib/serverApi";
 import {
-  ACTIVE_MEMBERS_PARAMS,
-  ALL_DEPOSITS_PARAMS,
+  ALL_MEMBERS_PARAMS,
   depositsParams,
   expensesParams,
-  formatMonth,
   fromSearchParams,
+  ledgerMealsParams,
+  ledgerTab,
 } from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,12 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function page({
   searchParams,
 }: PageProps<"/[lang]/dashboard/mess">) {
-  const [t, locale, client, sp] = await Promise.all([
-    getT(),
-    getLocale(),
-    serverApi(),
-    searchParams,
-  ]);
+  const [client, sp] = await Promise.all([serverApi(), searchParams]);
 
   const { activeMessId } = await getActiveMess();
   if (!activeMessId) {
@@ -69,73 +68,63 @@ export default async function page({
   }
 
   const get = fromSearchParams(sp);
-  const expenseParams = expensesParams(get);
-  const depositParams = depositsParams(get);
-
+  const tab = ledgerTab(get);
   const queryClient = new QueryClient();
+  const prefetch = {
+    meals: () =>
+      queryClient.prefetchQuery({
+        queryKey: ["meals", cycle.id, ledgerMealsParams(get)],
+        queryFn: () => getCycleMeals(cycle.id, ledgerMealsParams(get), client),
+      }),
+    expenses: () =>
+      queryClient.prefetchQuery({
+        queryKey: ["expenses", cycle.id, expensesParams(get)],
+        queryFn: () => getCycleExpenses(cycle.id, expensesParams(get), client),
+      }),
+    deposits: () =>
+      queryClient.prefetchQuery({
+        queryKey: ["deposits", cycle.id, depositsParams(get)],
+        queryFn: () => getCycleDeposits(cycle.id, depositsParams(get), client),
+      }),
+    duty: () =>
+      Promise.all([
+        queryClient.prefetchQuery({
+          queryKey: ["duties", cycle.id],
+          queryFn: () => getCycleDuties(cycle.id, client),
+        }),
+        queryClient.prefetchQuery({
+          queryKey: ["duty-calendar", cycle.id],
+          queryFn: () => getDutyCalendar(cycle.id, client),
+        }),
+      ]),
+    members: () =>
+      queryClient.prefetchQuery({
+        queryKey: ["members", activeMessId, ALL_MEMBERS_PARAMS],
+        queryFn: () => getMessMembers(activeMessId, ALL_MEMBERS_PARAMS, client),
+      }),
+    // The mess itself carries its months.
+    cycles: () => Promise.resolve(),
+    summary: () =>
+      queryClient.prefetchQuery({
+        queryKey: ["meal-summary", cycle.id],
+        queryFn: () => getMealSummary(cycle.id, client),
+      }),
+  };
+
   await Promise.all([
     queryClient.prefetchQuery({
-      queryKey: ["expense-summary", cycle.id],
-      queryFn: () => getExpenseSummary(cycle.id, client),
+      queryKey: ["mess", activeMessId],
+      queryFn: () => getMess(activeMessId, client),
     }),
-    queryClient.prefetchQuery({
-      queryKey: ["expenses", cycle.id, expenseParams],
-      queryFn: () => getCycleExpenses(cycle.id, expenseParams, client),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["members", activeMessId, ACTIVE_MEMBERS_PARAMS],
-      queryFn: () =>
-        getMessMembers(activeMessId, ACTIVE_MEMBERS_PARAMS, client),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["deposits", cycle.id, ALL_DEPOSITS_PARAMS],
-      queryFn: () => getCycleDeposits(cycle.id, ALL_DEPOSITS_PARAMS, client),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["deposits", cycle.id, depositParams],
-      queryFn: () => getCycleDeposits(cycle.id, depositParams, client),
-    }),
+    prefetch[tab](),
   ]);
 
   return (
-    <section className="space-y-6 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">
-            {t("resident.ledger.title")}
-          </h1>
-          <p className="text-muted-foreground">
-            {t("resident.ledger.description")} ·{" "}
-            {formatMonth(cycle.year, cycle.month, locale)}
-          </p>
-        </div>
-        <CyclePicker messId={activeMessId} cycleId={cycle.id} />
-      </div>
+    <section className="page-frame">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <div className="space-y-10">
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold">
-              {t("resident.ledger.expensesTitle")}
-            </h2>
-            <ExpenseList
-              cycleId={cycle.id}
-              messId={activeMessId}
-              locked={false}
-              readOnly
-            />
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold">
-              {t("resident.ledger.depositsTitle")}
-            </h2>
-            <DepositList
-              cycleId={cycle.id}
-              messId={activeMessId}
-              locked={false}
-              readOnly
-            />
-          </div>
-        </div>
+        <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
+          <Ledger messId={activeMessId} cycle={cycle} />
+        </Suspense>
       </HydrationBoundary>
     </section>
   );

@@ -1,23 +1,16 @@
 "use client";
 
 import {
-  BanknoteIcon,
-  CalendarCheck2Icon,
+  CalendarDaysIcon,
+  CreditCardIcon,
   LockIcon,
   ShoppingCartIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import StatusBadge from "@/components/ui/status-badge";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import StatCard from "@/components/ui/stat-card";
-import {
+  useGetMe,
   useSuspenseMyBills,
   useSuspenseMyCalendar,
   useSuspenseMyDutyDays,
@@ -27,181 +20,189 @@ import {
   formatBDT,
   formatDate,
   formatDeadline,
+  formatLongDate,
   formatMonth,
   formatNumber,
   LATEST_BILL_PARAMS,
   todayInDhaka,
   toNumber,
 } from "@/utils";
+import TodayActivity from "./today-activity";
+import TodayStats from "./today-stats";
+import TomorrowMeals from "./tomorrow-meals";
 
-export default function Today({ cycleId }: { cycleId: string }) {
+/** Morning before noon, afternoon until five, evening after, in Dhaka. */
+function greetingKey() {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Dhaka",
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).format(new Date()),
+  );
+  if (hour < 12) return "resident.today.greetMorning" as const;
+  if (hour < 17) return "resident.today.greetAfternoon" as const;
+  return "resident.today.greetEvening" as const;
+}
+
+/** A member's day: tomorrow to plan, today as it stands, money and duty. */
+export default function Today({
+  cycleId,
+  messId,
+}: {
+  cycleId: string;
+  messId: string;
+}) {
   const t = useT();
   const locale = useLocale();
   const href = useLocalePath();
+  const { data: me } = useGetMe();
   const { data: calendar } = useSuspenseMyCalendar(cycleId);
   const { data: duty } = useSuspenseMyDutyDays(cycleId);
   const { data: bills } = useSuspenseMyBills(LATEST_BILL_PARAMS);
 
-  const today = calendar.data.days.find((day) => day.date === todayInDhaka());
+  const todayDate = todayInDhaka();
+  const today = calendar.data.days.find((day) => day.date === todayDate);
   const bill = bills.data[0];
   const due = toNumber(bill?.dueAmount);
+  const n = (value: number) => formatNumber(value, locale);
+
+  const turn =
+    duty.data.turns.find((entry) => entry.endDate.slice(0, 10) >= todayDate) ??
+    null;
+  const onDuty = !!turn && turn.startDate.slice(0, 10) <= todayDate;
+  const firstName = me?.data.name.split(" ")[0] ?? "";
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <StatCard
-          label={t("resident.today.plannedThisMonth")}
-          value={formatNumber(calendar.data.plannedMeals, locale)}
-        />
-        <StatCard
-          label={t("resident.today.dutyTitle")}
-          value={t("resident.today.dutyDays", {
-            count: formatNumber(duty.data.totalDays, locale),
-          })}
-        />
-        <StatCard
-          label={t("resident.today.billTitle")}
-          value={
-            bill
-              ? due > 0
-                ? formatBDT(due, locale)
-                : t("resident.today.billSettled")
-              : "—"
-          }
-          hint={
-            bill
-              ? formatMonth(bill.cycle.year, bill.cycle.month, locale)
-              : t("resident.today.billNone")
-          }
-          valueClassName={due > 0 ? "text-(--tone-a-fg)" : undefined}
-        />
+    <>
+      <div className="flex flex-col gap-1">
+        <p className="micro text-muted-foreground" suppressHydrationWarning>
+          {t(greetingKey(), { name: firstName })} ·{" "}
+          {formatLongDate(new Date(), locale)}
+        </p>
+        <h1 className="page-title">{t("resident.today.title")}</h1>
+        <p className="text-muted-foreground">
+          {t("resident.today.description")}
+        </p>
       </div>
 
-      {today && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("resident.today.meals")}</CardTitle>
-            <CardDescription>
-              {formatDate(today.date, locale)}
-              {" · "}
-              {today.isLocked
-                ? t("resident.today.lockedNote")
-                : t("resident.today.changeUntil", {
-                    time: formatDeadline(today.deadline, locale),
-                  })}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {(["lunch", "dinner"] as const).map((meal) => (
-                <div
-                  key={meal}
-                  className="flex items-center justify-between rounded-lg border p-4"
-                >
-                  <span className="text-sm text-muted-foreground">
-                    {t(`resident.today.${meal}`)}
-                  </span>
-                  <span className="text-2xl font-semibold tabular-nums">
-                    {today[meal] === 0 ? (
-                      <span className="text-base font-normal text-muted-foreground">
-                        {t("resident.today.notCounted")}
-                      </span>
-                    ) : (
-                      formatNumber(today[meal], locale)
-                    )}
-                  </span>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <TomorrowMeals cycleId={cycleId} />
+
+        <div className="flex flex-col gap-4">
+          {today && (
+            <div className="flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-1">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <h2 className="font-semibold">{t("resident.today.meals")}</h2>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(today.date, locale)} ·{" "}
+                    {today.isLocked
+                      ? t("resident.today.lockedNote")
+                      : t("resident.today.changeUntil", {
+                          time: formatDeadline(today.deadline, locale),
+                        })}
+                  </p>
                 </div>
-              ))}
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge variant="outline">
-                {today.isPlanned
-                  ? t("resident.today.planned")
-                  : t("resident.today.fromDefault")}
-              </Badge>
-              {today.isLocked && (
-                <Badge variant="outline" className="gap-1">
-                  <LockIcon className="size-3" aria-hidden />
-                  {t("resident.today.locked")}
-                </Badge>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                render={<Link href={href("/dashboard/meal-plan")} />}
-                nativeButton={false}
-              >
-                {t("resident.today.planLink")}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("resident.today.dutyTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {duty.data.turns.length ? (
-              <ul className="space-y-2 text-sm">
-                {duty.data.turns.map((turn) => (
-                  <li key={turn.startDate} className="rounded-lg border p-3">
-                    <p className="font-medium">
-                      {t("resident.today.dutyTurn", {
-                        start: formatDate(turn.startDate, locale),
-                        end: formatDate(turn.endDate, locale),
-                        days: formatNumber(turn.days, locale),
-                      })}
+                {today.isLocked && (
+                  <span className="tone-n flex h-6 shrink-0 items-center gap-1 rounded-full border px-2 text-xs font-medium">
+                    <LockIcon className="size-3" />
+                    {t("resident.today.locked")}
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {(["lunch", "dinner"] as const).map((meal) => (
+                  <div key={meal} className="rounded-xl bg-muted px-3 py-2.5">
+                    <p className="text-xs text-muted-foreground">
+                      {t(`resident.today.${meal}`)}
                     </p>
-                    {turn.note && (
-                      <p className="text-xs text-muted-foreground">
-                        {turn.note}
-                      </p>
-                    )}
-                  </li>
+                    <p className="text-lg font-semibold tabular-nums">
+                      {today[meal] === 0
+                        ? t("resident.today.notCounted")
+                        : n(today[meal])}
+                    </p>
+                  </div>
                 ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {t("resident.today.dutyNone")}
-              </p>
-            )}
-          </CardContent>
-        </Card>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <StatusBadge
+                  status="PLANNED"
+                  tone={today.isPlanned ? "tone-g" : "tone-n"}
+                  label={
+                    today.isPlanned
+                      ? t("resident.today.planned")
+                      : t("resident.today.fromDefault")
+                  }
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  render={<Link href={href("/dashboard/meal-plan")} />}
+                  nativeButton={false}
+                >
+                  <CalendarDaysIcon />
+                  {t("resident.today.planLink")}
+                </Button>
+              </div>
+            </div>
+          )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("resident.today.billTitle")}</CardTitle>
-            <CardDescription>
-              {bill
-                ? formatMonth(bill.cycle.year, bill.cycle.month, locale)
-                : t("resident.today.billNone")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {bill && (
-              <p className="text-2xl font-semibold tabular-nums">
-                {due > 0
-                  ? t("resident.today.billDue", {
-                      amount: formatBDT(due, locale),
-                    })
-                  : t("resident.today.billSettled")}
+          {bill && due > 0 && (
+            <div className="tone-a flex flex-col gap-2 rounded-xl border bg-card p-4 shadow-1">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-semibold text-foreground">
+                  {t("resident.today.unpaid")}
+                </h2>
+                <StatusBadge status={bill.status} />
+              </div>
+              <p className="text-[13px] text-muted-foreground">
+                {formatMonth(bill.cycle.year, bill.cycle.month, locale)} ·{" "}
+                {bill.cycle.mess.name}
               </p>
-            )}
-            {due > 0 && (
+              <p className="text-[26px] font-bold text-foreground tabular-nums">
+                {formatBDT(due, locale)}
+              </p>
               <Button
-                size="sm"
+                size="lg"
                 render={<Link href={href("/dashboard/bills")} />}
                 nativeButton={false}
               >
+                <CreditCardIcon />
                 {t("resident.today.payNow")}
               </Button>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 rounded-xl border bg-card p-4 shadow-1">
+            <span className="tone-a grid size-9 shrink-0 place-items-center rounded-lg">
+              <ShoppingCartIcon className="size-4" />
+            </span>
+            <div>
+              <h2 className="font-semibold">{t("resident.today.myDuty")}</h2>
+              <p className="text-[13px] text-muted-foreground">
+                {turn
+                  ? t(
+                      onDuty
+                        ? "resident.today.dutyNow"
+                        : "resident.today.dutyNext",
+                      {
+                        start: formatDate(turn.startDate, locale),
+                        end: formatDate(turn.endDate, locale),
+                        days: n(turn.days),
+                      },
+                    )
+                  : duty.data.turns.length > 0
+                    ? t("resident.today.dutyDone")
+                    : t("resident.today.dutyNone")}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <TodayStats cycleId={cycleId} memberId={calendar.data.memberId} />
+      <TodayActivity messId={messId} />
+    </>
   );
 }

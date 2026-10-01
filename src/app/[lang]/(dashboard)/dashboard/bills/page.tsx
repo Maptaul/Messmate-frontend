@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function page({
   searchParams,
 }: PageProps<"/[lang]/dashboard/bills">) {
-  const [t, client] = await Promise.all([getT(), serverApi()]);
+  const client = await serverApi();
   const params = billsParams(fromSearchParams(await searchParams));
 
   const queryClient = new QueryClient();
@@ -32,13 +32,7 @@ export default async function page({
   });
 
   return (
-    <section className="p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("resident.bills.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("resident.bills.description")}
-        </p>
-      </div>
+    <section className="page-frame">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <MyBillList />
       </HydrationBoundary>

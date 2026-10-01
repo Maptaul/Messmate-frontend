@@ -4,7 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { getMessAuditLogs } from "@/api";
+import { getActivityUnread, getMessAuditLogs } from "@/api";
 import ActivityList from "@/components/modules/activity/activity-list";
 import ResidentEmpty from "@/components/modules/today/resident-empty";
 import { getT } from "@/i18n/get-dictionary";
@@ -38,18 +38,27 @@ export default async function page({
   const params = messAuditParams(fromSearchParams(await searchParams));
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["mess-audit", activeMessId, params],
-    queryFn: () => getMessAuditLogs(activeMessId, params, client),
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["mess-audit", activeMessId, params],
+      queryFn: () => getMessAuditLogs(activeMessId, params, client),
+    }),
+    // What was new when the page opened, before it marks everything seen.
+    queryClient.prefetchQuery({
+      queryKey: ["activity-unread", activeMessId],
+      queryFn: () => getActivityUnread(activeMessId, client),
+    }),
+  ]);
 
   return (
-    <section className="p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("activity.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("activity.descriptionMember")}
-        </p>
+    <section className="page-frame">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">{t("activity.title")}</h1>
+          <p className="text-muted-foreground">
+            {t("activity.descriptionMember")}
+          </p>
+        </div>
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ActivityList messId={activeMessId} />

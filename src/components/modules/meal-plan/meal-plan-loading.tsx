@@ -2,13 +2,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MealPlanLoading() {
   return (
-    <div className="space-y-6">
-      <Skeleton className="h-36 rounded-xl" />
-      <div className="space-y-2 rounded-lg border p-4">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-          <Skeleton key={item} className="h-10 w-full" />
-        ))}
+    <>
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-7 w-56" />
+        <Skeleton className="h-4 w-96 max-w-full" />
       </div>
-    </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Skeleton className="h-20 rounded-xl" />
+        <Skeleton className="h-20 rounded-xl" />
+      </div>
+      <Skeleton className="h-[34rem] rounded-xl" />
+    </>
   );
 }

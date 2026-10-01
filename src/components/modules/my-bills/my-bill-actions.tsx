@@ -1,19 +1,26 @@
 "use client";
 
-import { CreditCardIcon, SmartphoneIcon } from "lucide-react";
+import { CreditCardIcon, InfoIcon, SmartphoneIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useBkashPayment, useStripeCheckout } from "@/hooks";
-import { useT } from "@/i18n/i18n-provider";
-import { getErrorMessage } from "@/utils";
+import { useLocale, useT } from "@/i18n/i18n-provider";
+import { formatBDT, getErrorMessage } from "@/utils";
 
 /**
  * Card (Stripe) and bKash both hand back a hosted page; we send the browser
  * there. The amount is the bill's full due, decided by the API — not by us.
  */
-export default function MyBillActions({ billId }: { billId: string }) {
+export default function MyBillActions({
+  billId,
+  due,
+}: {
+  billId: string;
+  due: number;
+}) {
   const t = useT();
+  const locale = useLocale();
 
   const {
     mutate: stripeCheckout,
@@ -53,19 +60,29 @@ export default function MyBillActions({ billId }: { billId: string }) {
   };
 
   return (
-    <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:justify-end">
-      <Button size="sm" disabled={busy} onClick={handleStripe}>
+    <div className="flex flex-col gap-2">
+      <Button size="lg" disabled={busy} onClick={handleStripe}>
         {stripePending ? <Spinner /> : <CreditCardIcon />}
         {stripePending
           ? t("resident.bills.payingCard")
-          : t("resident.bills.payCard")}
+          : t("resident.bills.payCardAmount", {
+              amount: formatBDT(due, locale),
+            })}
       </Button>
-      <Button size="sm" variant="outline" disabled={busy} onClick={handleBkash}>
-        {bkashPending ? <Spinner /> : <SmartphoneIcon />}
+      <Button size="lg" variant="outline" disabled={busy} onClick={handleBkash}>
+        {bkashPending ? (
+          <Spinner />
+        ) : (
+          <SmartphoneIcon className="text-[#e2136e]" />
+        )}
         {bkashPending
           ? t("resident.bills.payingBkash")
           : t("resident.bills.payBkash")}
       </Button>
+      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <InfoIcon className="size-3.5 shrink-0" />
+        {t("resident.bills.testCard")}
+      </p>
     </div>
   );
 }
