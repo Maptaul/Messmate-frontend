@@ -1,6 +1,8 @@
 import { CalendarClockIcon, HomeIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import JoinMessCard from "@/components/modules/membership/join-mess-card";
+import MyMembershipRequests from "@/components/modules/membership/my-membership-requests";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
 import { getLocale, getT } from "@/i18n/get-dictionary";
@@ -16,11 +18,13 @@ export default async function ResidentEmpty({
   const t = await getT();
   const key = kind === "no-mess" ? "resident.noMess" : "resident.noCycle";
 
-  // Not in a mess yet: point a member at running one, or at the request they sent.
+  // Not in a mess yet: a member can join one, or ask to run one.
   let action: ReactNode;
+  let isMember = false;
   if (kind === "no-mess") {
     const [me, locale] = await Promise.all([getMeOnServer(), getLocale()]);
     const latest = me?.data.managerApplications?.[0];
+    isMember = me?.data.role === "MEMBER";
 
     if (latest?.status === "PENDING") {
       action = (
@@ -28,7 +32,7 @@ export default async function ResidentEmpty({
           {t("resident.noMess.pending", { mess: latest.messName })}
         </p>
       );
-    } else if (me?.data.role === "MEMBER") {
+    } else if (isMember) {
       action = (
         <Button
           variant="outline"
@@ -43,13 +47,21 @@ export default async function ResidentEmpty({
   }
 
   return (
-    <div className="rounded-xl border">
-      <EmptyState
-        icon={kind === "no-mess" ? HomeIcon : CalendarClockIcon}
-        title={t(`${key}.title`)}
-        description={t(`${key}.body`)}
-        action={action}
-      />
+    <div className="flex flex-col gap-4">
+      <div className="rounded-xl border">
+        <EmptyState
+          icon={kind === "no-mess" ? HomeIcon : CalendarClockIcon}
+          title={t(`${key}.title`)}
+          description={t(`${key}.body`)}
+          action={action}
+        />
+      </div>
+      {isMember && (
+        <div className="grid items-start gap-4 lg:grid-cols-2">
+          <JoinMessCard />
+          <MyMembershipRequests />
+        </div>
+      )}
     </div>
   );
 }

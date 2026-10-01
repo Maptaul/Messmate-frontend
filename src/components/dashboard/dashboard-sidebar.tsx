@@ -24,6 +24,7 @@ import {
   useDashboardStats,
   useManagerRequests,
   useMessCycles,
+  useMessMembershipRequests,
   useMyBills,
 } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
@@ -41,6 +42,12 @@ import MessSwitcher from "./mess-switcher";
 import UserMenu from "./user-menu";
 
 const OWED = { limit: 100 };
+/** Requests to join waiting for this manager; their own invitations don't count. */
+const ASKING_TO_JOIN = {
+  status: "PENDING",
+  kind: "REQUEST",
+  limit: 1,
+} as const;
 
 /** Numbers beside a nav item: bills still owed, activity not yet seen, users, requests waiting. */
 function useNavCounts(role: UserRole, messId: string | null) {
@@ -56,6 +63,10 @@ function useNavCounts(role: UserRole, messId: string | null) {
   const cycleBills = useCycleBills(lastClosed.data?.data[0]?.id ?? "", OWED);
   const stats = useDashboardStats(isAdmin);
   const pendingRequests = useManagerRequests(PENDING_REQUESTS_PARAMS, isAdmin);
+  const askingToJoin = useMessMembershipRequests(
+    isManager && messId ? messId : "",
+    ASKING_TO_JOIN,
+  );
 
   const owed = (bills?: { dueAmount: Money }[]) =>
     bills?.filter((bill) => toNumber(bill.dueAmount) > 0).length ?? 0;
@@ -68,6 +79,7 @@ function useNavCounts(role: UserRole, messId: string | null) {
   }
   counts["/dashboard/bills"] = owed(myBills.data?.data);
   counts["/manager/bills"] = owed(cycleBills.data?.data);
+  counts["/manager/members"] = askingToJoin.data?.meta?.total ?? 0;
   const seen = unread.data?.data.unread ?? 0;
   counts[isManager ? "/manager/activity" : "/dashboard/activity"] = seen;
   return counts;

@@ -4,6 +4,7 @@ import { KeyRoundIcon, ShieldIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import ProfileForm from "@/components/form/profile-form";
+import MyMembershipRequests from "@/components/modules/membership/my-membership-requests";
 import { Button } from "@/components/ui/button";
 import Panel from "@/components/ui/panel";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,10 +45,11 @@ export default function Profile() {
       </div>
       <div className="flex flex-col gap-4">
         <AccountCard me={me} />
+        {me.role === "MEMBER" && <MyMembershipRequests />}
         {me.role === "MEMBER" && <ManagerRequestCard me={me} />}
         {me.role !== "ADMIN" && (
           <Suspense fallback={<Skeleton className="h-28 rounded-xl" />}>
-            <MyMessesCard />
+            <MyMessesCard isMember={me.role === "MEMBER"} />
           </Suspense>
         )}
         <Panel

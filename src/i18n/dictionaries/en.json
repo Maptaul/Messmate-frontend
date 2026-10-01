@@ -249,7 +249,7 @@
     "dateRequired": "Choose a date",
     "noFutureDate": "The date can't be in the future",
     "endBeforeStart": "End date can't be before the start date",
-    "noteMax": "Note is too long",
+    "noteMax": "Keep the note under 300 characters.",
     "descriptionMax": "Description is too long",
     "selectMember": "Choose a member",
     "selectType": "Choose a type",
@@ -259,7 +259,8 @@
     "messageMin": "Write at least 20 characters",
     "messageMax": "Message is too long",
     "reasonRequired": "Give a reason so the applicant knows why.",
-    "reasonMax": "Keep the reason under 500 characters."
+    "reasonMax": "Keep the reason under 500 characters.",
+    "joinCodeInvalid": "Enter the 6-character code, like 3FA9C2."
   },
   "errors": {
     "network": "Can't reach the MessMate server. Check your connection and try again.",
@@ -279,7 +280,18 @@
       "requestPending": "You already have a request waiting for review.",
       "requestReviewed": "This request has already been reviewed.",
       "requestNotFound": "This request no longer exists.",
-      "alreadyManageMess": "You already run a mess. A manager runs one mess."
+      "alreadyManageMess": "You already run a mess. A manager runs one mess.",
+      "joinCodeNotFound": "No mess has this join code. Check it with your manager.",
+      "alreadyAsked": "You already asked to join this mess.",
+      "acceptInvitation": "You have an invitation to this mess. Accept it instead.",
+      "alreadyMember": "You're already a member of this mess.",
+      "theyAsked": "They already asked to join. Approve their request instead.",
+      "alreadyInvited": "This person already has an invitation.",
+      "alreadyActiveMember": "This person is already a member of this mess.",
+      "noUserWithEmail": "No account uses this email. Ask them to register first.",
+      "managerCannotJoin": "A mess manager runs their own mess and can't join another.",
+      "alreadyAnswered": "This invitation or request was already answered.",
+      "managerCannotLeave": "A manager can't leave their own mess."
     }
   },
   "admin": {
@@ -537,8 +549,7 @@
     "deleted": "Deleted",
     "messCreated": "{name} is ready",
     "messUpdated": "Mess details saved",
-    "memberAdded": "{name} added to the mess",
-    "memberRemoved": "{name} left the mess",
+    "memberRemoved": "{name} was removed from the mess",
     "cycleOpened": "{month} is open",
     "cycleClosed": "{month} closed — {count} bills emailed",
     "cycleReopened": "{month} reopened; its bills were withdrawn",
@@ -564,7 +575,18 @@
     "mealUpdated": "Meals updated for {name}",
     "mealDeleted": "Entry removed",
     "exported": "{count} entries exported",
-    "requestSent": "Request sent to the admin"
+    "requestSent": "Request sent to the admin",
+    "invitationSent": "Invitation sent to {email}",
+    "joinCodeCopied": "Join code copied",
+    "joinCodeChanged": "New join code: {code}",
+    "requestApprovedMember": "{name} joined the mess",
+    "requestDeclined": "Request from {name} declined",
+    "invitationWithdrawn": "Invitation to {email} withdrawn",
+    "joinRequestSent": "Request sent to {mess}",
+    "joinedMess": "You joined {mess}",
+    "invitationDeclined": "Invitation declined",
+    "requestWithdrawn": "Request withdrawn",
+    "leftMess": "You left {mess}"
   },
   "messSwitcher": {
     "label": "Switch mess",
@@ -591,7 +613,9 @@
       "MEAL_UPDATED": "Meals updated",
       "MEAL_DELETED": "Meals deleted",
       "MANAGER_APPROVED": "Manager approved",
-      "MANAGER_REJECTED": "Manager request rejected"
+      "MANAGER_REJECTED": "Manager request rejected",
+      "MEMBER_JOINED": "Member joined",
+      "MEMBER_LEFT": "Member left"
     },
     "entities": {
       "BillingCycle": "Billing month",
@@ -623,7 +647,7 @@
   "manager": {
     "noMess": {
       "title": "You don't run a mess yet",
-      "body": "Create your first mess to add members and start tracking the month.",
+      "body": "Create your mess, then invite members or share its join code.",
       "cta": "Create a mess"
     },
     "noCycle": {
@@ -719,22 +743,22 @@
       "rentHint": "Split by the days each member lived here that month. Up to ৳10,00,000.",
       "deposit": "Monthly advance per member",
       "depositHint": "Charged on every bill to fund next month’s bazar.",
-      "membersTitle": "Add members",
-      "membersHint": "Add people by the email they registered with. They must already have a MessMate account. You can also do this later.",
+      "membersTitle": "Invite members",
+      "membersHint": "Invite people by the email they registered with. They join once they accept. You can also do this later.",
       "memberEmail": "Member email",
       "addMember": "Add",
       "removeMember": "Remove {email}",
       "duplicate": "That email is already in the list",
-      "noneYet": "No members added yet.",
+      "noneYet": "No one to invite yet.",
       "reviewTitle": "Review and create",
-      "reviewMembers": "{count} members to add",
+      "reviewMembers": "{count} people to invite",
       "reviewNoMembers": "No members yet — you can add them after creating the mess.",
       "back": "Back",
       "next": "Next",
       "create": "Create mess",
       "creating": "Creating…",
       "startOver": "Start over",
-      "someMembersFailed": "{name} is ready, but these could not be added: {emails}",
+      "someMembersFailed": "{name} is ready, but these could not be invited: {emails}",
       "draftSaved": "Draft saved",
       "detailsTitle": "Mess details",
       "moneyTitle": "Rent and advance",
@@ -742,9 +766,9 @@
       "optional": "optional",
       "members": "Members",
       "createdTitle": "{name} is created",
-      "addedCount": "{added} of {total} members added.",
-      "noMembersAdded": "No members yet — add them any time from Members.",
-      "added": "Added",
+      "addedCount": "{added} of {total} invitations sent.",
+      "noMembersAdded": "No invitations yet. Invite people any time from Members.",
+      "added": "Invited",
       "goMess": "Go to your mess"
     },
     "members": {
@@ -759,11 +783,11 @@
       "status": "Status",
       "joined": "Joined",
       "actions": "Actions",
-      "add": "Add member",
-      "addTitle": "Add a member",
-      "addBody": "Add someone by the email they used to sign up for MessMate.",
+      "add": "Invite member",
+      "addTitle": "Invite a member",
+      "addBody": "Send an invitation to the email they registered with. They join once they accept.",
       "email": "Email",
-      "submit": "Add member",
+      "submit": "Send invitation",
       "cancel": "Cancel",
       "remove": "Remove",
       "removeTitle": "Remove {name}?",
@@ -787,7 +811,7 @@
       "noCycle": "Open a billing month first to plan meals.",
       "save": "Save",
       "cantRemoveSelf": "You can’t remove yourself",
-      "mustHave": "They must already have a MessMate account. Anyone without one can register and you can add them later.",
+      "mustHave": "They need a MessMate account. Anyone without one can register first.",
       "lunch": "Lunch",
       "dinner": "Dinner",
       "lessLunch": "Less lunch",
@@ -795,7 +819,19 @@
       "lessDinner": "Less dinner",
       "moreDinner": "More dinner",
       "defaultsSaved": "Default meals updated",
-      "planSaved": "Meal plan saved for {date}"
+      "planSaved": "Meal plan saved for {date}",
+      "joinCodeTitle": "Join code",
+      "joinCodeBody": "Share this code with the people who live here. They ask to join with it, and you approve each request.",
+      "copyCode": "Copy",
+      "newCode": "New code",
+      "newCodeHint": "The old code stops working. Requests already sent stay.",
+      "waitingTitle": "Waiting for an answer",
+      "waitingEmpty": "No requests or invitations are waiting.",
+      "askedOn": "Asked to join {date}",
+      "invitedOn": "Invited {date}",
+      "approve": "Approve",
+      "reject": "Reject",
+      "withdraw": "Withdraw"
     },
     "cycles": {
       "metaTitle": "Billing cycles",
@@ -928,7 +964,7 @@
       "increase": "One more {meal} for {name}",
       "decrease": "One less {meal} for {name}",
       "empty": "No members to record",
-      "emptyHint": "Add members first.",
+      "emptyHint": "Invite members first.",
       "editEntry": "Edit {name}’s meals",
       "deleteEntry": "Delete {name}’s entry",
       "entryTitle": "Edit meals",
@@ -1210,7 +1246,7 @@
   "resident": {
     "noMess": {
       "title": "You're not in a mess yet",
-      "body": "Ask your mess manager to add you with the email you registered with — it will show up here right away.",
+      "body": "Ask your manager for the mess's join code, or for an invitation. You're in once they approve, or once you accept.",
       "pending": "Your request to run {mess} is with the admin.",
       "runAMess": "Run a mess yourself? Ask from your profile"
     },
@@ -1769,7 +1805,7 @@
       "lead": "Three roles, one ledger.",
       "manager": {
         "title": "Mess Manager",
-        "i1": "Create a mess in four steps and add members by email",
+        "i1": "Create a mess in four steps, then invite members or share a join code",
         "i2": "See the headcount for any day",
         "i3": "Record meals, or fill a day from everyone’s plans",
         "i4": "Log expenses with receipts, deposits and bazar duty",
@@ -1820,7 +1856,7 @@
       },
       "q6": {
         "q": "What happens if I leave the mess?",
-        "a": "Your manager removes you once your bills are paid. Your past bills and payments stay in your account."
+        "a": "You can leave the mess yourself once your bills are paid. Your past bills and payments stay in your account."
       },
       "q7": {
         "q": "Can I use it in Bangla?",
@@ -1945,5 +1981,26 @@
     "toggleSidebar": "Toggle sidebar",
     "account": "Account",
     "payment": "Payment"
+  },
+  "membership": {
+    "joinTitle": "Join a mess",
+    "joinBody": "Ask your manager for the mess's join code. They approve your request before you're in.",
+    "joinCode": "Join code",
+    "joinCodeHint": "6 letters and digits, like 3FA9C2",
+    "note": "Note to the manager (optional)",
+    "noteHint": "Say who you are or which room you're in.",
+    "send": "Ask to join",
+    "sending": "Sending…",
+    "codeNotFound": "No mess has this code. Check it with your manager.",
+    "previewMeta": "Manager: {manager} · Members: {count}",
+    "pendingTitle": "Waiting for an answer",
+    "invitedBy": "{manager} invited you · {date}",
+    "youAsked": "You asked to join · {date}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "withdraw": "Withdraw",
+    "leave": "Leave",
+    "leaveHint": "You can leave once every bill is paid.",
+    "joinAnother": "Join another mess"
   }
 }

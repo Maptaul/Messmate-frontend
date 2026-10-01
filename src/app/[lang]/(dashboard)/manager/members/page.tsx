@@ -4,17 +4,19 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { getMessMembers } from "@/api";
-import AddMemberDialog from "@/components/modules/members/add-member-dialog";
+import { getMessMembers, getMyMesses } from "@/api";
+import InviteMemberDialog from "@/components/modules/members/invite-member-dialog";
+import JoinCodeCard from "@/components/modules/members/join-code-card";
 import MemberExport from "@/components/modules/members/member-export";
 import MemberList from "@/components/modules/members/member-list";
+import MembershipRequests from "@/components/modules/members/membership-requests";
 import NoMess from "@/components/modules/my-messes/no-mess";
 import { getT } from "@/i18n/get-dictionary";
 import { alternates } from "@/i18n/metadata";
 import { getActiveCycle } from "@/lib/activeCycle";
 import { getActiveMess } from "@/lib/activeMess";
 import serverApi from "@/lib/serverApi";
-import { fromSearchParams, membersParams } from "@/utils";
+import { fromSearchParams, MY_MESSES_PARAMS, membersParams } from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -43,10 +45,17 @@ export default async function page({
   const cycle = await getActiveCycle(activeMessId);
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["members", activeMessId, params],
-    queryFn: () => getMessMembers(activeMessId, params, client),
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["members", activeMessId, params],
+      queryFn: () => getMessMembers(activeMessId, params, client),
+    }),
+    // The join code card reads the mess from the same list the messes page uses.
+    queryClient.prefetchQuery({
+      queryKey: ["my-messes", MY_MESSES_PARAMS],
+      queryFn: () => getMyMesses(MY_MESSES_PARAMS, client),
+    }),
+  ]);
 
   return (
     <section className="page-frame">
@@ -59,10 +68,14 @@ export default async function page({
         </div>
         <div className="flex flex-wrap gap-2">
           <MemberExport messId={activeMessId} />
-          <AddMemberDialog messId={activeMessId} />
+          <InviteMemberDialog messId={activeMessId} />
         </div>
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
+        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+          <JoinCodeCard messId={activeMessId} />
+          <MembershipRequests messId={activeMessId} />
+        </div>
         <MemberList messId={activeMessId} cycle={cycle} />
       </HydrationBoundary>
     </section>

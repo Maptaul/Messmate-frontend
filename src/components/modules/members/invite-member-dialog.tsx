@@ -1,8 +1,8 @@
 "use client";
 
-import { UserPlusIcon } from "lucide-react";
+import { MailPlusIcon } from "lucide-react";
 import { useState } from "react";
-import AddMemberForm from "@/components/form/add-member-form";
+import InviteMemberForm from "@/components/form/invite-member-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,14 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import { useT } from "@/i18n/i18n-provider";
 
-export default function AddMemberDialog({ messId }: { messId: string }) {
+export default function InviteMemberDialog({ messId }: { messId: string }) {
   const t = useT();
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button />}>
-        <UserPlusIcon />
+        <MailPlusIcon />
         {t("manager.members.add")}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -29,7 +29,7 @@ export default function AddMemberDialog({ messId }: { messId: string }) {
           <DialogTitle>{t("manager.members.addTitle")}</DialogTitle>
           <DialogDescription>{t("manager.members.addBody")}</DialogDescription>
         </DialogHeader>
-        <AddMemberForm messId={messId} handleClose={() => setOpen(false)} />
+        <InviteMemberForm messId={messId} handleClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );

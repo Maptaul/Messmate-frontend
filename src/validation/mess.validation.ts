@@ -83,10 +83,6 @@ export const messSchema = messDetailsSchema.extend(messMoneySchema.shape);
 
 // --- Members ----------------------------------------------------------------
 
-export const addMemberSchema = z.object({
-  email: z.string().trim().pipe(z.email("validation.emailInvalid")),
-});
-
 export const defaultMealsSchema = z.object({
   lunch: mealCountRule,
   dinner: mealCountRule,

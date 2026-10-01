@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { addMember } from "@/api";
+import { inviteMember } from "@/api";
 import { useCreateMess } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { useMessWizard } from "@/stores/mess-wizard.store";
@@ -44,7 +44,7 @@ export default function MessReview({
           const results: CreatedMess["results"] = [];
           for (const email of memberEmails) {
             try {
-              await addMember({ messId: mess.id, email });
+              await inviteMember({ messId: mess.id, email });
               results.push({ email });
             } catch (err) {
               results.push({ email, error: getErrorMessage(err) });

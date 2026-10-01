@@ -7,6 +7,7 @@ export * from "./ledger.api";
 export * from "./manager-request.api";
 export * from "./meal.api";
 export * from "./member.api";
+export * from "./membership.api";
 export * from "./mess.api";
 export * from "./payment.api";
 export * from "./user.api";

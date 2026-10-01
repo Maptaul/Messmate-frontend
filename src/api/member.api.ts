@@ -1,6 +1,5 @@
 import apiClient from "@/lib/apiClient";
 import type {
-  AddMemberPayload,
   ApiResponse,
   MemberListParams,
   MessMember,
@@ -23,10 +22,10 @@ export function getMyMemberships(params: MemberListParams, client = apiClient) {
   });
 }
 
-export function addMember(payload: AddMemberPayload) {
-  return apiClient<ApiResponse<MessMember>>("/member/add-member", {
-    method: "POST",
-    body: payload,
+/** Leaving needs every bill paid; the API says so if one isn't. */
+export function leaveMess(messId: string) {
+  return apiClient<ApiResponse<MessMember>>(`/member/leave/${messId}`, {
+    method: "PATCH",
   });
 }
 

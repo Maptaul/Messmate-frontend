@@ -4,13 +4,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { FieldGroup } from "@/components/ui/field";
-import { useAddMember } from "@/hooks";
+import { useInviteMember } from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import { getErrorMessage } from "@/utils";
-import { addMemberSchema } from "@/validation";
+import { inviteMemberSchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-export default function AddMemberForm({
+/** Invites someone by the email they registered with; they accept or decline. */
+export default function InviteMemberForm({
   messId,
   handleClose,
 }: {
@@ -19,17 +20,18 @@ export default function AddMemberForm({
 }) {
   const t = useT();
 
-  const { mutate: addMember, isPending } = useAddMember();
+  const { mutate: invite, isPending } = useInviteMember();
 
   const form = useAppForm({
     defaultValues: { email: "" },
-    validators: { onChange: addMemberSchema },
+    validators: { onChange: inviteMemberSchema },
     onSubmit: ({ value }) => {
-      addMember(
+      invite(
         { messId, email: value.email.trim() },
         {
           onSuccess: (res) => {
-            toast.success(t("toast.memberAdded", { name: res.data.user.name }));
+            // Only the address they typed: the name stays private until they accept.
+            toast.success(t("toast.invitationSent", { email: res.data.email }));
             handleClose();
           },
           onError: (err) => {

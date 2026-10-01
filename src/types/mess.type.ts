@@ -6,6 +6,8 @@ export interface Mess {
   address: string;
   monthlyRent: Money;
   monthlyDeposit: Money;
+  /** What a member types to ask to join; the manager still approves. */
+  joinCode: string;
   createdAt: string;
   manager: { id: string; name: string; email: string };
   _count: { members: number; cycles: number };

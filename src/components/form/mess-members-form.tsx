@@ -5,7 +5,7 @@ import StepNav, { StepCard } from "@/components/modules/mess-wizard/step-nav";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/i18n/i18n-provider";
 import { useMessWizard } from "@/stores/mess-wizard.store";
-import { addMemberSchema } from "@/validation";
+import { inviteMemberSchema } from "@/validation";
 import { useAppForm } from ".";
 
 export default function MessMembersForm() {
@@ -15,7 +15,7 @@ export default function MessMembersForm() {
   const form = useAppForm({
     defaultValues: { email: "" },
     validators: {
-      onChange: addMemberSchema.refine(
+      onChange: inviteMemberSchema.refine(
         ({ email }) => !memberEmails.includes(email.trim().toLowerCase()),
         { message: "manager.wizard.duplicate", path: ["email"] },
       ),

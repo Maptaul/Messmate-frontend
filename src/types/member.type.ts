@@ -26,8 +26,3 @@ export interface MyMembership extends Omit<MessMember, "mess"> {
 export interface MemberListParams extends ListParams {
   status?: MembershipStatus;
 }
-
-export interface AddMemberPayload {
-  messId: string;
-  email: string;
-}

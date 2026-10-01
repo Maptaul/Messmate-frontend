@@ -33,6 +33,7 @@ import {
   messMoneySchema,
   openCycleSchema,
   registrationSchema,
+  requestToJoinSchema,
 } from "../src/validation";
 
 const firstMessage = (result: {
@@ -478,4 +479,22 @@ test("manager requests open on the pending queue, and All drops the filter", () 
   assert.equal(statusOf("REJECTED"), "REJECTED");
   assert.equal(statusOf("ALL"), undefined);
   assert.equal(statusOf("nonsense"), "PENDING");
+});
+
+test("a join code is read the way people paste it from a chat", () => {
+  const code = (joinCode: string) =>
+    requestToJoinSchema.safeParse({ joinCode, note: "" });
+
+  assert.equal(code(" 3fa-9c2 ").data?.joinCode, "3FA9C2");
+  assert.equal(firstMessage(code("3FA9C")), "validation.joinCodeInvalid");
+  assert.equal(firstMessage(code("3FA9CZ")), "validation.joinCodeInvalid");
+  assert.equal(
+    firstMessage(
+      requestToJoinSchema.safeParse({
+        joinCode: "3FA9C2",
+        note: "x".repeat(301),
+      }),
+    ),
+    "validation.noteMax",
+  );
 });

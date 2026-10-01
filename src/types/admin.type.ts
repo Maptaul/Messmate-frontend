@@ -48,6 +48,8 @@ export const AUDIT_ACTIONS = [
   "MEAL_DELETED",
   "MANAGER_APPROVED",
   "MANAGER_REJECTED",
+  "MEMBER_JOINED",
+  "MEMBER_LEFT",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

@@ -5,7 +5,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import {
-  addMember,
   createMess,
   getMess,
   getMessMembers,
@@ -77,18 +76,6 @@ export function useUpdateMess() {
       queryClient.invalidateQueries({ queryKey: ["mess"] });
       queryClient.invalidateQueries({ queryKey: ["my-messes"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
-    },
-  });
-}
-
-export function useAddMember() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: addMember,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["members"] });
-      queryClient.invalidateQueries({ queryKey: ["mess"] });
     },
   });
 }

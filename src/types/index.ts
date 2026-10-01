@@ -8,6 +8,7 @@ export * from "./ledger.type";
 export * from "./manager-request.type";
 export * from "./meal.type";
 export * from "./member.type";
+export * from "./membership.type";
 export * from "./mess.type";
 export * from "./payment.type";
 export * from "./user.type";
