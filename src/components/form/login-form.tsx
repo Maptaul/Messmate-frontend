@@ -4,7 +4,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   LockIcon,
   LogInIcon,
-  RocketIcon,
   ShieldCheckIcon,
   UserIcon,
   UsersIcon,
@@ -122,12 +121,12 @@ export default function LoginForm({
   };
 
   return (
-    <div className="flex flex-col gap-4.5">
+    <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-[28px] leading-tight font-semibold tracking-tight">
           {t("auth.login.title")}
         </h1>
-        <p className="mt-1.5 text-foreground-2">{t("auth.login.subtitle")}</p>
+        <p className="mt-1 text-foreground-2">{t("auth.login.subtitle")}</p>
       </div>
       {redirect && (
         <output className="tone-b flex items-center gap-2 rounded-lg border px-3 py-2.5 text-[13.5px]">
@@ -143,7 +142,7 @@ export default function LoginForm({
           form.handleSubmit();
         }}
       >
-        <FieldGroup>
+        <FieldGroup className="gap-4">
           <form.AppField name="email">
             {(field) => (
               <field.TextField
@@ -187,52 +186,42 @@ export default function LoginForm({
 
       <FieldSeparator>{t("auth.login.orDemo")}</FieldSeparator>
 
-      <section aria-labelledby="demo-login" className="flex flex-col gap-2.5">
-        <h2 id="demo-login" className="flex items-center gap-2 font-semibold">
-          <RocketIcon className="size-4 text-primary" />
-          {t("auth.login.demoTitle")}
-        </h2>
-        <div className="grid gap-2.5 sm:grid-cols-3">
-          {DEMO_ACCOUNTS.map((demo) => (
-            <div
-              key={demo.role}
+      <section
+        aria-label={t("auth.login.demoTitle")}
+        className="grid grid-cols-3 gap-2"
+      >
+        {DEMO_ACCOUNTS.map((demo) => (
+          <Button
+            key={demo.role}
+            variant="outline"
+            className={cn(
+              "h-auto min-h-10 justify-start gap-2 px-2.5 py-1.5 whitespace-normal",
+              demoRole === demo.role && "border-ring",
+            )}
+            disabled={loginPending}
+            onClick={() => demoLogin(demo)}
+            title={t(demo.blurbKey)}
+            aria-label={t("auth.login.demoAria", {
+              role: t(ROLE_LABEL_KEY[demo.role]),
+            })}
+          >
+            <span
               className={cn(
-                "flex flex-col gap-2.5 rounded-xl border bg-card p-3.5 shadow-1",
-                demoRole === demo.role && "border-ring",
+                "grid size-6 shrink-0 place-items-center rounded-md",
+                demo.tile,
               )}
             >
-              <span
-                className={cn(
-                  "grid size-8 shrink-0 place-items-center rounded-lg",
-                  demo.tile,
-                )}
-              >
-                <demo.icon className="size-4" aria-hidden />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[13.5px] font-semibold">
-                  {t(ROLE_LABEL_KEY[demo.role])}
-                </p>
-                <p className="text-xs leading-snug text-muted-foreground">
-                  {t(demo.blurbKey)}
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                disabled={loginPending}
-                onClick={() => demoLogin(demo)}
-                aria-label={t("auth.login.demoAria", {
-                  role: t(ROLE_LABEL_KEY[demo.role]),
-                })}
-              >
-                {demoRole === demo.role && <Spinner />}
-                {t("auth.login.demoButton")}
-              </Button>
-            </div>
-          ))}
-        </div>
+              {demoRole === demo.role ? (
+                <Spinner />
+              ) : (
+                <demo.icon className="size-3.5" aria-hidden />
+              )}
+            </span>
+            <span className="text-left text-[13px] leading-tight font-medium">
+              {t(ROLE_LABEL_KEY[demo.role])}
+            </span>
+          </Button>
+        ))}
       </section>
 
       <div className="text-center text-foreground-2">
