@@ -11,10 +11,13 @@ import { formatBDT, formatDate } from "@/utils";
 import FinanceEntryActions from "./finance-entry-actions";
 
 interface Props extends FinanceEntryParams {
+  /** A filter is on, so an empty page means "no match". */
+  filtered: boolean;
   handlePageChange: (page: number) => void;
 }
 
 export default function FinanceEntryTable({
+  filtered,
   handlePageChange,
   ...params
 }: Props) {
@@ -24,47 +27,42 @@ export default function FinanceEntryTable({
   const { data } = useSuspenseFinanceEntries(params);
 
   const entries = data?.data ?? [];
-  const totalPages = data?.meta?.totalPages ?? 0;
 
   const columns: Column<FinanceEntry>[] = [
     {
       key: "date",
       header: t("finance.date"),
-      className: "whitespace-nowrap",
+      className: "font-medium whitespace-nowrap",
       cell: (entry) => formatDate(entry.date, locale),
-    },
-    {
-      key: "category",
-      header: t("finance.category"),
-      cell: (entry) => (
-        <div className="min-w-0">
-          <p className="font-medium">
-            {t(`finance.categories.${entry.category}`)}
-          </p>
-          {entry.note && (
-            <p className="max-w-56 truncate text-xs text-muted-foreground">
-              {entry.note}
-            </p>
-          )}
-        </div>
-      ),
     },
     {
       key: "type",
       header: t("finance.type"),
-      className: "hidden sm:table-cell",
       cell: (entry) => <StatusBadge status={entry.type} />,
+    },
+    {
+      key: "category",
+      header: t("finance.category"),
+      cell: (entry) => t.dynamic(`finance.categories.${entry.category}`),
+    },
+    {
+      key: "note",
+      header: t("finance.note"),
+      className: "max-w-64 text-muted-foreground",
+      cell: (entry) => (
+        <span className="line-clamp-2">{entry.note || "—"}</span>
+      ),
     },
     {
       key: "amount",
       header: t("finance.amount"),
-      className: "tabular-nums",
+      className: "text-right font-semibold whitespace-nowrap tabular-nums",
       cell: (entry) => (
         <span
           className={
             entry.type === "INCOME"
-              ? "text-emerald-600 dark:text-emerald-400"
-              : undefined
+              ? "text-(--tone-g-fg)"
+              : "text-(--tone-r-fg)"
           }
         >
           {entry.type === "INCOME" ? "+" : "−"}
@@ -87,21 +85,23 @@ export default function FinanceEntryTable({
         rows={entries}
         rowKey={(entry) => entry.id}
         caption={t("finance.caption")}
-        empty={{
-          icon: WalletIcon,
-          title: t("finance.empty"),
-          description: t("finance.emptyHint"),
-        }}
+        empty={
+          filtered
+            ? { icon: WalletIcon, title: t("finance.noMatch") }
+            : {
+                icon: WalletIcon,
+                title: t("finance.empty"),
+                description: t("finance.emptyHint"),
+              }
+        }
       />
-      {totalPages > 1 && (
-        <div className="my-5">
-          <TablePagination
-            page={params.page ?? 1}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        </div>
-      )}
+      <TablePagination
+        page={params.page ?? 1}
+        totalPages={data?.meta?.totalPages ?? 0}
+        total={data?.meta?.total}
+        limit={data?.meta?.limit}
+        handlePageChange={handlePageChange}
+      />
     </>
   );
 }

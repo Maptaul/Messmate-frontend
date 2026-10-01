@@ -241,6 +241,30 @@ export const FINANCE_PERIODS = [
 export const financePeriod = (get: Get): SummaryPeriod =>
   oneOf(FINANCE_PERIODS, get("period")) ?? "monthly";
 
+const ISO_DAY = /^d{4}-d{2}-d{2}$/;
+const isoDay = (value: string | undefined) =>
+  value && ISO_DAY.test(value) ? value : undefined;
+
+/** The summary's window: a period, anchored on `date` (default today). */
+export function financeSummaryParams(get: Get) {
+  return { period: financePeriod(get), date: isoDay(get("date")) };
+}
+
+/** Moves a summary anchor one period back (-1) or forward (+1). */
+export function shiftPeriod(
+  date: string,
+  period: SummaryPeriod,
+  step: -1 | 1,
+): string {
+  const day = new Date(`${date}T00:00:00Z`);
+  if (period === "daily") day.setUTCDate(day.getUTCDate() + step);
+  if (period === "weekly") day.setUTCDate(day.getUTCDate() + 7 * step);
+  if (period === "monthly") day.setUTCMonth(day.getUTCMonth() + step, 1);
+  if (period === "yearly")
+    day.setUTCFullYear(day.getUTCFullYear() + step, 0, 1);
+  return day.toISOString().slice(0, 10);
+}
+
 export function financeEntriesParams(get: Get): FinanceEntryParams {
   return {
     page: pageOf(get),
@@ -250,6 +274,9 @@ export function financeEntriesParams(get: Get): FinanceEntryParams {
       [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES],
       get("category"),
     ),
+    from: isoDay(get("from")),
+    to: isoDay(get("to")),
+    searchTerm: get("searchTerm") || undefined,
   };
 }
 

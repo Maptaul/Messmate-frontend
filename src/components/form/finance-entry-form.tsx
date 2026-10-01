@@ -4,7 +4,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { FieldGroup } from "@/components/ui/field";
-import { useAddFinanceEntry, useUpdateFinanceEntry } from "@/hooks";
+import {
+  useAddFinanceEntry,
+  useFinanceCategories,
+  useUpdateFinanceEntry,
+} from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import {
   EXPENSE_CATEGORIES,
@@ -25,6 +29,8 @@ export default function FinanceEntryForm({
   handleClose: () => void;
 }) {
   const t = useT();
+  // The API's category lists; the built-in ones until they arrive.
+  const { data: categories } = useFinanceCategories();
 
   const { mutate: addEntry, isPending: addPending } = useAddFinanceEntry();
   const { mutate: updateEntry, isPending: updatePending } =
@@ -103,11 +109,11 @@ export default function FinanceEntryForm({
                   label={t("finance.formCategory")}
                   placeholder={t("finance.selectCategory")}
                   options={(type === "INCOME"
-                    ? INCOME_CATEGORIES
-                    : EXPENSE_CATEGORIES
+                    ? (categories?.data.INCOME ?? INCOME_CATEGORIES)
+                    : (categories?.data.EXPENSE ?? EXPENSE_CATEGORIES)
                   ).map((category) => ({
                     value: category,
-                    label: t(`finance.categories.${category}`),
+                    label: t.dynamic(`finance.categories.${category}`),
                   }))}
                 />
               )}

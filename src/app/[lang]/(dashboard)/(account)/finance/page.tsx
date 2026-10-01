@@ -9,7 +9,11 @@ import FinanceTabs from "@/components/modules/finance/finance-tabs";
 import { getT } from "@/i18n/get-dictionary";
 import { alternates } from "@/i18n/metadata";
 import serverApi from "@/lib/serverApi";
-import { financeEntriesParams, financePeriod, fromSearchParams } from "@/utils";
+import {
+  financeEntriesParams,
+  financeSummaryParams,
+  fromSearchParams,
+} from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -22,9 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function page({
   searchParams,
 }: PageProps<"/[lang]/finance">) {
-  const [t, client] = await Promise.all([getT(), serverApi()]);
+  const client = await serverApi();
   const get = fromSearchParams(await searchParams);
-  const summaryParams = { period: financePeriod(get) };
+  const summaryParams = financeSummaryParams(get);
   const entryParams = financeEntriesParams(get);
 
   const queryClient = new QueryClient();
@@ -40,11 +44,7 @@ export default async function page({
   ]);
 
   return (
-    <section className="space-y-6 p-5">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("finance.title")}</h1>
-        <p className="text-muted-foreground">{t("finance.description")}</p>
-      </div>
+    <section className="page-frame">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <FinanceTabs />
       </HydrationBoundary>

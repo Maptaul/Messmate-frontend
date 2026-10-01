@@ -1,4 +1,3 @@
-import { CompassIcon } from "lucide-react";
 import Link from "next/link";
 import Logo from "@/assets/svg/Logo";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ export default async function NotFound() {
   ]);
 
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-8 p-6 text-center">
+    <main className="flex min-h-svh flex-col items-center justify-center gap-8 bg-background p-6 text-center">
       <Link
         href={localePath(locale, "/")}
         className="flex items-center gap-2 font-semibold"
@@ -23,30 +22,29 @@ export default async function NotFound() {
         <Logo />
         <span className="text-lg">MessMate</span>
       </Link>
-      <div className="space-y-3">
-        <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <CompassIcon className="size-7" aria-hidden />
-        </span>
-        <p className="text-7xl font-bold tracking-tight text-primary">404</p>
-        <h1 className="text-2xl font-semibold">{t("notFound.title")}</h1>
+      <div className="flex w-full max-w-md flex-col items-center gap-3 rounded-2xl border bg-card p-8 shadow-2">
+        <p className="font-mono text-6xl font-semibold tracking-tight text-muted-foreground">
+          404
+        </p>
+        <h1 className="text-xl font-semibold">{t("notFound.title")}</h1>
         <p className="text-muted-foreground">{t("notFound.body")}</p>
-      </div>
-      <div className="flex flex-wrap justify-center gap-2">
-        <Button
-          render={<Link href={localePath(locale, "/")} />}
-          nativeButton={false}
-        >
-          {t("notFound.home")}
-        </Button>
-        {user && (
+        <div className="mt-2 flex flex-wrap justify-center gap-2">
           <Button
-            variant="outline"
-            render={<Link href={localePath(locale, ROLE_HOME[user.role])} />}
+            render={<Link href={localePath(locale, "/")} />}
             nativeButton={false}
           >
-            {t("notFound.dashboard")}
+            {t("notFound.home")}
           </Button>
-        )}
+          {user && (
+            <Button
+              variant="outline"
+              render={<Link href={localePath(locale, ROLE_HOME[user.role])} />}
+              nativeButton={false}
+            >
+              {t("notFound.dashboard")}
+            </Button>
+          )}
+        </div>
       </div>
     </main>
   );

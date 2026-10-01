@@ -1,63 +1,75 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import StatusBadge from "@/components/ui/status-badge";
+import {
+  CalendarIcon,
+  CircleCheckIcon,
+  CircleXIcon,
+  MailIcon,
+  ShieldCheckIcon,
+} from "lucide-react";
+import type { ReactNode } from "react";
+import Panel from "@/components/ui/panel";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { Me } from "@/types";
 import { formatDate } from "@/utils";
 
+/** Role, how they sign in, whether the email is verified, and since when. */
 export default function AccountCard({ me }: { me: Me }) {
   const t = useT();
   const locale = useLocale();
+  const isGoogle = me.authProvider.toUpperCase() === "GOOGLE";
 
-  const messes =
-    me.role === "MESS_MANAGER"
-      ? me.managedMesses.map(({ id, name }) => ({ id, name }))
-      : me.memberships
-          .filter((membership) => membership.status === "ACTIVE")
-          .map(({ mess }) => ({ id: mess.id, name: mess.name }));
+  const rows: [string, ReactNode][] = [
+    [
+      t("profile.role"),
+      <>
+        <ShieldCheckIcon className="size-4 text-primary" />
+        {t(`status.${me.role}`)}
+      </>,
+    ],
+    [
+      t("profile.sign_in_method"),
+      <>
+        <MailIcon className="size-4 text-muted-foreground" />
+        {isGoogle ? t("profile.google") : t("profile.password")}
+      </>,
+    ],
+    [
+      t("profile.emailVerified"),
+      me.emailVerified ? (
+        <>
+          <CircleCheckIcon className="size-4 text-(--tone-g-fg)" />
+          {t("profile.yes")}
+        </>
+      ) : (
+        <>
+          <CircleXIcon className="size-4 text-(--tone-a-fg)" />
+          {t("profile.no")}
+        </>
+      ),
+    ],
+    [
+      t("profile.memberSince"),
+      <>
+        <CalendarIcon className="size-4 text-muted-foreground" />
+        {formatDate(me.createdAt, locale)}
+      </>,
+    ],
+  ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("profile.accountTitle")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <dl className="space-y-3 text-sm">
-          <div className="flex items-center justify-between gap-4">
-            <dt className="text-muted-foreground">{t("profile.role")}</dt>
-            <dd>
-              <StatusBadge status={me.role} />
-            </dd>
+    <Panel flush title={t("profile.accountTitle")}>
+      <dl>
+        {rows.map(([label, value]) => (
+          <div
+            key={label}
+            className="flex items-center justify-between gap-3 border-b px-5 py-2.5 text-[13px] last:border-0"
+          >
+            <dt className="text-muted-foreground">{label}</dt>
+            <dd className="flex items-center gap-1.5 font-medium">{value}</dd>
           </div>
-          <div className="flex items-center justify-between gap-4">
-            <dt className="text-muted-foreground">
-              {t("profile.memberSince")}
-            </dt>
-            <dd>{formatDate(me.createdAt, locale)}</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <dt className="text-muted-foreground">
-              {t("profile.sign_in_method")}
-            </dt>
-            <dd>
-              {me.authProvider === "google"
-                ? t("profile.google")
-                : t("profile.password")}
-            </dd>
-          </div>
-          {me.role !== "ADMIN" && (
-            <div>
-              <dt className="text-muted-foreground">{t("profile.messes")}</dt>
-              <dd className="mt-1 font-medium">
-                {messes.length > 0
-                  ? messes.map((mess) => mess.name).join(", ")
-                  : t("profile.noMesses")}
-              </dd>
-            </div>
-          )}
-        </dl>
-      </CardContent>
-    </Card>
+        ))}
+      </dl>
+    </Panel>
   );
 }

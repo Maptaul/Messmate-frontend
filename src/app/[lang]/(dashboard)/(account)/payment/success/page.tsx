@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { confirmStripePayment } from "@/api";
+import { confirmStripePayment, getPayment } from "@/api";
 import PaymentResult, {
   type PaymentOutcome,
 } from "@/components/modules/payment-result/payment-result";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 import serverApi from "@/lib/serverApi";
+import type { Payment } from "@/types";
 import { getErrorMessage } from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -33,16 +34,23 @@ export default async function page({
   const bkashStatus = typeof sp.status === "string" ? sp.status : "";
 
   if (bkashStatus && bkashStatus !== "success") {
-    redirect(localePath(locale, "/payment/cancel"));
+    redirect(localePath(locale, `/payment/cancel?status=${bkashStatus}`));
   }
 
   let outcome: PaymentOutcome = bkashStatus ? "success" : "pending";
   let errorKey: string | undefined;
+  let payment: Payment | null = null;
 
   if (sessionId) {
     try {
       const res = await confirmStripePayment(sessionId, client);
       outcome = res.data.paid ? "success" : "failed";
+      if (res.data.paid) {
+        // The receipt details; the outcome stands even if this read fails.
+        payment = await getPayment(res.data.paymentId, client)
+          .then((detail) => detail.data)
+          .catch(() => null);
+      }
     } catch (err) {
       outcome = "error";
       errorKey = getErrorMessage(err);
@@ -50,8 +58,8 @@ export default async function page({
   }
 
   return (
-    <section className="p-5">
-      <PaymentResult outcome={outcome} errorKey={errorKey} />
+    <section className="page-frame">
+      <PaymentResult outcome={outcome} errorKey={errorKey} payment={payment} />
     </section>
   );
 }

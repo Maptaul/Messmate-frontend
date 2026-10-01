@@ -50,7 +50,6 @@ export default function ProfileForm({ me }: { me: Me }) {
   return (
     <form
       noValidate
-      className="max-w-xl"
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();
@@ -59,28 +58,34 @@ export default function ProfileForm({ me }: { me: Me }) {
       <FieldGroup>
         <form.AppField name="name">
           {(field) => (
-            <field.TextField label={t("profile.name")} autoComplete="name" />
-          )}
-        </form.AppField>
-        <form.AppField name="phone">
-          {(field) => (
             <field.TextField
-              label={t("profile.phone")}
-              type="tel"
-              autoComplete="tel"
+              label={t("profile.name")}
+              autoComplete="name"
+              description={t("profile.nameHint")}
             />
           )}
         </form.AppField>
-        <div className="space-y-1.5">
-          <label htmlFor="profile-email" className="text-sm font-medium">
-            {t("profile.email")}
-          </label>
-          <Input id="profile-email" value={me.email} readOnly disabled />
-          <p className="text-xs text-muted-foreground">
-            {t("profile.emailHint")}
-          </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <form.AppField name="phone">
+            {(field) => (
+              <field.TextField
+                label={t("profile.phone")}
+                type="tel"
+                autoComplete="tel"
+              />
+            )}
+          </form.AppField>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="profile-email" className="font-medium">
+              {t("profile.email")}
+            </label>
+            <Input id="profile-email" value={me.email} readOnly disabled />
+            <p className="text-xs text-muted-foreground">
+              {t("profile.emailHint")}
+            </p>
+          </div>
         </div>
-        <div>
+        <div className="flex justify-end">
           <form.AppForm>
             <form.SubmitButton
               isPending={isPending}

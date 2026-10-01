@@ -1,30 +1,25 @@
 "use client";
 
-import { Trash2Icon, UploadIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import FileUpload from "@/components/ui/file-upload";
+import Panel from "@/components/ui/panel";
+import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import UserAvatar from "@/components/ui/user-avatar";
 import { useRemoveAvatar, useUploadAvatar } from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import type { Me } from "@/types";
 import { getErrorMessage } from "@/utils";
-import { AVATAR_TYPES } from "@/utils/upload.util";
+import { AVATAR_TYPES, checkUpload } from "@/utils/upload.util";
 
+/** The photo: pick one and it uploads at once, with a progress bar. */
 export default function AvatarCard({ me }: { me: Me }) {
   const t = useT();
   const router = useRouter();
-  const [file, setFile] = useState<File | null>(null);
+  const input = useRef<HTMLInputElement>(null);
   const [progress, setProgress] = useState<number | null>(null);
 
   const { mutate: uploadAvatar, isPending: uploading } = useUploadAvatar();
@@ -32,13 +27,18 @@ export default function AvatarCard({ me }: { me: Me }) {
 
   const handleDone = (message: string) => {
     toast.success(message);
-    setFile(null);
     // The header's copy of the photo comes from the server layout.
     router.refresh();
   };
 
-  const handleUpload = () => {
+  const handlePick = (file: File | undefined) => {
+    if (input.current) input.current.value = "";
     if (!file) return;
+    const problem = checkUpload(file, AVATAR_TYPES);
+    if (problem) {
+      toast.error(t(`upload.${problem}`));
+      return;
+    }
     uploadAvatar(
       { file, onProgress: setProgress },
       {
@@ -61,48 +61,57 @@ export default function AvatarCard({ me }: { me: Me }) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("profile.photoTitle")}</CardTitle>
-        <CardDescription>{t("profile.photoBody")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Panel title={t("profile.photoTitle")}>
+      <div className="flex flex-wrap items-center gap-4">
         <UserAvatar
           name={me.name}
           src={me.avatarUrl}
-          className="size-20 text-xl"
+          variant="ink"
+          className="size-16 text-xl"
         />
-        <FileUpload
-          label={t("profile.photoChoose")}
-          hint={t("profile.photoHint")}
-          file={file}
-          onChange={setFile}
-          allowedTypes={AVATAR_TYPES}
-          progress={uploading ? progress : null}
-          disabled={uploading}
-        />
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            disabled={!file || uploading}
-            onClick={handleUpload}
-          >
-            {uploading ? <Spinner /> : <UploadIcon />}
-            {uploading ? t("profile.photoUploading") : t("profile.photoUpload")}
-          </Button>
-          {me.avatarUrl && (
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <div className="flex flex-wrap gap-2">
             <Button
-              type="button"
               variant="outline"
-              disabled={removing || uploading}
-              onClick={handleRemove}
+              size="sm"
+              disabled={uploading || removing}
+              onClick={() => input.current?.click()}
             >
-              {removing ? <Spinner /> : <Trash2Icon />}
-              {t("profile.photoRemove")}
+              {uploading ? <Spinner /> : <ImageIcon />}
+              {uploading
+                ? t("profile.photoUploading")
+                : t("profile.changePhoto")}
             </Button>
+            {me.avatarUrl && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive"
+                disabled={uploading || removing}
+                onClick={handleRemove}
+              >
+                {removing && <Spinner />}
+                {t("profile.photoRemove")}
+              </Button>
+            )}
+          </div>
+          {progress !== null ? (
+            <Progress value={progress} className="max-w-60" />
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              {t("profile.photoHint")}
+            </p>
           )}
         </div>
-      </CardContent>
-    </Card>
+        <input
+          ref={input}
+          type="file"
+          accept={AVATAR_TYPES.join(",")}
+          className="sr-only"
+          aria-label={t("profile.changePhoto")}
+          onChange={(event) => handlePick(event.target.files?.[0])}
+        />
+      </div>
+    </Panel>
   );
 }
