@@ -49,15 +49,17 @@ One click on `/login` signs in as any of them. They hold demo data only.
 
 | Role             | Pages                                                                                                                                  |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Admin**        | `/admin` platform overview with charts, `/admin/users` (search, filters, role change, optimistic block/unblock) and each user's detail, `/admin/messes` and each mess's detail (members, recent months, reopen a closed month), `/admin/audit-logs` |
-| **Mess manager** | `/manager` month at a glance, meal register (edit or delete a single entry), headcount, expenses with receipt upload, deposits, bazar duty, billing months with settlement preview and close, bills with cash payments and a PDF of each bill, members, activity log, mess settings, a four-step create-mess wizard |
-| **Member**       | `/dashboard` today, meal plan (optimistic, locks at the 11 PM cutoff), the mess ledger, bills with Stripe or bKash and a PDF of each bill, payment history, activity |
-| **Everyone**     | `/profile` (photo upload with progress), `/finance` personal income and spending with charts and CSV export                                         |
-| **Public**       | Home, features, about us, FAQ, contact, login (three demo accounts + Google), register with email OTP, forgot password               |
+| **Admin**        | `/admin` platform overview with weekly trends and charts, `/admin/users` (search, filters, role change, block/unblock) and each user's detail, `/admin/messes` (filter by manager) and each mess's detail (cycles, members, activity, reopen a closed month), `/admin/audit-logs` with a change sheet |
+| **Mess manager** | `/manager` month at a glance (rate, bazar, shared, outstanding with trends, tomorrow's headcount, meals per day), meal register (record a day or browse every entry), month headcount, expenses with receipt upload and payer filter, deposits with who hasn't paid, bazar duty calendar, billing cycles with an expandable settlement table and close, bills with cash payments, a breakdown sheet and a PDF of each bill, members (default meals, plan for them), activity timeline, mess settings, a four-step create-mess wizard whose draft survives a reload |
+| **Member**       | `/dashboard` today (plan tomorrow until 11 PM, running bill), meal plan calendar (day, several days, "I'm away", defaults), the read-only mess ledger in tabs, bills with Stripe or bKash and a PDF of each bill, payment history with a detail sheet, activity with new changes marked |
+| **Everyone**     | `/profile` (photo, details, memberships, password reset link), `/finance` personal income and spending by day, week, month or year, with charts, filters and CSV export |
+| **Public**       | Home (with a bill estimator), features, about us, FAQ with search, contact, login (three demo accounts + Google), register with email OTP and live password rules, forgot password |
 
 A manager also eats and pays like a member, so the manager sidebar carries the
 member pages too. Managers and members get an activity bell in the header with the
-number of changes since they last opened the feed.
+number of changes since they last opened the feed. The header also has a jump-to
+menu (⌘K), the open month and its meal rate, the 11 PM countdown and quick actions
+(N) that open the create forms directly (`?new=1`).
 
 ---
 
@@ -77,8 +79,8 @@ number of changes since they last opened the feed.
   `/bn/...`; a `NEXT_LOCALE` cookie remembers the choice. Strings live in
   `src/i18n/dictionaries/en.json` and `bn.json`.
 - **Exports.** A bill's PDF is the browser's own "Save as PDF" of a print-only invoice,
-  so Bangla keeps its conjuncts; the finance CSV holds every entry for the current
-  filters, with a BOM so Excel opens Bangla correctly.
+  so Bangla keeps its conjuncts. Every table has an Export CSV button that fetches every
+  page matching the current filters, with a BOM so Excel opens Bangla correctly.
 - **Payments.** Card payments open Stripe Checkout; `/payment/success` confirms the
   session with the API on the server before showing a result. bKash returns to the same
   page with its own status.
