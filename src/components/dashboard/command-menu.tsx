@@ -4,6 +4,7 @@ import { SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -62,24 +63,27 @@ export default function CommandMenu({ role }: { role: UserRole }) {
         title={t("shell.jumpTo")}
         description={t("shell.jumpPlaceholder")}
       >
-        <CommandInput placeholder={t("shell.jumpPlaceholder")} />
-        <CommandList>
-          <CommandEmpty>{t("shell.noResults")}</CommandEmpty>
-          {ROLE_ROUTES[role].map((group) => (
-            <CommandGroup key={group.title} heading={t(group.title)}>
-              {group.items.map((item) => (
-                <CommandItem
-                  key={item.url}
-                  value={`${t(item.title)} ${item.url}`}
-                  onSelect={() => go(item.url)}
-                >
-                  <item.icon className="text-muted-foreground" />
-                  {t(item.title)}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          ))}
-        </CommandList>
+        {/* cmdk needs its root around the input and list, or it throws on open. */}
+        <Command>
+          <CommandInput placeholder={t("shell.jumpPlaceholder")} />
+          <CommandList>
+            <CommandEmpty>{t("shell.noResults")}</CommandEmpty>
+            {ROLE_ROUTES[role].map((group) => (
+              <CommandGroup key={group.title} heading={t(group.title)}>
+                {group.items.map((item) => (
+                  <CommandItem
+                    key={item.url}
+                    value={`${t(item.title)} ${item.url}`}
+                    onSelect={() => go(item.url)}
+                  >
+                    <item.icon className="text-muted-foreground" />
+                    {t(item.title)}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))}
+          </CommandList>
+        </Command>
       </CommandDialog>
     </>
   );
