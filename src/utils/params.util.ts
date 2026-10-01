@@ -241,7 +241,7 @@ export const FINANCE_PERIODS = [
 export const financePeriod = (get: Get): SummaryPeriod =>
   oneOf(FINANCE_PERIODS, get("period")) ?? "monthly";
 
-const ISO_DAY = /^d{4}-d{2}-d{2}$/;
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
 const isoDay = (value: string | undefined) =>
   value && ISO_DAY.test(value) ? value : undefined;
 

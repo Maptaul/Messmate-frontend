@@ -13,6 +13,7 @@ import {
   expensesParams,
   financeEntriesParams,
   financePeriod,
+  financeSummaryParams,
   fromSearchParams,
   membersParams,
   messAuditParams,
@@ -419,4 +420,13 @@ test("CSV cells with commas, quotes or line breaks are quoted", () => {
       "2026-09-03,,300",
     ].join("\r\n"),
   );
+});
+
+test("the finance summary keeps a real day as its anchor and drops anything else", () => {
+  const get = (date: string) => fromSearchParams({ period: "weekly", date });
+  assert.deepEqual(financeSummaryParams(get("2026-09-15")), {
+    period: "weekly",
+    date: "2026-09-15",
+  });
+  assert.equal(financeSummaryParams(get("15-09-2026")).date, undefined);
 });

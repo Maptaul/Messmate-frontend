@@ -43,9 +43,9 @@ export default function FinanceSummary({
 
   // "2026-09-14" → "14", "2026-09" → "Sep": the axis only needs the step.
   const tick = (label: string) =>
-    /^d{4}-d{2}-d{2}$/.test(label)
+    /^\d{4}-\d{2}-\d{2}$/.test(label)
       ? formatNumber(Number(label.slice(8)), locale)
-      : /^d{4}-d{2}$/.test(label)
+      : /^\d{4}-\d{2}$/.test(label)
         ? formatMonthName(Number(label.slice(5)), locale).slice(
             0,
             locale === "en" ? 3 : undefined,
