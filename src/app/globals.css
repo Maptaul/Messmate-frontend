@@ -58,6 +58,34 @@
   --shadow-2: var(--elevation-2);
   --shadow-3: var(--elevation-3);
   --ease-settle: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  /* The brand loader: fades in late so quick loads don't flash it. */
+  --animate-loader-in: loader-in 0.3s ease-out 0.15s both;
+  --animate-loader-slide: loader-slide 1.3s ease-in-out infinite;
+  --animate-logo-breathe: logo-breathe 1.8s ease-in-out infinite;
+
+  @keyframes loader-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes loader-slide {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(300%);
+    }
+  }
+  @keyframes logo-breathe {
+    0%,
+    100% {
+      transform: scale(0.94);
+    }
+    50% {
+      transform: scale(1);
+    }
+  }
 }
 
 /* Values from the design handoff (tokens.css): paper and ink, one emerald. */
