@@ -66,7 +66,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
       )}
     >
       <body>
-        <Providers>
+        <Providers locale={locale}>
           <I18nProvider locale={locale} dictionary={dictionary}>
             {children}
             <Toaster
