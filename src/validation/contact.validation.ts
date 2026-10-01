@@ -15,6 +15,6 @@ export const contactSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(10, "validation.messageMin")
+    .min(20, "validation.messageMin")
     .max(2000, "validation.messageMax"),
 });

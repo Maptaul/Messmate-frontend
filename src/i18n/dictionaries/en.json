@@ -248,7 +248,7 @@
     "selectCategory": "Choose a category",
     "categoryMismatch": "That category doesn't belong to this type",
     "subjectMin": "Subject must be at least 3 characters",
-    "messageMin": "Write at least 10 characters",
+    "messageMin": "Write at least 20 characters",
     "messageMax": "Message is too long"
   },
   "errors": {
@@ -1558,80 +1558,129 @@
       "featuresBody": "No more screenshots in the group chat.",
       "f1": {
         "title": "Meal plans before 11 PM",
-        "body": "Everyone marks tomorrow's lunch and dinner — halves included. The cook sees the headcount."
+        "body": "Everyone sets tomorrow’s lunch and dinner. Half meals count, and a default covers the days you forget."
       },
       "f2": {
         "title": "One shared ledger",
-        "body": "Groceries, gas, internet and deposits are recorded once, with the receipt, and visible to all."
+        "body": "Meals, bazar, bills and deposits in one place. Members see the same numbers as the manager."
       },
       "f3": {
         "title": "Bazar duty rota",
-        "body": "Assign who shops on which days, and each member sees their own turns."
+        "body": "Assign turns by date so everyone knows who shops this week."
       },
       "f4": {
         "title": "Month-end bill in one click",
-        "body": "Close the month and every member's share is worked out — meals, shared costs and rent — and emailed."
+        "body": "Close the month and each member gets an itemised PDF bill by email."
       },
       "f5": {
         "title": "Pay by card or bKash",
-        "body": "Members pay their bill online; managers can record cash in person, part or all."
+        "body": "Members pay the full due online. The manager records cash, even part payments."
       },
       "f6": {
         "title": "English and বাংলা",
-        "body": "Switch language anytime. Dates and money follow Dhaka time and the taka."
+        "body": "Every screen in both languages, with Bangla digits and dates."
       },
       "stepsTitle": "How a month works",
       "s1": {
         "title": "Open the month",
-        "body": "The manager opens a billing month and adds members by email."
+        "body": "The manager opens September. Rent and the advance are already set.",
+        "chip": "September 2026",
+        "tag": "Open"
       },
       "s2": {
         "title": "Eat, shop, record",
-        "body": "Members plan meals; the manager records the register, expenses and deposits."
+        "body": "Members plan their meals; the manager records meals, bazar and deposits.",
+        "chip": "Grocery ৳1,450",
+        "tag": "Receipt"
       },
       "s3": {
         "title": "Close and settle",
-        "body": "Bills are issued, emailed and paid. Balances carry into the next month."
+        "body": "Close the month and bills go out; members pay by card, bKash or cash.",
+        "chip": "6 bills emailed",
+        "tag": "Closed"
       },
       "rolesTitle": "Built for the three people in every mess",
       "r1": {
-        "title": "Mess manager",
-        "body": "Runs the month: register, expenses, deposits, bills."
+        "title": "Mess Manager",
+        "body": "Runs the month: members, meals, expenses, deposits and the close."
       },
       "r2": {
         "title": "Member",
-        "body": "Plans meals, sees the ledger, pays the bill."
+        "body": "Plans meals, reads the ledger and pays the bill."
       },
       "r3": {
         "title": "Admin",
-        "body": "Oversees the platform, its users and its audit trail."
+        "body": "Looks after users and messes, and can reopen a closed month."
       },
       "ctaTitle": "Ready to close your first month?",
-      "ctaBody": "Create an account in a minute, or explore with a demo login first."
+      "ctaBody": "Create an account in a minute, or explore with a demo login first.",
+      "preview": {
+        "label": "An example mess on MessMate",
+        "example": "Example",
+        "mess": "Green View Mess",
+        "cycle": "Sep 2026 · Open",
+        "rate": "Meal rate",
+        "groceries": "Groceries",
+        "shared": "Shared",
+        "spending": "Spending by type",
+        "headcount": "Tomorrow’s headcount",
+        "locks": "Locks at 11:00 PM",
+        "lunch": "Lunch",
+        "dinner": "Dinner"
+      },
+      "math": {
+        "eyebrow": "The meal rate",
+        "title": "Your bill is math, not guesswork.",
+        "body": "Every bazar goes into one pot. Divide it by every meal eaten and you get the meal rate. Shared bills are split equally. Everyone sees the same numbers.",
+        "chips": {
+          "c1": "meals × rate",
+          "c2": "+ shared bills",
+          "c3": "+ rent share",
+          "c4": "+ advance",
+          "c5": "− deposits",
+          "c6": "− bazar you paid"
+        }
+      },
+      "calc": {
+        "title": "Estimate your bill",
+        "reset": "Reset",
+        "bazar": "Total bazar this month",
+        "meals": "Meals eaten by everyone",
+        "mine": "Your meals",
+        "shared": "Shared bills",
+        "members": "Members",
+        "unitMeals": "meals",
+        "unitPeople": "people",
+        "rate": "Meal rate",
+        "mealCost": "Your meals × rate",
+        "share": "Your share of shared bills",
+        "total": "Estimated bill",
+        "note": "Real bills also add rent share and next month’s advance, minus your deposits."
+      }
     },
     "about": {
       "metaTitle": "About",
       "metaDescription": "Why MessMate exists and how it keeps a shared mess fair.",
       "title": "Why MessMate",
       "lead": "A shared mess runs on trust — and on somebody's notebook.",
-      "p1": "In most messes, one person keeps the hisab: who ate how much, who bought what, who has paid. It works until the notebook is lost, the month ends in an argument, or the person keeping it moves out.",
-      "p2": "MessMate turns that notebook into a shared ledger. Every meal, expense and deposit is recorded once, timestamped, and visible to every member, so the month-end bill is a calculation, not a negotiation.",
+      "p1": "Every month, one person in the flat keeps track of who ate what, who bought the bazar and who paid the gas bill. At the end they add it up, and everyone has to take their word for it.",
+      "p2": "MessMate puts that record where the whole mess can see it. Meals, expenses and deposits go in as they happen, and the bill is worked out the same way for everyone.",
       "principlesTitle": "How we keep it fair",
       "q1": {
         "title": "One record for everyone",
-        "body": "Members see exactly what the manager sees. Changes to money leave an audit trail."
+        "body": "Members and the manager read the same ledger."
       },
       "q2": {
         "title": "Meals count as eaten",
-        "body": "Whole and half meals are recorded per member per day, and the meal rate is total groceries divided by total meals."
+        "body": "The register holds what people actually ate, not only what they planned."
       },
       "q3": {
         "title": "Shared costs, split your way",
-        "body": "Gas, internet and the like can be split equally or by meals; rent is shared among members."
+        "body": "Groceries split by meals; gas, power and khala split equally."
       },
       "q4": {
         "title": "Nothing hidden at the end",
-        "body": "Before closing, the manager previews every bill and any warnings, so there are no surprises."
+        "body": "Every bill is itemised, and every money change is logged."
       },
       "cta": "See the features"
     },
@@ -1641,28 +1690,28 @@
       "title": "Features",
       "lead": "Three roles, one ledger.",
       "manager": {
-        "title": "For the mess manager",
-        "i1": "Create a mess and add members by email",
-        "i2": "Record daily meals, in halves, or fill a day from everyone's plans",
-        "i3": "Log expenses with receipts, split equally or by meals",
-        "i4": "Record deposits and cash payments",
-        "i5": "Preview every bill, then close the month and email them",
-        "i6": "Assign the bazar duty rota"
+        "title": "Mess Manager",
+        "i1": "Create a mess in four steps and add members by email",
+        "i2": "See the headcount for any day",
+        "i3": "Record meals, or fill a day from everyone’s plans",
+        "i4": "Log expenses with receipts, deposits and bazar duty",
+        "i5": "Preview every bill, then close the month",
+        "i6": "Record cash payments and download any bill as a PDF"
       },
       "member": {
-        "title": "For the member",
-        "i1": "Plan meals day by day and set your default",
-        "i2": "See today's meals, your bazar duty and your bill",
-        "i3": "Pay online by card or bKash",
-        "i4": "Follow every payment you've made",
-        "i5": "Keep a private income and spending tracker"
+        "title": "Member",
+        "i1": "Plan lunch and dinner before 11 PM, with default meals",
+        "i2": "Read the mess ledger: expenses and deposits",
+        "i3": "See your bills and download them as PDF",
+        "i4": "Pay by card or bKash",
+        "i5": "Follow what changed in the activity feed"
       },
       "admin": {
-        "title": "For the admin",
-        "i1": "See platform-wide totals and charts",
-        "i2": "Search, filter, block and re-role users",
-        "i3": "Review every mess and remove one if needed",
-        "i4": "Read the audit log of sensitive changes"
+        "title": "Admin",
+        "i1": "Platform overview with charts",
+        "i2": "Users: change roles, block or unblock",
+        "i3": "Every mess, with a detail page for each",
+        "i4": "Reopen a closed month and read the audit log"
       },
       "cta": "Start your mess"
     },
@@ -1673,42 +1722,47 @@
       "lead": "Still stuck? Write to us from the contact page.",
       "q1": {
         "q": "When do I have to plan tomorrow's meals?",
-        "a": "Before 11 PM Dhaka time the night before. After that the day locks and only the manager can change it."
+        "a": "By 11:00 PM the night before, Dhaka time. After that the day locks, and only your manager can change what you ate."
       },
       "q2": {
         "q": "Can I eat half a meal?",
-        "a": "Yes. Meal counts go in steps of 0.5, from 0 to 10 per meal."
+        "a": "Yes. Meals go in steps of 0.5, so a lunch-only day can be 0.5 or 1."
       },
       "q3": {
         "q": "How is my bill worked out?",
-        "a": "Your meals times the meal rate, plus your share of shared costs, plus your share of the rent — minus what you've deposited or paid on the mess's behalf. The meal rate is the month's groceries divided by the month's total meals."
+        "a": "Your meals × the meal rate, plus your share of shared bills and rent, plus next month’s advance and any carried balance, minus your deposits and any bazar you paid for yourself."
       },
       "q4": {
         "q": "How can I pay?",
-        "a": "Online by card (Stripe) or bKash, or in cash to your manager, who records it. Cash can be partial; online payments cover the full amount due."
+        "a": "By card (Stripe) or bKash for the full amount due, or hand cash to your manager, who can record part of it."
       },
       "q5": {
         "q": "Does the manager also eat and pay?",
-        "a": "Yes. A manager lives in the mess too, so they plan meals and pay a bill like everyone else."
+        "a": "Yes. The manager lives in the mess too and gets a bill like everyone else."
       },
       "q6": {
         "q": "What happens if I leave the mess?",
-        "a": "Your manager removes you once you owe nothing. Your past meals and bills stay on the record."
+        "a": "Your manager removes you once your bills are paid. Your past bills and payments stay in your account."
       },
       "q7": {
         "q": "Can I use it in Bangla?",
-        "a": "Yes — switch between English and বাংলা from the top of any page."
+        "a": "Yes. Switch EN · বাং in the header on any page. MessMate remembers your choice."
       },
       "q8": {
         "q": "Is my data private?",
-        "a": "Members see the mess ledger, but only you see your own personal finance tracker and your payment history."
-      }
+        "a": "Your mess sees the mess ledger. Your personal finance entries are visible only to you."
+      },
+      "search": "Search questions — e.g. 11 PM, bKash, half meal",
+      "clear": "Clear search",
+      "none": "No questions match that. Ask us directly.",
+      "matches": "{count} questions match",
+      "matchOne": "1 question matches"
     },
     "contact": {
       "metaTitle": "Contact",
       "metaDescription": "Get in touch with the MessMate team.",
       "title": "Contact us",
-      "lead": "Questions, feedback or a problem with your mess? Write to us.",
+      "lead": "Setting up a mess, a billing question or a bug — write to us and we reply within 2 working days.",
       "name": "Your name",
       "email": "Your email",
       "subject": "Subject",
@@ -1716,7 +1770,11 @@
       "send": "Open in my email app",
       "sendHint": "This opens your email app with the message ready to send.",
       "sent": "Your email app should open now. If not, write to {email}.",
-      "direct": "Or write directly to"
+      "direct": "Or write directly to",
+      "replyTime": "We reply within 2 working days",
+      "readFaq": "Read the FAQ first",
+      "subjectPlaceholder": "e.g. Setting up our mess",
+      "messageHint": "At least 20 characters · {count}"
     }
   },
   "activity": {
