@@ -1,4 +1,5 @@
 import z from "zod";
+import { messAddressRule, messNameRule } from "./mess.validation";
 
 // Messages are dictionary keys; the field components translate them.
 
@@ -40,12 +41,32 @@ export const registrationSchema = z
     role: z.enum(["MEMBER", "MESS_MANAGER"], {
       message: "validation.roleRequired",
     }),
+    // Only asked for when running a mess; an admin reviews the request.
+    messName: z.string(),
+    messAddress: z.string(),
     password: passwordRule,
     confirmPassword: z.string(),
   })
   .refine((values) => values.password === values.confirmPassword, {
     message: "validation.passwordsMismatch",
     path: ["confirmPassword"],
+  })
+  .superRefine((values, ctx) => {
+    if (values.role !== "MESS_MANAGER") return;
+
+    for (const [path, rule] of [
+      ["messName", messNameRule],
+      ["messAddress", messAddressRule],
+    ] as const) {
+      const result = rule.safeParse(values[path]);
+      if (!result.success) {
+        ctx.addIssue({
+          code: "custom",
+          path: [path],
+          message: result.error.issues[0]?.message,
+        });
+      }
+    }
   });
 
 export const verifyAccountSchema = z.object({ otp });

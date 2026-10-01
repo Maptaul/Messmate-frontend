@@ -27,6 +27,8 @@ export default function RegisterForm() {
       email: "",
       phone: "",
       role: "MEMBER",
+      messName: "",
+      messAddress: "",
       password: "",
       confirmPassword: "",
     },
@@ -35,11 +37,14 @@ export default function RegisterForm() {
       const {
         confirmPassword: _,
         phone,
+        messName,
+        messAddress,
         ...rest
       } = registrationSchema.parse(value);
       const payload: RegistrationPayload = {
         ...rest,
         ...(phone ? { phone } : {}),
+        ...(rest.role === "MESS_MANAGER" ? { messName, messAddress } : {}),
       };
 
       registration(payload, {
@@ -97,6 +102,34 @@ export default function RegisterForm() {
               />
             )}
           </form.AppField>
+          <form.Subscribe selector={(state) => state.values.role}>
+            {(role) =>
+              role === "MESS_MANAGER" && (
+                <>
+                  <p className="tone-b rounded-lg border px-3 py-2.5 text-[13px]">
+                    {t("auth.register.managerNote")}
+                  </p>
+                  <form.AppField name="messName">
+                    {(field) => (
+                      <field.TextField
+                        label={t("auth.register.messName")}
+                        autoComplete="organization"
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="messAddress">
+                    {(field) => (
+                      <field.TextField
+                        label={t("auth.register.messAddress")}
+                        description={t("auth.register.messAddressHint")}
+                        autoComplete="street-address"
+                      />
+                    )}
+                  </form.AppField>
+                </>
+              )
+            }
+          </form.Subscribe>
           <form.AppField name="name">
             {(field) => (
               <field.TextField

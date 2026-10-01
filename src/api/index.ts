@@ -4,6 +4,7 @@ export * from "./cycle.api";
 export * from "./expense.api";
 export * from "./finance.api";
 export * from "./ledger.api";
+export * from "./manager-request.api";
 export * from "./meal.api";
 export * from "./member.api";
 export * from "./mess.api";

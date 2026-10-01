@@ -41,8 +41,15 @@ export default function VerifyAccountForm({ email }: { email: string }) {
         { email, otp: value.otp },
         {
           onSuccess: (res) => {
+            const askedToManage = pending?.role === "MESS_MANAGER";
             clearPending(null);
-            toast.success(t("auth.verify.welcome"));
+            toast.success(
+              t(
+                askedToManage
+                  ? "auth.verify.welcomePending"
+                  : "auth.verify.welcome",
+              ),
+            );
             router.replace(homeAfterLogin(res.data.accessToken, locale));
             router.refresh();
           },

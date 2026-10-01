@@ -46,6 +46,8 @@ export const AUDIT_ACTIONS = [
   "MEAL_RECORDED",
   "MEAL_UPDATED",
   "MEAL_DELETED",
+  "MANAGER_APPROVED",
+  "MANAGER_REJECTED",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

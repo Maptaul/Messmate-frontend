@@ -1,4 +1,5 @@
 import type { ListParams, Money } from "./api.type";
+import type { MyManagerRequest } from "./manager-request.type";
 
 export type UserRole = "ADMIN" | "MESS_MANAGER" | "MEMBER";
 export type UserStatus = "ACTIVE" | "BLOCKED";
@@ -41,6 +42,8 @@ export interface Me extends User {
     address: string;
     monthlyRent: Money;
   }[];
+  /** The latest request to run a mess; absent from an API older than the feature. */
+  managerApplications?: MyManagerRequest[];
 }
 
 export interface AdminUserDetail extends User {

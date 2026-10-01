@@ -66,7 +66,10 @@
     "OVERDUE": "Overdue",
     "CASH": "Cash",
     "CARD": "Card",
-    "BKASH": "bKash"
+    "BKASH": "bKash",
+    "PENDING": "Pending",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected"
   },
   "nav": {
     "groups": {
@@ -99,7 +102,8 @@
       "payments": "Payments",
       "activity": "Activity",
       "finance": "Personal finance",
-      "profile": "Profile"
+      "profile": "Profile",
+      "managerRequests": "Manager requests"
     }
   },
   "userMenu": {
@@ -149,7 +153,7 @@
       "memberTitle": "I live in a mess",
       "memberDescription": "Plan meals, see the ledger, pay my bill.",
       "managerTitle": "I run a mess",
-      "managerDescription": "Add members, record expenses, close the month.",
+      "managerDescription": "Ask to run a mess. An admin approves it.",
       "name": "Full name",
       "email": "Email",
       "phone": "Phone (optional)",
@@ -160,7 +164,11 @@
       "submit": "Create account",
       "submitting": "Sending code…",
       "haveAccount": "Already have an account?",
-      "login": "Log in"
+      "login": "Log in",
+      "messName": "Mess name",
+      "messAddress": "Mess address",
+      "messAddressHint": "House, road and area. The admin uses it to check the mess is real.",
+      "managerNote": "An admin reviews every request to run a mess. Until it's approved you can use MessMate as a member."
     },
     "verify": {
       "metaTitle": "Verify your email",
@@ -176,7 +184,8 @@
       "expired": "Code expired?",
       "registerAgain": "Register again",
       "toGetNew": "to get a new one.",
-      "welcome": "Email confirmed — welcome to MessMate!"
+      "welcome": "Email confirmed — welcome to MessMate!",
+      "welcomePending": "Account created. Your request to run a mess is with the admin."
     },
     "forgot": {
       "metaTitle": "Reset your password",
@@ -248,7 +257,9 @@
     "categoryMismatch": "That category doesn't belong to this type",
     "subjectMin": "Subject must be at least 3 characters",
     "messageMin": "Write at least 20 characters",
-    "messageMax": "Message is too long"
+    "messageMax": "Message is too long",
+    "reasonRequired": "Give a reason so the applicant knows why.",
+    "reasonMax": "Keep the reason under 500 characters."
   },
   "errors": {
     "network": "Can't reach the MessMate server. Check your connection and try again.",
@@ -264,7 +275,11 @@
       "otpMismatch": "That code doesn't match. Check the email and try again.",
       "emailAlreadyVerified": "This email is already verified — log in instead.",
       "tooManyRequests": "Too many attempts — try again in 15 minutes.",
-      "sessionExpired": "Your session has ended. Please log in again."
+      "sessionExpired": "Your session has ended. Please log in again.",
+      "requestPending": "You already have a request waiting for review.",
+      "requestReviewed": "This request has already been reviewed.",
+      "requestNotFound": "This request no longer exists.",
+      "alreadyManageMess": "You already run a mess. A manager runs one mess."
     }
   },
   "admin": {
@@ -272,7 +287,9 @@
       "blocked": "{name} is blocked",
       "unblocked": "{name} is active again",
       "roleChanged": "{name} is now {role}",
-      "messDeleted": "{name} was deleted"
+      "messDeleted": "{name} was deleted",
+      "requestApproved": "{name} can now run a mess",
+      "requestRejected": "Request from {name} rejected"
     },
     "overview": {
       "metaTitle": "Platform overview",
@@ -461,6 +478,51 @@
       "reopenNote": "Only admins can reopen a closed month, and only before anyone has paid.",
       "leftOn": "Left {date}",
       "activityEmpty": "Nothing logged yet"
+    },
+    "managerRequests": {
+      "metaTitle": "Manager requests",
+      "title": "Manager requests",
+      "description": "People asking to run a mess. Approve them, or reject with a reason.",
+      "tabs": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "ALL": "All"
+      },
+      "searchPlaceholder": "Search name, email or mess",
+      "searchLabel": "Search requests",
+      "caption": "Requests to run a mess",
+      "applicant": "Applicant",
+      "phone": "Phone",
+      "mess": "Mess",
+      "applied": "Applied",
+      "status": "Status",
+      "actions": "Actions",
+      "review": "Review",
+      "view": "View",
+      "reviewAria": "Open {name}'s request",
+      "emptyPending": "No requests waiting",
+      "emptyPendingHint": "New requests to run a mess show up here.",
+      "empty": "No requests here",
+      "emptyHint": "Try another tab or a different search.",
+      "sheetTitle": "Request to run a mess",
+      "sheetDescription": "Check the applicant and the mess before you decide.",
+      "account": "Account",
+      "joined": "Joined {date}",
+      "messName": "Mess name",
+      "messAddress": "Address",
+      "appliedOn": "Applied",
+      "reviewedOn": "Reviewed",
+      "reason": "Reason",
+      "approveNote": "They become a manager and can create this mess after logging in again.",
+      "approve": "Approve",
+      "approving": "Approving…",
+      "reject": "Reject",
+      "reasonLabel": "Why are you rejecting it?",
+      "reasonHint": "The applicant reads this in their email and on their profile.",
+      "confirmReject": "Reject request",
+      "rejecting": "Rejecting…",
+      "cancel": "Cancel"
     }
   },
   "notFound": {
@@ -501,7 +563,8 @@
     "googleFailed": "Google sign-in failed. Please try again.",
     "mealUpdated": "Meals updated for {name}",
     "mealDeleted": "Entry removed",
-    "exported": "{count} entries exported"
+    "exported": "{count} entries exported",
+    "requestSent": "Request sent to the admin"
   },
   "messSwitcher": {
     "label": "Switch mess",
@@ -526,7 +589,9 @@
       "DEPOSIT_DELETED": "Deposit deleted",
       "MEAL_RECORDED": "Meals recorded",
       "MEAL_UPDATED": "Meals updated",
-      "MEAL_DELETED": "Meals deleted"
+      "MEAL_DELETED": "Meals deleted",
+      "MANAGER_APPROVED": "Manager approved",
+      "MANAGER_REJECTED": "Manager request rejected"
     },
     "entities": {
       "BillingCycle": "Billing month",
@@ -1145,7 +1210,9 @@
   "resident": {
     "noMess": {
       "title": "You're not in a mess yet",
-      "body": "Ask your mess manager to add you with the email you registered with — it will show up here right away."
+      "body": "Ask your mess manager to add you with the email you registered with — it will show up here right away.",
+      "pending": "Your request to run {mess} is with the admin.",
+      "runAMess": "Run a mess yourself? Ask from your profile"
     },
     "noCycle": {
       "title": "No month is open right now",
@@ -1436,7 +1503,19 @@
     "securityTitle": "Security",
     "securityBody": "We'll email a 6-digit code to reset your password.",
     "securityGoogle": "You sign in with Google, so there's no MessMate password to change.",
-    "changePassword": "Change password"
+    "changePassword": "Change password",
+    "managerRequest": {
+      "title": "Run a mess",
+      "body": "Want to run your own mess? Send a request. An admin checks it, and then you can create the mess.",
+      "submit": "Send request",
+      "submitting": "Sending…",
+      "pendingTitle": "Request sent",
+      "pendingBody": "Your request to run {mess} has been with the admin since {date}. We'll email you when it's reviewed.",
+      "rejectedTitle": "Request not approved",
+      "rejectedBody": "Your request to run {mess} wasn't approved.",
+      "reason": "Reason: {reason}",
+      "tryAgain": "You can send a new request below."
+    }
   },
   "finance": {
     "metaTitle": "Personal finance",

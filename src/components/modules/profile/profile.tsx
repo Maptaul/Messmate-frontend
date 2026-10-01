@@ -11,6 +11,7 @@ import { useGetMe } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import AccountCard from "./account-card";
 import AvatarCard from "./avatar-card";
+import ManagerRequestCard from "./manager-request-card";
 import MyMessesCard from "./my-messes-card";
 
 export default function Profile() {
@@ -43,6 +44,7 @@ export default function Profile() {
       </div>
       <div className="flex flex-col gap-4">
         <AccountCard me={me} />
+        {me.role === "MEMBER" && <ManagerRequestCard me={me} />}
         {me.role !== "ADMIN" && (
           <Suspense fallback={<Skeleton className="h-28 rounded-xl" />}>
             <MyMessesCard />

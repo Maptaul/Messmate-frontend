@@ -15,6 +15,7 @@ import {
   financePeriod,
   financeSummaryParams,
   fromSearchParams,
+  managerRequestsParams,
   membersParams,
   messAuditParams,
   paymentsParams,
@@ -31,6 +32,7 @@ import {
   mealCountRule,
   messMoneySchema,
   openCycleSchema,
+  registrationSchema,
 } from "../src/validation";
 
 const firstMessage = (result: {
@@ -429,4 +431,51 @@ test("the finance summary keeps a real day as its anchor and drops anything else
     date: "2026-09-15",
   });
   assert.equal(financeSummaryParams(get("15-09-2026")).date, undefined);
+});
+
+test("signing up to run a mess asks for the mess name and address", () => {
+  const account = {
+    name: "Arman Hossain",
+    email: "arman@messmate.test",
+    phone: "",
+    password: "Arman@mess123",
+    confirmPassword: "Arman@mess123",
+    messName: "",
+    messAddress: "",
+  };
+
+  assert.equal(
+    registrationSchema.safeParse({ ...account, role: "MEMBER" }).success,
+    true,
+  );
+
+  const manager = registrationSchema.safeParse({
+    ...account,
+    role: "MESS_MANAGER",
+  });
+  assert.equal(manager.success, false);
+  assert.deepEqual(
+    manager.error?.issues.map((issue) => issue.path.join(".")).sort(),
+    ["messAddress", "messName"],
+  );
+
+  assert.equal(
+    registrationSchema.safeParse({
+      ...account,
+      role: "MESS_MANAGER",
+      messName: "Green View Mess",
+      messAddress: "Nasirabad",
+    }).success,
+    true,
+  );
+});
+
+test("manager requests open on the pending queue, and All drops the filter", () => {
+  const statusOf = (status?: string) =>
+    managerRequestsParams(fromSearchParams(status ? { status } : {})).status;
+
+  assert.equal(statusOf(), "PENDING");
+  assert.equal(statusOf("REJECTED"), "REJECTED");
+  assert.equal(statusOf("ALL"), undefined);
+  assert.equal(statusOf("nonsense"), "PENDING");
 });

@@ -16,6 +16,10 @@ const API_MESSAGE_KEYS: Record<string, MessageKey> = {
   "Too many authentication attempts. Please try again later.":
     "errors.api.tooManyRequests",
   "User not found. Please log in again.": "errors.api.sessionExpired",
+  "You Already Have A Request Waiting For Review": "errors.api.requestPending",
+  "This Request Has Already Been Reviewed": "errors.api.requestReviewed",
+  "Manager Request Not Found": "errors.api.requestNotFound",
+  "You Already Manage A Mess": "errors.api.alreadyManageMess",
 };
 
 export const apiMessageKey = (message: string): MessageKey | undefined =>

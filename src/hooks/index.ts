@@ -5,6 +5,7 @@ export * from "./cycle.hook";
 export * from "./debounce.hook";
 export * from "./export.hook";
 export * from "./ledger.hook";
+export * from "./manager-request.hook";
 export * from "./meal.hook";
 export * from "./mess.hook";
 export * from "./payment.hook";

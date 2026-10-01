@@ -22,6 +22,7 @@ import {
   useActivityUnread,
   useCycleBills,
   useDashboardStats,
+  useManagerRequests,
   useMessCycles,
   useMyBills,
 } from "@/hooks";
@@ -30,13 +31,18 @@ import type { MessChoice } from "@/lib/activeMess";
 import { ROLE_ROUTES } from "@/routes";
 import type { Money, UserRole } from "@/types";
 import type { SidebarItems } from "@/types/sidebar.type";
-import { formatNumber, ROLE_HOME, toNumber } from "@/utils";
+import {
+  formatNumber,
+  PENDING_REQUESTS_PARAMS,
+  ROLE_HOME,
+  toNumber,
+} from "@/utils";
 import MessSwitcher from "./mess-switcher";
 import UserMenu from "./user-menu";
 
 const OWED = { limit: 100 };
 
-/** Numbers beside a nav item: bills still owed, activity not yet seen, users. */
+/** Numbers beside a nav item: bills still owed, activity not yet seen, users, requests waiting. */
 function useNavCounts(role: UserRole, messId: string | null) {
   const isAdmin = role === "ADMIN";
   const isManager = role === "MESS_MANAGER";
@@ -49,6 +55,7 @@ function useNavCounts(role: UserRole, messId: string | null) {
   });
   const cycleBills = useCycleBills(lastClosed.data?.data[0]?.id ?? "", OWED);
   const stats = useDashboardStats(isAdmin);
+  const pendingRequests = useManagerRequests(PENDING_REQUESTS_PARAMS, isAdmin);
 
   const owed = (bills?: { dueAmount: Money }[]) =>
     bills?.filter((bill) => toNumber(bill.dueAmount) > 0).length ?? 0;
@@ -56,6 +63,7 @@ function useNavCounts(role: UserRole, messId: string | null) {
   const counts: Record<string, number> = {};
   if (isAdmin) {
     counts["/admin/users"] = stats.data?.data.users.total ?? 0;
+    counts["/admin/manager-requests"] = pendingRequests.data?.meta?.total ?? 0;
     return counts;
   }
   counts["/dashboard/bills"] = owed(myBills.data?.data);

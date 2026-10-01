@@ -5,6 +5,7 @@ export * from "./cycle.type";
 export * from "./expense.type";
 export * from "./finance.type";
 export * from "./ledger.type";
+export * from "./manager-request.type";
 export * from "./meal.type";
 export * from "./member.type";
 export * from "./mess.type";

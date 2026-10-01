@@ -18,6 +18,10 @@ const STATUS_TONE: Record<string, Tone> = {
   ADMIN: "tone-v",
   MESS_MANAGER: "tone-b",
   MEMBER: "tone-n",
+  // manager requests
+  PENDING: "tone-a",
+  APPROVED: "tone-g",
+  REJECTED: "tone-r",
   // billing cycles and meal plans
   OPEN: "tone-g",
   CLOSED: "tone-n",

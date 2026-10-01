@@ -14,6 +14,8 @@ import {
   type ExpenseType,
   type FinanceEntryParams,
   INCOME_CATEGORIES,
+  MANAGER_REQUEST_STATUSES,
+  type ManagerRequestParams,
   type MealListParams,
   type MemberListParams,
   type MembershipStatus,
@@ -58,6 +60,33 @@ export function usersParams(get: Get): UserListParams {
     status: oneOf(STATUSES, get("status")),
   };
 }
+
+export const MANAGER_REQUEST_TABS = [
+  ...MANAGER_REQUEST_STATUSES,
+  "ALL",
+] as const;
+
+export type ManagerRequestTab = (typeof MANAGER_REQUEST_TABS)[number];
+
+/** The tab is the status filter: none means the pending queue, ALL means every request. */
+export const managerRequestTab = (get: Get): ManagerRequestTab =>
+  oneOf(MANAGER_REQUEST_TABS, get("status")) ?? "PENDING";
+
+export function managerRequestsParams(get: Get): ManagerRequestParams {
+  const tab = managerRequestTab(get);
+  return {
+    page: pageOf(get),
+    limit: PAGE_SIZE,
+    searchTerm: get("searchTerm") || undefined,
+    status: tab === "ALL" ? undefined : tab,
+  };
+}
+
+/** The sidebar badge: how many requests wait for an admin. */
+export const PENDING_REQUESTS_PARAMS: ManagerRequestParams = {
+  status: "PENDING",
+  limit: 1,
+};
 
 export function messesParams(get: Get): MessListParams {
   return {

@@ -35,17 +35,21 @@ export const mealCountRule = z.coerce
 
 // --- Mess (create wizard + settings) -----------------------------------
 
+export const messNameRule = z
+  .string()
+  .trim()
+  .min(3, "validation.messNameMin")
+  .max(120, "validation.messNameMax");
+
+export const messAddressRule = z
+  .string()
+  .trim()
+  .min(3, "validation.addressMin")
+  .max(300, "validation.addressMax");
+
 export const messDetailsSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(3, "validation.messNameMin")
-    .max(120, "validation.messNameMax"),
-  address: z
-    .string()
-    .trim()
-    .min(3, "validation.addressMin")
-    .max(300, "validation.addressMax"),
+  name: messNameRule,
+  address: messAddressRule,
 });
 
 // Inputs hold strings; empty or non-numeric text becomes NaN and is rejected
