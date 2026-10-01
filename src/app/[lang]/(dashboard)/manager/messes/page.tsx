@@ -49,13 +49,16 @@ export default async function page() {
             {t("manager.messes.description")}
           </p>
         </div>
-        <Button
-          render={<Link href={localePath(locale, "/manager/messes/new")} />}
-          nativeButton={false}
-        >
-          <PlusIcon />
-          {t("manager.messes.create")}
-        </Button>
+        {/* A manager runs one mess, so creating is only offered while they have none. */}
+        {!activeMessId && (
+          <Button
+            render={<Link href={localePath(locale, "/manager/messes/new")} />}
+            nativeButton={false}
+          >
+            <PlusIcon />
+            {t("manager.messes.create")}
+          </Button>
+        )}
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<MyMessListLoading />}>

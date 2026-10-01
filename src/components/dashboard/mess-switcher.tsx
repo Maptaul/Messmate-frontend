@@ -1,7 +1,6 @@
 "use client";
 
-import { CheckIcon, ChevronsUpDownIcon, PlusIcon } from "lucide-react";
-import Link from "next/link";
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -9,16 +8,19 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { initialsOf } from "@/components/ui/user-avatar";
-import { useLocalePath, useT } from "@/i18n/i18n-provider";
+import { useT } from "@/i18n/i18n-provider";
 import type { MessChoice } from "@/lib/activeMess";
 import type { UserRole } from "@/types";
 import { rememberActiveMess } from "@/utils";
 
-/** Which mess the dashboard shows. Hidden for admins and single-mess members. */
+/**
+ * Which mess the dashboard shows. Hidden for admins, for a manager who has no
+ * mess yet, and for single-mess members. A manager runs one mess, so there is
+ * no "create" entry here.
+ */
 export default function MessSwitcher({
   role,
   messes,
@@ -29,11 +31,15 @@ export default function MessSwitcher({
   activeMessId: string | null;
 }) {
   const t = useT();
-  const href = useLocalePath();
   const router = useRouter();
 
   const isManager = role === "MESS_MANAGER";
-  if (role === "ADMIN" || (!isManager && messes.length < 2)) return null;
+  if (
+    role === "ADMIN" ||
+    messes.length === 0 ||
+    (!isManager && messes.length < 2)
+  )
+    return null;
 
   const active = messes.find((mess) => mess.id === activeMessId);
 
@@ -88,18 +94,6 @@ export default function MessSwitcher({
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
-        {isManager && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              render={<Link href={href("/manager/messes/new")} />}
-              className="font-medium"
-            >
-              <PlusIcon />
-              {t("messSwitcher.create")}
-            </DropdownMenuItem>
-          </>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

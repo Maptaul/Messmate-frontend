@@ -13,7 +13,12 @@ import MessCreated, { type CreatedMess } from "./mess-created";
 import MessReview from "./mess-review";
 
 /** Details → Money → Members → Review; the draft survives a reload. */
-export default function MessWizard() {
+export default function MessWizard({
+  prefill,
+}: {
+  /** The approved request's mess, used when the draft has no details yet. */
+  prefill?: { name: string; address: string };
+}) {
   const t = useT();
   const locale = useLocale();
   const step = useMessWizard((state) => state.step);
@@ -22,10 +27,12 @@ export default function MessWizard() {
 
   // The draft lives in localStorage, which the server render can't read.
   useEffect(() => {
-    Promise.resolve(useMessWizard.persist.rehydrate()).then(() =>
-      setReady(true),
-    );
-  }, []);
+    Promise.resolve(useMessWizard.persist.rehydrate()).then(() => {
+      const { details, setDetails } = useMessWizard.getState();
+      if (prefill && !details.name && !details.address) setDetails(prefill);
+      setReady(true);
+    });
+  }, [prefill]);
 
   if (created) return <MessCreated {...created} />;
 

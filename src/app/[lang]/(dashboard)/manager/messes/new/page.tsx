@@ -1,8 +1,11 @@
 import { CloudCheckIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import MessWizard from "@/components/modules/mess-wizard/mess-wizard";
-import { getT } from "@/i18n/get-dictionary";
+import { getLocale, getT } from "@/i18n/get-dictionary";
+import { localePath } from "@/i18n/locale-path";
 import { alternates } from "@/i18n/metadata";
+import { getActiveMess, getMeOnServer } from "@/lib/activeMess";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -13,7 +16,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function page() {
-  const t = await getT();
+  const [t, locale, { choices }, me] = await Promise.all([
+    getT(),
+    getLocale(),
+    getActiveMess(),
+    getMeOnServer(),
+  ]);
+
+  // A manager runs one mess; the API refuses a second one too.
+  if (choices.length > 0) redirect(localePath(locale, "/manager"));
+
+  // Start from the mess the admin approved, if that's how they got here.
+  const request = me?.data.managerApplications?.[0];
+  const prefill =
+    request?.status === "APPROVED"
+      ? { name: request.messName, address: request.messAddress }
+      : undefined;
 
   return (
     <section className="page-frame mx-auto max-w-192">
@@ -29,7 +47,7 @@ export default async function page() {
           {t("manager.wizard.draftSaved")}
         </span>
       </div>
-      <MessWizard />
+      <MessWizard prefill={prefill} />
     </section>
   );
 }
