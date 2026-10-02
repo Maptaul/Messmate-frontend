@@ -28,7 +28,7 @@ export default async function page() {
 
   if (!activeMessId) {
     return (
-      <section className="p-5">
+      <section className="page-frame">
         <NoMess />
       </section>
     );

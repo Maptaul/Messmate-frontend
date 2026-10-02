@@ -42,7 +42,7 @@ export default async function page({
   const { activeMessId, choices } = await getActiveMess();
   if (!activeMessId) {
     return (
-      <section className="p-5">
+      <section className="page-frame">
         <NoMess />
       </section>
     );
@@ -56,7 +56,7 @@ export default async function page({
   );
   if (!cycle) {
     return (
-      <section className="p-5">
+      <section className="page-frame">
         <NoCycle />
       </section>
     );
