@@ -1,12 +1,8 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  type QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import {
-  answerMembership,
+  acceptMembership,
   cancelMembership,
+  declineMembership,
   getMessMembershipRequests,
   getMyMembershipRequests,
   inviteMember,
@@ -17,20 +13,6 @@ import {
 } from "@/api";
 import type { MessMembershipParams } from "@/types";
 import { JOIN_CODE_PATTERN } from "@/validation";
-
-/** Everything that changes when someone joins, leaves or gets an answer. */
-const refreshMemberships = (queryClient: QueryClient) => {
-  for (const queryKey of [
-    ["my-membership-requests"],
-    ["mess-membership-requests"],
-    ["members"],
-    ["my-memberships"],
-    ["my-messes"],
-    ["user"],
-  ]) {
-    queryClient.invalidateQueries({ queryKey });
-  }
-};
 
 export function useJoinCodePreview(code: string) {
   return useQuery({
@@ -65,7 +47,9 @@ export function useRequestToJoin() {
 
   return useMutation({
     mutationFn: requestToJoin,
-    onSuccess: () => refreshMemberships(queryClient),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-membership-requests"] });
+    },
   });
 }
 
@@ -74,16 +58,37 @@ export function useInviteMember() {
 
   return useMutation({
     mutationFn: inviteMember,
-    onSuccess: () => refreshMemberships(queryClient),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mess-membership-requests"] });
+    },
   });
 }
 
-export function useAnswerMembership() {
+export function useAcceptMembership() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: answerMembership,
-    onSuccess: () => refreshMemberships(queryClient),
+    mutationFn: acceptMembership,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-membership-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["mess-membership-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["my-memberships"] });
+      queryClient.invalidateQueries({ queryKey: ["my-messes"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+}
+
+export function useDeclineMembership() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: declineMembership,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-membership-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["mess-membership-requests"] });
+    },
   });
 }
 
@@ -92,7 +97,10 @@ export function useCancelMembership() {
 
   return useMutation({
     mutationFn: cancelMembership,
-    onSuccess: () => refreshMemberships(queryClient),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-membership-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["mess-membership-requests"] });
+    },
   });
 }
 
@@ -101,7 +109,12 @@ export function useLeaveMess() {
 
   return useMutation({
     mutationFn: leaveMess,
-    onSuccess: () => refreshMemberships(queryClient),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-memberships"] });
+      queryClient.invalidateQueries({ queryKey: ["my-messes"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
   });
 }
 
@@ -110,6 +123,8 @@ export function useRegenerateJoinCode() {
 
   return useMutation({
     mutationFn: regenerateJoinCode,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["my-messes"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-messes"] });
+    },
   });
 }

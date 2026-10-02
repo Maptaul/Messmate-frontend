@@ -7,8 +7,9 @@ import Panel from "@/components/ui/panel";
 import { Skeleton } from "@/components/ui/skeleton";
 import UserAvatar from "@/components/ui/user-avatar";
 import {
-  useAnswerMembership,
+  useAcceptMembership,
   useCancelMembership,
+  useDeclineMembership,
   useMessMembershipRequests,
 } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
@@ -26,28 +27,34 @@ export default function MembershipRequests({ messId }: { messId: string }) {
     messId,
     PENDING,
   );
-  const answer = useAnswerMembership();
+  const accept = useAcceptMembership();
+  const decline = useDeclineMembership();
   const cancel = useCancelMembership();
 
   const rows = data?.data ?? [];
-  const busy = answer.isPending || cancel.isPending;
+  const busy = accept.isPending || decline.isPending || cancel.isPending;
 
-  const decide = (request: MessMembershipRequest, accept: boolean) =>
-    answer.mutate(
-      { id: request.id, accept },
-      {
-        onSuccess: () =>
-          toast.success(
-            t(
-              accept ? "toast.requestApprovedMember" : "toast.requestDeclined",
-              {
-                name: request.user.name ?? request.user.email,
-              },
-            ),
-          ),
-        onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
-      },
-    );
+  const handleApprove = (request: MessMembershipRequest) =>
+    accept.mutate(request.id, {
+      onSuccess: () =>
+        toast.success(
+          t("toast.requestApprovedMember", {
+            name: request.user.name ?? request.user.email,
+          }),
+        ),
+      onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
+    });
+
+  const handleReject = (request: MessMembershipRequest) =>
+    decline.mutate(request.id, {
+      onSuccess: () =>
+        toast.success(
+          t("toast.requestDeclined", {
+            name: request.user.name ?? request.user.email,
+          }),
+        ),
+      onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
+    });
 
   const withdraw = (request: MessMembershipRequest) =>
     cancel.mutate(request.id, {
@@ -111,7 +118,7 @@ export default function MembershipRequests({ messId }: { messId: string }) {
                   <Button
                     size="sm"
                     disabled={busy}
-                    onClick={() => decide(request, true)}
+                    onClick={() => handleApprove(request)}
                   >
                     <CheckIcon />
                     {t("manager.members.approve")}
@@ -120,7 +127,7 @@ export default function MembershipRequests({ messId }: { messId: string }) {
                     size="sm"
                     variant="outline"
                     disabled={busy}
-                    onClick={() => decide(request, false)}
+                    onClick={() => handleReject(request)}
                   >
                     <XIcon />
                     {t("manager.members.reject")}

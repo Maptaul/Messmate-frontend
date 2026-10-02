@@ -44,15 +44,16 @@ export function getMessMembershipRequests(
   );
 }
 
-export function answerMembership({
-  id,
-  accept,
-}: {
-  id: string;
-  accept: boolean;
-}) {
+export function acceptMembership(id: string) {
   return apiClient<ApiResponse<MessMembershipRequest>>(
-    `/membership/${id}/${accept ? "accept" : "decline"}`,
+    `/membership/${id}/accept`,
+    { method: "PATCH" },
+  );
+}
+
+export function declineMembership(id: string) {
+  return apiClient<ApiResponse<MessMembershipRequest>>(
+    `/membership/${id}/decline`,
     { method: "PATCH" },
   );
 }

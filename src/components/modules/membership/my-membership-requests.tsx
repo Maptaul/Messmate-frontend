@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Panel from "@/components/ui/panel";
 import {
-  useAnswerMembership,
+  useAcceptMembership,
   useCancelMembership,
+  useDeclineMembership,
   useMyMembershipRequests,
 } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
@@ -21,30 +22,30 @@ export default function MyMembershipRequests() {
   const router = useRouter();
 
   const { data } = useMyMembershipRequests();
-  const answer = useAnswerMembership();
+  const accept = useAcceptMembership();
+  const decline = useDeclineMembership();
   const cancel = useCancelMembership();
 
   const rows = data?.data ?? [];
-  const busy = answer.isPending || cancel.isPending;
+  const busy = accept.isPending || decline.isPending || cancel.isPending;
 
   if (rows.length === 0) return null;
 
-  const respond = (request: MyMembershipRequest, accept: boolean) =>
-    answer.mutate(
-      { id: request.id, accept },
-      {
-        onSuccess: () => {
-          if (accept) {
-            toast.success(t("toast.joinedMess", { mess: request.mess.name }));
-            // The dashboard shell picks its mess on the server.
-            router.refresh();
-          } else {
-            toast.success(t("toast.invitationDeclined"));
-          }
-        },
-        onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
+  const handleAccept = (request: MyMembershipRequest) =>
+    accept.mutate(request.id, {
+      onSuccess: () => {
+        toast.success(t("toast.joinedMess", { mess: request.mess.name }));
+        // The dashboard shell picks its mess on the server.
+        router.refresh();
       },
-    );
+      onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
+    });
+
+  const handleDecline = (request: MyMembershipRequest) =>
+    decline.mutate(request.id, {
+      onSuccess: () => toast.success(t("toast.invitationDeclined")),
+      onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
+    });
 
   const withdraw = (request: MyMembershipRequest) =>
     cancel.mutate(request.id, {
@@ -84,7 +85,7 @@ export default function MyMembershipRequests() {
                   <Button
                     size="sm"
                     disabled={busy}
-                    onClick={() => respond(request, true)}
+                    onClick={() => handleAccept(request)}
                   >
                     <CheckIcon />
                     {t("membership.accept")}
@@ -93,7 +94,7 @@ export default function MyMembershipRequests() {
                     size="sm"
                     variant="outline"
                     disabled={busy}
-                    onClick={() => respond(request, false)}
+                    onClick={() => handleDecline(request)}
                   >
                     <XIcon />
                     {t("membership.decline")}
