@@ -15,6 +15,8 @@ export default async function NotFound() {
 
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-8 bg-background p-6 text-center">
+      {/* not-found cannot export metadata; React's <title> is the documented way. */}
+      <title>{`${t("notFound.metaTitle")} · MessMate`}</title>
       <Link
         href={localePath(locale, "/")}
         className="flex items-center gap-2 font-semibold"
