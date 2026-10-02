@@ -915,6 +915,7 @@
       "kOutstanding": "বাকি",
       "kOutstandingHint": "{count} জনের বাকি",
       "kOutstandingNone": "সবাই পরিশোধ করেছেন",
+      "kOutstandingCarried": "এখানে কিছু বাকি নেই · {count}টি পরের মাসে গেছে",
       "finalTitle": "চূড়ান্ত বিল",
       "finalCaption": "{date}-এ বন্ধ করেছেন {name} · শুধু দেখা যাবে",
       "colMember": "সদস্য",

@@ -915,6 +915,7 @@
       "kOutstanding": "Outstanding",
       "kOutstandingHint": "{count} members still owe",
       "kOutstandingNone": "Everyone has paid",
+      "kOutstandingCarried": "Nothing owed here · {count} moved to next month",
       "finalTitle": "Final bills",
       "finalCaption": "Closed {date} by {name} · read-only",
       "colMember": "Member",

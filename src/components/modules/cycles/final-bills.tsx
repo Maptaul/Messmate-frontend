@@ -34,6 +34,7 @@ export default function FinalBills({ cycleId }: { cycleId: string }) {
           credit: toNumber(bill.creditAmount),
           paid: toNumber(bill.paidAmount),
           due: toNumber(bill.dueAmount),
+          carried: bill.status === "CARRIED",
         }))}
     />
   );

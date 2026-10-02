@@ -20,6 +20,8 @@ export interface SettlementRow {
   credit: number;
   paid?: number;
   due: number;
+  /** Its balance opened the next month's bill. */
+  carried?: boolean;
   /** Shown when the row is opened. */
   detail?: ReactNode;
 }
@@ -73,7 +75,9 @@ export default function SettlementTable({
   ];
 
   const due = (row: SettlementRow) =>
-    row.due < 0 ? (
+    row.carried ? (
+      <span className="text-muted-foreground">{t("status.CARRIED")}</span>
+    ) : row.due < 0 ? (
       <span className="text-(--tone-g-fg)">
         {t("manager.cycle.inCredit", { amount: money(-row.due) })}
       </span>

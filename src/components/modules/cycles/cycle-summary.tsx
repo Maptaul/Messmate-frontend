@@ -115,6 +115,7 @@ function OutstandingCard({ cycleId }: { cycleId: string }) {
   const { data } = useSuspenseCycleBills(cycleId, ALL_BILLS_PARAMS);
   const owing = data.data.filter((bill) => toNumber(bill.dueAmount) > 0);
   const total = owing.reduce((sum, bill) => sum + toNumber(bill.dueAmount), 0);
+  const carried = data.data.filter((bill) => bill.status === "CARRIED").length;
 
   return (
     <StatCard
@@ -126,7 +127,11 @@ function OutstandingCard({ cycleId }: { cycleId: string }) {
           ? t("manager.cycle.kOutstandingHint", {
               count: formatNumber(owing.length, locale),
             })
-          : t("manager.cycle.kOutstandingNone")
+          : carried > 0
+            ? t("manager.cycle.kOutstandingCarried", {
+                count: formatNumber(carried, locale),
+              })
+            : t("manager.cycle.kOutstandingNone")
       }
     />
   );
