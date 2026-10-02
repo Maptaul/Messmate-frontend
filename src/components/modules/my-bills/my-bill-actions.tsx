@@ -83,6 +83,10 @@ export default function MyBillActions({
         <InfoIcon className="size-3.5 shrink-0" />
         {t("resident.bills.testCard")}
       </p>
+      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <InfoIcon className="size-3.5 shrink-0" />
+        {t("resident.bills.testBkash")}
+      </p>
     </div>
   );
 }

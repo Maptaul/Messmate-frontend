@@ -1396,6 +1396,7 @@
       "paidLine": "Paid",
       "payCardAmount": "Pay {amount} with card",
       "testCard": "Test card 4242 4242 4242 4242, any future date, any CVC.",
+      "testBkash": "bKash sandbox wallet 01770618575, OTP 123456, PIN 12121.",
       "download": "Download PDF",
       "breakdown": "View breakdown",
       "noMatch": "No bills with this status.",
