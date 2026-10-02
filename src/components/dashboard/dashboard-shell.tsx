@@ -7,6 +7,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import ThemeToggle from "@/components/ui/theme-toggle";
+import { getT } from "@/i18n/get-dictionary";
 import { getActiveCycle } from "@/lib/activeCycle";
 import { getActiveMess } from "@/lib/activeMess";
 import type { UserRole } from "@/types";
@@ -25,7 +26,10 @@ export default async function DashboardShell({
   children: ReactNode;
   role: UserRole;
 }) {
-  const { choices, activeMessId } = await getActiveMess();
+  const [{ choices, activeMessId }, t] = await Promise.all([
+    getActiveMess(),
+    getT(),
+  ]);
   const isResident = role !== "ADMIN";
   const cycle =
     isResident && activeMessId ? await getActiveCycle(activeMessId) : null;
@@ -39,7 +43,10 @@ export default async function DashboardShell({
       />
       <SidebarInset className="min-w-0">
         <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-3 backdrop-blur-md md:px-5">
-          <SidebarTrigger className="text-foreground-2" />
+          <SidebarTrigger
+            className="text-foreground-2"
+            aria-label={t("shell.toggleSidebar")}
+          />
           <Separator orientation="vertical" className="h-4 self-center!" />
           <HeaderBreadcrumb role={role} />
           <div className="flex-1" />

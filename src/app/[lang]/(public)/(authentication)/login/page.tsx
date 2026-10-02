@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import LoginForm from "@/components/form/login-form";
 import AuthShell from "@/components/modules/auth/auth-shell";
 import { getT } from "@/i18n/get-dictionary";
-import { alternates } from "@/i18n/metadata";
+import { pageMetadata } from "@/i18n/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
-  return {
+  return pageMetadata({
     title: t("auth.login.metaTitle"),
     description: t("auth.login.metaDescription"),
-    alternates: await alternates("/login"),
-  };
+    path: "/login",
+  });
 }
 
 export default async function LoginPage({
