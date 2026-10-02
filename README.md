@@ -5,6 +5,7 @@ keeps the ledger (meals, groceries, bills, deposits, bazar duty), closing the mo
 turns all of it into one bill per member, and members pay by card (Stripe) or bKash.
 English by default, Bangla at `/bn`, light and dark.
 
+**Live app:** <https://meassmate.vercel.app> ·
 **Live API:** <https://messmatebackend.vercel.app> ·
 **Backend repo:** <https://github.com/Maptaul/Messmate-Backend> ·
 **API reference:** [docs/API.md](https://github.com/Maptaul/Messmate-Backend/blob/main/docs/API.md)
@@ -20,6 +21,21 @@ One click on `/login` signs in as any of them. They hold demo data only.
 | Admin        | `admin@messmate.app`   | `Admin@messmate12345`   |
 | Mess manager | `manager@messmate.app` | `Manager@messmate12345` |
 | Member       | `member@messmate.app`  | `Member@messmate12345`  |
+
+The demo manager runs **Shanti Niloy Bachelor Mess** with four members and three
+closed months; the demo member lives there with the newest closed month still
+unpaid, so the card and bKash buttons have something to pay. Two more messes and their members
+sit beside it (`*@messmate.test`, same passwords as the demo member, managers as
+the demo manager). The API's `pnpm seed:demo --write` resets all of it.
+
+Paying in test mode:
+
+| Method | What to enter |
+| ------ | ------------- |
+| Card (Stripe) | `4242 4242 4242 4242`, any future date, any CVC |
+| bKash sandbox | wallet `01770618575`, OTP `123456`, PIN `12121` |
+
+Both are also printed under the pay buttons.
 
 ---
 
@@ -49,14 +65,17 @@ One click on `/login` signs in as any of them. They hold demo data only.
 
 | Role             | Pages                                                                                                                                  |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Admin**        | `/admin` platform overview with weekly trends and charts, `/admin/users` (search, filters, role change, block/unblock) and each user's detail, `/admin/messes` (filter by manager) and each mess's detail (cycles, members, activity, reopen a closed month), `/admin/audit-logs` with a change sheet |
-| **Mess manager** | `/manager` month at a glance (rate, bazar, shared, outstanding with trends, tomorrow's headcount, meals per day), meal register (record a day or browse every entry), month headcount, expenses with receipt upload and payer filter, deposits with who hasn't paid, bazar duty calendar, billing cycles with an expandable settlement table and close, bills with cash payments, a breakdown sheet and a PDF of each bill, members (default meals, plan for them), activity timeline, mess settings, a four-step create-mess wizard whose draft survives a reload |
-| **Member**       | `/dashboard` today (plan tomorrow until 11 PM, running bill), meal plan calendar (day, several days, "I'm away", defaults), the read-only mess ledger in tabs, bills with Stripe or bKash and a PDF of each bill, payment history with a detail sheet, activity with new changes marked |
-| **Everyone**     | `/profile` (photo, details, memberships, password reset link), `/finance` personal income and spending by day, week, month or year, with charts, filters and CSV export |
-| **Public**       | Home (with a bill estimator), features, about us, FAQ with search, contact, login (three demo accounts + Google), register with email OTP and live password rules, forgot password |
+| **Admin**        | `/admin` platform overview with weekly trends and charts, `/admin/manager-requests` (pending, approved, rejected; approve, or reject with a reason; a sidebar badge counts what waits), `/admin/users` (search, filters, role change, block/unblock) and each user's detail, `/admin/messes` (filter by manager) and each mess's detail (cycles, members, activity, reopen a closed month), `/admin/audit-logs` with a change sheet |
+| **Mess manager** | `/manager` month at a glance (rate, bazar, shared, outstanding with trends, tomorrow's headcount, meals per day), meal register (record a day or browse every entry), month headcount, expenses with receipt upload and payer filter, deposits with who hasn't paid, bazar duty calendar, billing cycles with an expandable settlement table and close, bills with cash payments, a breakdown sheet and a PDF of each bill (a balance moved into the next month shows as carried), members (the mess's join code to copy or renew, invite by email, requests to approve or decline with a sidebar badge, default meals, plan for them), activity timeline, mess settings, a four-step create-mess wizard prefilled from the approved request, whose draft survives a reload |
+| **Member**       | `/dashboard` today (plan tomorrow until 11 PM, running bill), meal plan calendar (day, several days, "I'm away", defaults), the read-only mess ledger in tabs, bills with Stripe or bKash and a PDF of each bill, payment history with a detail sheet, activity with new changes marked. Without a mess, the dashboard asks for a join code — showing the mess before you ask — and lists invitations to accept or decline |
+| **Everyone**     | `/profile` (photo, details, memberships with leave and join another, invitations and requests, a request to run a mess and its answer, password reset link), `/finance` personal income and spending by day, week, month or year, with charts, filters and CSV export |
+| **Public**       | Home (with a bill estimator), features, about us, FAQ with search, contact, login (three demo accounts + Google), register with email OTP and live password rules — choosing to run a mess asks for its name and address and sends a request to the admin — forgot password |
 
 A manager also eats and pays like a member, so the manager sidebar carries the
-member pages too. Managers and members get an activity bell in the header with the
+member pages too. A manager runs one mess, so once it exists the create entry
+disappears. Nobody is put into a mess without agreeing: a member asks with the
+join code and the manager approves, or the manager invites and the member
+accepts. Managers and members get an activity bell in the header with the
 number of changes since they last opened the feed. The header also has a jump-to
 menu (⌘K), the open month and its meal rate, the 11 PM countdown and quick actions
 (N) that open the create forms directly (`?new=1`).
