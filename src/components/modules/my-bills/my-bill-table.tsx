@@ -111,7 +111,11 @@ function BillCard({ bill }: { bill: MyBill }) {
             label={t("resident.bills.inCredit", { amount: money(-due) })}
           />
         ) : (
-          <StatusBadge status={due === 0 ? "SETTLED" : bill.status} />
+          <StatusBadge
+            status={
+              due === 0 && bill.status !== "CARRIED" ? "SETTLED" : bill.status
+            }
+          />
         )}
       </div>
 
@@ -129,7 +133,9 @@ function BillCard({ bill }: { bill: MyBill }) {
             ? money(due)
             : due < 0
               ? t("resident.bills.inCredit", { amount: money(-due) })
-              : t("resident.bills.settled")}
+              : bill.status === "CARRIED"
+                ? t("resident.bills.carried")
+                : t("resident.bills.settled")}
         </span>
       </div>
 

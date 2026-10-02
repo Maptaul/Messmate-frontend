@@ -28,6 +28,7 @@ const API_MESSAGE_KEYS: Record<string, MessageKey> = {
   "They Already Asked To Join. Approve Their Request Instead.":
     "errors.api.theyAsked",
   "This Person Already Has An Invitation": "errors.api.alreadyInvited",
+  "Reopen The Newest Closed Month First": "errors.api.reopenNewestFirst",
   "This User Is Already An Active Member Of This Mess":
     "errors.api.alreadyActiveMember",
   "No User Found With This Email. Ask Them To Register First.":

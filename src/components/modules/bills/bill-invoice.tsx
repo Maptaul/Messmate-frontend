@@ -134,7 +134,9 @@ export default function BillInvoice({
                 ? t("invoice.due")
                 : due < 0
                   ? t("invoice.inCredit")
-                  : t("invoice.settled")}
+                  : bill.status === "CARRIED"
+                    ? t("invoice.carried")
+                    : t("invoice.settled")}
             </td>
             <td className="pt-3 text-right tabular-nums">
               {formatBDT(Math.abs(due), locale)}

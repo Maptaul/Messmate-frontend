@@ -1,6 +1,6 @@
 import type { ListParams, Money } from "./api.type";
 
-export type BillStatus = "UNPAID" | "PARTIAL" | "PAID";
+export type BillStatus = "UNPAID" | "PARTIAL" | "PAID" | "CARRIED";
 export type PaymentStatus =
   | "UNPAID"
   | "PAID"

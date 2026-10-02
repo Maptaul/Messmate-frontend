@@ -100,7 +100,13 @@ export default function BillTable({
             />
           );
         }
-        return <StatusBadge status={due === 0 ? "SETTLED" : bill.status} />;
+        return (
+          <StatusBadge
+            status={
+              due === 0 && bill.status !== "CARRIED" ? "SETTLED" : bill.status
+            }
+          />
+        );
       },
     },
     {

@@ -33,6 +33,7 @@ const STATUS_TONE: Record<string, Tone> = {
   SETTLED: "tone-g",
   CREDIT: "tone-g",
   PARTIAL: "tone-a",
+  CARRIED: "tone-n",
   UNPAID: "tone-a",
   OVERDUE: "tone-r",
   FAILED: "tone-r",
