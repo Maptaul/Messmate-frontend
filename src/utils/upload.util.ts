@@ -1,7 +1,7 @@
 import { FetchError } from "ofetch";
 import type { ApiErrorBody } from "@/types";
 
-/** The API rejects files over 4 MB with a 500, so check before sending. */
+/** The API refuses files over 4 MB, so check before sending. */
 export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 export const RECEIPT_TYPES = [
