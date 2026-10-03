@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { getCycle, getMessCycles } from "@/api";
 import type { Cycle, CycleStatus } from "@/types";
+import { getErrorStatus } from "@/utils/error.util";
 import { OPEN_CYCLE_PARAMS } from "@/utils/params.util";
 import serverApi from "./serverApi";
 
@@ -12,7 +13,8 @@ export type ActiveCycle = Pick<Cycle, "id" | "year" | "month" | "status">;
  * to this mess), otherwise the newest month with `prefer` status (the open
  * month for meals, expenses and deposits; a closed one for bills, since bills
  * only exist once a month is closed), otherwise the open month. Null means the
- * mess has no month at all.
+ * mess has no month at all; a failed call (rate limit, outage) throws to the
+ * error page instead of offering to open a month that already exists.
  */
 export const getActiveCycle = cache(
   async (
@@ -37,8 +39,11 @@ export const getActiveCycle = cache(
 
       const open = await getMessCycles(messId, OPEN_CYCLE_PARAMS, client);
       return open.data[0] ?? null;
-    } catch {
-      return null;
+    } catch (error) {
+      // A `?cycle=` that is malformed, missing or another mess's.
+      const status = getErrorStatus(error);
+      if (status === 400 || status === 403 || status === 404) return null;
+      throw error;
     }
   },
 );

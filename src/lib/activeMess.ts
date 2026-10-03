@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import { getMe } from "@/api";
 import type { ApiResponse, Me, UserRole } from "@/types";
+import { getErrorStatus } from "@/utils/error.util";
 import { ACTIVE_MESS_COOKIE } from "@/utils/mess.util";
 import serverApi from "./serverApi";
 import { getSessionUser } from "./session";
@@ -13,13 +14,19 @@ export interface MessChoice {
   address: string;
 }
 
-/** /auth/me once per request, shared by the layout and the page. */
+/**
+ * /auth/me once per request, shared by the layout and the page. Null only
+ * when the API doesn't accept the session; any other failure (rate limit,
+ * outage) throws to the error page instead of looking like "no mess yet".
+ */
 export const getMeOnServer = cache(
   async (): Promise<ApiResponse<Me> | null> => {
     try {
       return await getMe(await serverApi());
-    } catch {
-      return null;
+    } catch (error) {
+      const status = getErrorStatus(error);
+      if (status === 401 || status === 403) return null;
+      throw error;
     }
   },
 );

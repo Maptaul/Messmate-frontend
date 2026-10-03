@@ -27,13 +27,18 @@ export default async function DashboardShell({
   children: ReactNode;
   role: UserRole;
 }) {
+  // If the API fails, the shell still draws without the mess switcher or the
+  // month pill; the page hits the same (cached) failure and shows its error
+  // panel, with Try again, inside the shell.
   const [{ choices, activeMessId }, t] = await Promise.all([
-    getActiveMess(),
+    getActiveMess().catch(() => ({ choices: [], activeMessId: null })),
     getT(),
   ]);
   const isResident = role !== "ADMIN";
   const cycle =
-    isResident && activeMessId ? await getActiveCycle(activeMessId) : null;
+    isResident && activeMessId
+      ? await getActiveCycle(activeMessId).catch(() => null)
+      : null;
 
   return (
     <SidebarProvider>
