@@ -17,9 +17,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * Where Stripe (?session_id=) and bKash (?status=) send the browser back to.
- * Stripe's result is confirmed with the API - the URL alone never marks
- * anything paid. bKash reports its own outcome; anything but "success" goes
- * to the cancel page.
+ * Neither is taken on the URL's word: Stripe's session is confirmed with the
+ * API, and a bKash success shows "received" only once the payment it names
+ * (`?paymentId=`) reads back as paid. Any other bKash status goes to the
+ * cancel page.
  */
 export default async function page({
   searchParams,
@@ -32,12 +33,13 @@ export default async function page({
 
   const sessionId = typeof sp.session_id === "string" ? sp.session_id : "";
   const bkashStatus = typeof sp.status === "string" ? sp.status : "";
+  const paymentId = typeof sp.paymentId === "string" ? sp.paymentId : "";
 
   if (bkashStatus && bkashStatus !== "success") {
     redirect(localePath(locale, `/payment/cancel?status=${bkashStatus}`));
   }
 
-  let outcome: PaymentOutcome = bkashStatus ? "success" : "pending";
+  let outcome: PaymentOutcome = "pending";
   let errorKey: string | undefined;
   let payment: Payment | null = null;
 
@@ -51,6 +53,14 @@ export default async function page({
           .then((detail) => detail.data)
           .catch(() => null);
       }
+    } catch (err) {
+      outcome = "error";
+      errorKey = getErrorMessage(err);
+    }
+  } else if (bkashStatus === "success" && paymentId) {
+    try {
+      payment = (await getPayment(paymentId, client)).data;
+      outcome = payment.status === "PAID" ? "success" : "pending";
     } catch (err) {
       outcome = "error";
       errorKey = getErrorMessage(err);
