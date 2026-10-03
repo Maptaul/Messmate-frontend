@@ -22,7 +22,7 @@ export default function PageSkeleton({
         <Skeleton className="h-6.5 w-65 max-w-[70%]" />
       </div>
       {stats && (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}

@@ -36,7 +36,7 @@ export default function StatCard({
       </span>
       <span
         className={cn(
-          "truncate text-2xl leading-tight font-semibold tracking-[-0.01em] tabular-nums",
+          "truncate text-2xl leading-tight font-semibold tracking-[-0.01em] tabular-nums @max-[480px]:text-xl",
           valueClassName,
         )}
       >
@@ -44,10 +44,11 @@ export default function StatCard({
       </span>
       {children}
       {(hint || trend) && (
-        <span className="mt-auto flex items-end justify-between gap-2">
+        // A narrow cell (two per row on a phone) moves the trend under the hint.
+        <span className="mt-auto flex flex-wrap items-end justify-between gap-2">
           <span
             className={cn(
-              "text-xs leading-snug text-muted-foreground",
+              "grow basis-24 text-xs leading-snug text-muted-foreground",
               hintClassName,
             )}
           >
@@ -59,7 +60,8 @@ export default function StatCard({
     </>
   );
   const className = cn(
-    "flex min-w-0 flex-col gap-1.5 border-r border-b px-5 py-4 text-foreground",
+    // A phone fits two cells per row, so they tighten up there.
+    "flex min-w-0 flex-col gap-1.5 border-r border-b px-5 py-4 text-foreground @max-[480px]:px-4",
     trend && "gap-2.5",
   );
 
