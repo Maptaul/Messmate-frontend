@@ -10,6 +10,20 @@ if (!backendUrl) {
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  poweredByHeader: false,
+
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+    ];
+  },
 
   // The browser only ever talks to this app. Proxying the API through our own
   // origin makes the backend's auth cookies first-party, so proxy.ts can read

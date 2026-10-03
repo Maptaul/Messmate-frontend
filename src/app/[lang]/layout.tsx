@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { LOCALES } from "@/i18n/config";
 import { getDictionary, getLocale, getT } from "@/i18n/get-dictionary";
 import { I18nProvider } from "@/i18n/i18n-provider";
+import { OPEN_GRAPH, ogLocale } from "@/i18n/metadata";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";
 import "../globals.css";
@@ -40,11 +41,8 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: t("meta.siteTitle"), template: "%s · MessMate" },
     description: t("meta.siteDescription"),
     applicationName: "MessMate",
-    openGraph: {
-      type: "website",
-      siteName: "MessMate",
-      locale: locale === "bn" ? "bn_BD" : "en_BD",
-    },
+    openGraph: { ...OPEN_GRAPH, locale: ogLocale(locale) },
+    twitter: { card: "summary_large_image" },
   };
 }
 
