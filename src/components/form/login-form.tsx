@@ -89,7 +89,6 @@ export default function LoginForm({
     );
     queryClient.removeQueries({ queryKey: ["user"] });
     router.replace(homeAfterLogin(tokens.accessToken, locale, redirect));
-    router.refresh();
   };
 
   const form = useAppForm({

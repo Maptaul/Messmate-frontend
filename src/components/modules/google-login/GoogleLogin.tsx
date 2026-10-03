@@ -46,7 +46,6 @@ export default function GoogleLoginComponent({
                   router.replace(
                     homeAfterLogin(data.accessToken, locale, redirect),
                   );
-                  router.refresh();
                 },
                 onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
               },

@@ -51,7 +51,6 @@ export default function VerifyAccountForm({ email }: { email: string }) {
               ),
             );
             router.replace(homeAfterLogin(res.data.accessToken, locale));
-            router.refresh();
           },
           onError: (err) => {
             toast.error(t.dynamic(getErrorMessage(err)));
