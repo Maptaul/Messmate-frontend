@@ -1,7 +1,12 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { CircleUserRoundIcon, LogOutIcon, WalletIcon } from "lucide-react";
+import {
+  ChevronsUpDownIcon,
+  CircleUserRoundIcon,
+  LogOutIcon,
+  WalletIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -15,14 +20,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 import StatusBadge from "@/components/ui/status-badge";
 import UserAvatar from "@/components/ui/user-avatar";
 import { useGetMe, useLogout } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage, ROLE_LABEL_KEY } from "@/utils";
 
-/** The signed-in person, at the right end of the header: one tap away on a phone. */
-export default function UserMenu() {
+/**
+ * The signed-in person: at the foot of the sidebar with their name and role,
+ * and as an avatar at the right end of the header, one tap away on a phone.
+ */
+export default function UserMenu({
+  inSidebar = false,
+}: {
+  inSidebar?: boolean;
+}) {
   const t = useT();
   const href = useLocalePath();
   const router = useRouter();
@@ -53,24 +66,56 @@ export default function UserMenu() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="shrink-0 rounded-full"
-            aria-label={t("userMenu.open", { name: user.name })}
+      {inSidebar ? (
+        <DropdownMenuTrigger
+          render={
+            <SidebarMenuButton
+              size="lg"
+              className="h-auto gap-2.5 p-1.5"
+              aria-label={user.name}
+            />
+          }
+        >
+          <UserAvatar
+            name={user.name}
+            src={user.avatarUrl}
+            variant="ink"
+            className="size-[30px]"
           />
-        }
+          <span className="grid min-w-0 flex-1 leading-tight">
+            <span className="truncate text-[13px] font-medium">
+              {user.name}
+            </span>
+            <span className="truncate text-[11px] text-muted-foreground">
+              {t(ROLE_LABEL_KEY[user.role])}
+            </span>
+          </span>
+          <ChevronsUpDownIcon className="size-3.5 text-muted-foreground" />
+        </DropdownMenuTrigger>
+      ) : (
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0 rounded-full"
+              aria-label={t("userMenu.open", { name: user.name })}
+            />
+          }
+        >
+          <UserAvatar
+            name={user.name}
+            src={user.avatarUrl}
+            variant="ink"
+            className="size-[30px]"
+          />
+        </DropdownMenuTrigger>
+      )}
+      <DropdownMenuContent
+        side={inSidebar ? "top" : "bottom"}
+        align={inSidebar ? "start" : "end"}
+        className="w-61"
       >
-        <UserAvatar
-          name={user.name}
-          src={user.avatarUrl}
-          variant="ink"
-          className="size-[30px]"
-        />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side="bottom" align="end" className="w-61">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="px-2.5 pt-2 pb-2.5 font-normal">
             <p className="text-[13px] font-medium text-foreground">

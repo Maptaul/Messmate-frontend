@@ -13,6 +13,10 @@ export default function loading() {
             <Skeleton key={item} className="h-4 w-4/5 rounded-sm" />
           ))}
         </div>
+        <div className="mt-auto flex items-center gap-2.5 border-t pt-3">
+          <Skeleton className="size-[30px] rounded-full" />
+          <Skeleton className="h-3 w-28 rounded-sm" />
+        </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-14 shrink-0 items-center gap-3 border-b px-3 md:px-5">
