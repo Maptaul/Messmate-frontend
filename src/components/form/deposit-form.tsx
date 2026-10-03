@@ -11,7 +11,6 @@ import { formatBDT, getErrorMessage } from "@/utils";
 import { depositSchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-/** Add a deposit for a member, or (with `deposit`) fix its amount and note. */
 export default function DepositForm({
   cycleId,
   messId,

@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { AuditLog } from "@/types";
 import { auditParams, EXPORT_PAGE_SIZE } from "@/utils";
 
-/** Every audit entry matching the current action and entity filters. */
 export default function AuditLogExport() {
   const t = useT();
   const { get } = useQueryParams();

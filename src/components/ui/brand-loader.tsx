@@ -1,6 +1,5 @@
 import Logo from "@/assets/svg/Logo";
 
-/** Full-screen loader: the logo breathing inside a spinning ring. */
 export default function BrandLoader({ label }: { label: string }) {
   return (
     <output className="fixed inset-0 z-50 grid animate-loader-in place-items-center bg-background">

@@ -12,7 +12,6 @@ import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage } from "@/utils";
 import { forgotPasswordSchema, resetPasswordSchema } from "@/validation";
 
-/** Step 1 asks for the email; step 2 takes the emailed code and a new password. */
 export default function ForgotPasswordForm() {
   const t = useT();
   const href = useLocalePath();

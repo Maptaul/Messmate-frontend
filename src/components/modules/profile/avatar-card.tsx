@@ -15,7 +15,6 @@ import type { Me } from "@/types";
 import { getErrorMessage } from "@/utils";
 import { AVATAR_TYPES, checkUpload } from "@/utils/upload.util";
 
-/** The photo: pick one and it uploads at once, with a progress bar. */
 export default function AvatarCard({ me }: { me: Me }) {
   const t = useT();
   const router = useRouter();

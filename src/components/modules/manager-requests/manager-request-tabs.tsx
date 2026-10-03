@@ -13,7 +13,6 @@ import {
 import ManagerRequestTable from "./manager-request-table";
 import ManagerRequestTableLoading from "./manager-request-table-loading";
 
-/** The pending queue first; the tab is the status filter and lives in the URL. */
 export default function ManagerRequestTabs() {
   const t = useT();
   const { get, set } = useQueryParams();

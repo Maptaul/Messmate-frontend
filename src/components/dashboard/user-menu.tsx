@@ -27,10 +27,6 @@ import { useGetMe, useLogout } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage, ROLE_LABEL_KEY } from "@/utils";
 
-/**
- * The signed-in person: at the foot of the sidebar with their name and role,
- * and as an avatar at the right end of the header, one tap away on a phone.
- */
 export default function UserMenu({
   inSidebar = false,
 }: {

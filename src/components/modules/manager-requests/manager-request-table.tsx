@@ -54,7 +54,7 @@ export default function ManagerRequestTable({
       key: "phone",
       header: t("admin.managerRequests.phone"),
       className: "text-muted-foreground tabular-nums",
-      cell: (request) => request.user.phone ?? "—",
+      cell: (request) => request.user.phone ?? "-",
     },
     {
       key: "mess",

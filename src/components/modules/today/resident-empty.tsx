@@ -9,7 +9,6 @@ import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 import { getMeOnServer } from "@/lib/activeMess";
 
-/** Shown to a resident who isn't in a mess yet, or whose mess has no open month. */
 export default async function ResidentEmpty({
   kind,
 }: {

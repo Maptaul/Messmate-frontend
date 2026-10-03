@@ -20,7 +20,6 @@ import type { MealCounts as Counts } from "@/types";
 import { formatNumber, getErrorMessage } from "@/utils";
 import MealCounts from "./meal-counts";
 
-/** What an unplanned day counts as, with a dialog to change it. */
 export default function DefaultMealsCard({
   messId,
   defaults,

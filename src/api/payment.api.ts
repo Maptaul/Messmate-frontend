@@ -36,7 +36,6 @@ export function getPayment(paymentId: string, client = apiClient) {
   return client<ApiResponse<Payment>>(`/payment/${paymentId}`);
 }
 
-/** The bill as a PDF file, the same document the month's email attaches. */
 export function downloadBillPdf(billId: string) {
   return apiClient(`/payment/bill-pdf/${billId}`, { responseType: "blob" });
 }

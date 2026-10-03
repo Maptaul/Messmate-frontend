@@ -4,7 +4,6 @@ import { CloudCheckIcon } from "lucide-react";
 import { useT } from "@/i18n/i18n-provider";
 import { useMessWizard } from "@/stores/mess-wizard.store";
 
-/** "Draft saved", once the draft holds something the manager entered. */
 export default function WizardDraftStatus({
   prefill,
 }: {

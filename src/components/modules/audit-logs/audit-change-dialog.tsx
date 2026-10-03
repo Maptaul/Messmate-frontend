@@ -15,14 +15,10 @@ import type { AuditLog } from "@/types";
 import { formatDateTime } from "@/utils";
 
 const show = (value: unknown) => {
-  if (value === undefined || value === null) return "—";
+  if (value === undefined || value === null) return "-";
   return typeof value === "object" ? JSON.stringify(value) : String(value);
 };
 
-/**
- * "View change": a side sheet with the entity and a before/after row per
- * recorded field — the old value struck through, the new one in green.
- */
 export default function AuditChangeDialog({
   log,
   variant = "ghost",
@@ -99,7 +95,7 @@ export default function AuditChangeDialog({
                   <span
                     className={cn(
                       "break-all text-(--tone-r-fg)",
-                      before !== "—" && "line-through",
+                      before !== "-" && "line-through",
                     )}
                   >
                     {before}

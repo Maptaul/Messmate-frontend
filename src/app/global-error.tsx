@@ -3,11 +3,11 @@
 import { ServerCrashIcon } from "lucide-react";
 import "./globals.css";
 
-/** "What you can do" — both languages, since there is no dictionary here. */
+/** "What you can do" - both languages, since there is no dictionary here. */
 const TIPS = [
   [
-    "Try again — most hiccups pass in a moment.",
-    "আবার চেষ্টা করুন — বেশিরভাগ সমস্যা একটু পরেই কেটে যায়।",
+    "Try again. Most hiccups pass in a moment.",
+    "আবার চেষ্টা করুন। বেশিরভাগ সমস্যা একটু পরেই কেটে যায়।",
   ],
   [
     "Your meals, bills and payments are safe.",
@@ -20,7 +20,7 @@ const TIPS = [
 ];
 
 // Replaces the root layout when it crashes, so there is no dictionary or
-// theme here — both languages are spelled out and styles stay minimal.
+// theme here - both languages are spelled out and styles stay minimal.
 export default function GlobalError({
   error,
   retry,

@@ -50,7 +50,7 @@ export default function FinanceEntryTable({
       header: t("finance.note"),
       className: "max-w-64 text-muted-foreground",
       cell: (entry) => (
-        <span className="line-clamp-2">{entry.note || "—"}</span>
+        <span className="line-clamp-2">{entry.note || "-"}</span>
       ),
     },
     {

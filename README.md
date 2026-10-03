@@ -1,4 +1,4 @@
-# MessMate — Smart Mess & Shared Housing Management Platform (Frontend)
+# MessMate: Smart Mess & Shared Housing Management Platform (Frontend)
 
 The web app for MessMate. Residents of a shared mess plan their meals, the manager
 keeps the ledger (meals, groceries, bills, deposits, bazar duty), closing the month
@@ -67,9 +67,9 @@ Both are also printed under the pay buttons.
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Admin**        | `/admin` platform overview with weekly trends and charts, `/admin/manager-requests` (pending, approved, rejected; approve, or reject with a reason; a sidebar badge counts what waits), `/admin/users` (search, filters, role change, block/unblock) and each user's detail, `/admin/messes` (filter by manager) and each mess's detail (cycles, members, activity, reopen a closed month), `/admin/audit-logs` with a change sheet |
 | **Mess manager** | `/manager` month at a glance (rate, bazar, shared, outstanding with trends, tomorrow's headcount, meals per day), meal register (record a day or browse every entry), month headcount, expenses with receipt upload and payer filter, deposits with who hasn't paid, bazar duty calendar, billing cycles with an expandable settlement table and close, bills with cash payments, a breakdown sheet and a PDF of each bill (a balance moved into the next month shows as carried), members (the mess's join code to copy or renew, invite by email, requests to approve or decline with a sidebar badge, default meals, plan for them), activity timeline, mess settings, a four-step create-mess wizard prefilled from the approved request, whose draft survives a reload |
-| **Member**       | `/dashboard` today (plan tomorrow until 11 PM, running bill), meal plan calendar (day, several days, "I'm away", defaults), the read-only mess ledger in tabs, bills with Stripe or bKash and a PDF of each bill, payment history with a detail sheet, activity with new changes marked. Without a mess, the dashboard asks for a join code — showing the mess before you ask — and lists invitations to accept or decline |
+| **Member**       | `/dashboard` today (plan tomorrow until 11 PM, running bill), meal plan calendar (day, several days, "I'm away", defaults), the read-only mess ledger in tabs, bills with Stripe or bKash and a PDF of each bill, payment history with a detail sheet, activity with new changes marked. Without a mess, the dashboard asks for a join code (showing the mess before you ask) and lists invitations to accept or decline |
 | **Everyone**     | `/profile` (photo, details, memberships with leave and join another, invitations and requests, a request to run a mess and its answer, password reset link), `/finance` personal income and spending by day, week, month or year, with charts, filters and CSV export |
-| **Public**       | Home (with a bill estimator), features, about us, FAQ with search, contact, login (three demo accounts + Google), register with email OTP and live password rules — choosing to run a mess asks for its name and address and sends a request to the admin — forgot password |
+| **Public**       | Home (with a bill estimator), features, about us, FAQ with search, contact, login (three demo accounts + Google), register with email OTP and live password rules (choosing to run a mess asks for its name and address and sends a request to the admin), forgot password |
 
 A manager also eats and pays like a member, so the manager sidebar carries the
 member pages too. A manager runs one mess, so once it exists the create entry
@@ -97,7 +97,7 @@ menu (⌘K), the open month and its meal rate, the 11 PM countdown and quick act
 - **Bilingual.** Every route sits under `app/[lang]`. English has no prefix, Bangla is
   `/bn/...`; a `NEXT_LOCALE` cookie remembers the choice. Strings live in
   `src/i18n/dictionaries/en.json` and `bn.json`.
-- **Exports.** **Download PDF** saves the bill as a file from the API — the same PDF the
+- **Exports.** **Download PDF** saves the bill as a file from the API: the same PDF the
   month's email attaches, in English, since a server PDF cannot shape Bangla. Every table
   has an Export CSV button that fetches every
   page matching the current filters, with a BOM so Excel opens Bangla correctly.
@@ -110,7 +110,7 @@ src/
 ├── app/[lang]/
 │   ├── (public)/(marketing)/        home, features, about-us, faq, contact
 │   ├── (public)/(authentication)/   login, register, register/verify-account, forgot-password
-│   └── (dashboard)/                 admin/, manager/, dashboard/, (account)/  — one layout per role
+│   └── (dashboard)/                 admin/, manager/, dashboard/, (account)/  one layout per role
 ├── api/            one function per endpoint
 ├── hooks/          TanStack Query hooks (useX / useSuspenseX, mutations invalidate)
 ├── components/
@@ -137,7 +137,7 @@ pnpm install
 # 2. Configure
 cp .env.example .env.local   # then fill in the values below
 
-# 3. Run — with the MessMate API running locally on port 5000
+# 3. Run, with the MessMate API running locally on port 5000
 pnpm dev                     # http://localhost:3000
 ```
 
@@ -154,7 +154,7 @@ To develop against the live API without running the backend, put
 
 | Variable (`.env.local`)        | Value                                                                        |
 | ------------------------------ | ---------------------------------------------------------------------------- |
-| `JWT_ACCESS_SECRET`            | the API's `JWT_ACCESS_SECRET` — used only on the server, by `proxy.ts`        |
+| `JWT_ACCESS_SECRET`            | the API's `JWT_ACCESS_SECRET`, used only on the server, by `proxy.ts`        |
 | `NEXT_PUBLIC_APP_URL`          | this app's origin, e.g. `http://localhost:3000`                              |
 | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | the API's Google OAuth client id; the Google button hides when it is empty   |
 | `NEXT_PUBLIC_CONTACT_EMAIL`    | the inbox the contact page writes to                                         |

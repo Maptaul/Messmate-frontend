@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { Expense } from "@/types";
 import { EXPORT_PAGE_SIZE, expensesParams } from "@/utils";
 
-/** Every expense matching the current search, type and payer filters. */
 export default function ExpenseExport({ cycleId }: { cycleId: string }) {
   const t = useT();
   const { get } = useQueryParams();

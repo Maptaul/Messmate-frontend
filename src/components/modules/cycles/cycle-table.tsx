@@ -16,7 +16,6 @@ interface Props extends CycleListParams {
   handlePageChange: (page: number) => void;
 }
 
-/** One card per month: its meals, grocery and rate, and who closed it. */
 export default function CycleTable({
   messId,
   handlePageChange,
@@ -117,7 +116,7 @@ function Figures({
 }) {
   const t = useT();
   const locale = useLocale();
-  const dash = "—";
+  const dash = "-";
 
   return (
     <span className="grid grid-cols-3 gap-2 text-[13px]">

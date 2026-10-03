@@ -46,7 +46,6 @@ function openDays(cycle: ActiveCycle) {
   return days;
 }
 
-/** A manager planning one day of meals on a member's behalf. */
 export default function MemberPlanDialog({
   member,
   cycle,

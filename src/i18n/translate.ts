@@ -32,7 +32,7 @@ const fill = (template: string, vars?: MessageVars) =>
 export interface Translator {
   (key: MessageKey, vars?: MessageVars): string;
   /**
-   * For strings only known at runtime — Zod messages (which are keys) and API
+   * For strings only known at runtime - Zod messages (which are keys) and API
    * messages (mapped in errors.api). Unknown text comes back unchanged.
    */
   dynamic: (keyOrText: string, vars?: MessageVars) => string;

@@ -2,7 +2,7 @@ import type { ListParams, Money } from "./api.type";
 import type { MembershipStatus } from "./user.type";
 
 export interface MessMember {
-  /** The MessMember id — what every member-scoped endpoint takes. */
+  /** The MessMember id - what every member-scoped endpoint takes. */
   id: string;
   status: MembershipStatus;
   joinedAt: string;

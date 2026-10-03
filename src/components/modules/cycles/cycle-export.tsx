@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { Cycle } from "@/types";
 import { cyclesParams, EXPORT_PAGE_SIZE } from "@/utils";
 
-/** Every month matching the status and year filters. */
 export default function CycleExport({ messId }: { messId: string }) {
   const t = useT();
   const { get } = useQueryParams();

@@ -53,7 +53,7 @@ export default function DepositTable({
       key: "note",
       header: t("manager.deposits.note"),
       className: "max-w-64 text-muted-foreground",
-      cell: (deposit) => deposit.note || "—",
+      cell: (deposit) => deposit.note || "-",
     },
     {
       key: "by",

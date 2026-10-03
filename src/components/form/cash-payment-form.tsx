@@ -11,7 +11,6 @@ import { formatBDT, getErrorMessage, toNumber } from "@/utils";
 import { cashPaymentSchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-/** Records cash the member handed over — partial is fine, never more than is due. */
 export default function CashPaymentForm({
   bill,
   handleClose,

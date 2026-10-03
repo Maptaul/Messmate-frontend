@@ -19,7 +19,7 @@ export default function OpenCycleDialog({
   openMonth,
 }: {
   messId: string;
-  /** The month already open, if any — a mess can only have one. */
+  /** The month already open, if any - a mess can only have one. */
   openMonth?: string;
 }) {
   const t = useT();

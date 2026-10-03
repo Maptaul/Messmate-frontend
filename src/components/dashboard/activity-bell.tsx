@@ -15,7 +15,6 @@ import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { UserRole } from "@/types";
 import { formatNumber, formatRelative, RECENT_ACTIVITY_PARAMS } from "@/utils";
 
-/** New activity in the mess since the viewer last opened the feed; checked every minute. */
 export default function ActivityBell({
   role,
   messId,
@@ -89,7 +88,7 @@ export default function ActivityBell({
               <span className="text-[13px] leading-snug">
                 <span className="font-medium">{log.actor.name}</span> ·{" "}
                 {t(`audit.actions.${log.action}`)}
-                {log.subjectMember && ` — ${log.subjectMember.user.name}`}
+                {log.subjectMember && ` - ${log.subjectMember.user.name}`}
               </span>
               <span className="font-mono text-[11px] text-muted-foreground">
                 {formatRelative(log.createdAt, locale)}

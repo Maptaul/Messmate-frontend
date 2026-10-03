@@ -110,7 +110,7 @@ export default function MyPaymentTable({ handlePageChange, ...params }: Props) {
       header: t("resident.payments.paidAt"),
       className: "font-mono text-xs whitespace-nowrap text-muted-foreground",
       cell: (payment) =>
-        payment.paidAt ? formatTime(payment.paidAt, locale) : "—",
+        payment.paidAt ? formatTime(payment.paidAt, locale) : "-",
     },
     {
       key: "details",

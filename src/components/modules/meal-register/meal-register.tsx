@@ -12,10 +12,6 @@ import MealRegisterLoading from "./meal-register-loading";
 import MealRegisterTable from "./meal-register-table";
 import MealSummary from "./meal-summary";
 
-/**
- * Two ways in: record one day for everyone, or browse every entry. The
- * month's per-member totals sit alongside.
- */
 export default function MealRegister({
   cycleId,
   year,

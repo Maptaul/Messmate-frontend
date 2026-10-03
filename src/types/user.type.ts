@@ -5,7 +5,7 @@ export type UserRole = "ADMIN" | "MESS_MANAGER" | "MEMBER";
 export type UserStatus = "ACTIVE" | "BLOCKED";
 export type MembershipStatus = "ACTIVE" | "LEFT";
 
-/** What the access token carries — enough to route and label the UI. */
+/** What the access token carries - enough to route and label the UI. */
 export interface SessionUser {
   userId: string;
   name: string;

@@ -5,7 +5,6 @@ import EmptyState from "@/components/ui/empty-state";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 
-/** A ledger page for a mess with no open month (and no `?cycle=` to fall back on). */
 export default async function NoCycle() {
   const [t, locale] = await Promise.all([getT(), getLocale()]);
 

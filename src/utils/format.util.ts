@@ -27,7 +27,7 @@ export const formatNumber = (
     maximumFractionDigits: 2,
   }).format(toNumber(value));
 
-/** 2026 → "2026" / "২০২৬" — a year, without a thousands separator. */
+/** 2026 → "2026" / "২০২৬" - a year, without a thousands separator. */
 export const formatYear = (year: number, locale: Locale = "en") =>
   new Intl.NumberFormat(INTL_LOCALE[locale], { useGrouping: false }).format(
     year,
@@ -41,7 +41,6 @@ export const formatDate = (value: string | Date, locale: Locale = "en") =>
     year: "numeric",
   }).format(new Date(value));
 
-/** "Tuesday, Sep 15, 2026" — a day heading. */
 export const formatLongDate = (value: string | Date, locale: Locale = "en") =>
   new Intl.DateTimeFormat(INTL_LOCALE[locale], {
     timeZone: DHAKA,
@@ -51,7 +50,7 @@ export const formatLongDate = (value: string | Date, locale: Locale = "en") =>
     year: "numeric",
   }).format(new Date(value));
 
-/** Sun…Sat, short — a month grid's header. 6 Sep 2026 is a Sunday. */
+/** Sun…Sat, short - a month grid's header. 6 Sep 2026 is a Sunday. */
 export const weekdayNames = (locale: Locale = "en") =>
   Array.from({ length: 7 }, (_, day) =>
     new Intl.DateTimeFormat(INTL_LOCALE[locale], {
@@ -60,7 +59,6 @@ export const weekdayNames = (locale: Locale = "en") =>
     }).format(new Date(Date.UTC(2026, 8, 6 + day))),
   );
 
-/** "7:50 PM" — a time of day in Dhaka. */
 export const formatTime = (value: string | Date, locale: Locale = "en") =>
   new Intl.DateTimeFormat(INTL_LOCALE[locale], {
     timeZone: DHAKA,
@@ -92,14 +90,13 @@ export const formatMonth = (
 export const formatDeadline = (deadline: string, locale: Locale = "en") =>
   formatDateTime(`${deadline.replace(" ", "T")}:00+06:00`, locale);
 
-/** Just the month name ("September" / "সেপ্টেম্বর"), for pickers. */
 export const formatMonthName = (month: number, locale: Locale = "en") =>
   new Intl.DateTimeFormat(INTL_LOCALE[locale], {
     month: "long",
     timeZone: "UTC",
   }).format(new Date(Date.UTC(2000, month - 1, 1)));
 
-/** Today's date in Dhaka as YYYY-MM-DD — the format every API date takes. */
+/** Today's date in Dhaka as YYYY-MM-DD - the format every API date takes. */
 export const todayInDhaka = () =>
   new Intl.DateTimeFormat("en-CA", { timeZone: DHAKA }).format(new Date());
 
@@ -109,7 +106,6 @@ export const dayInDhaka = (offsetDays = 0) =>
     new Date(Date.now() + offsetDays * 86_400_000),
   );
 
-/** "Sep 2026" / "সেপ্টেম্বর ২০২৬" — the header's cycle pill. */
 export const formatShortMonth = (
   year: number,
   month: number,
@@ -121,7 +117,6 @@ export const formatShortMonth = (
     timeZone: "UTC",
   }).format(new Date(Date.UTC(year, month - 1, 1)));
 
-/** "1h ago", "12d ago" — newest-first feeds. */
 export const formatRelative = (value: string | Date, locale: Locale = "en") => {
   const seconds = (new Date(value).getTime() - Date.now()) / 1000;
   const format = new Intl.RelativeTimeFormat(INTL_LOCALE[locale], {

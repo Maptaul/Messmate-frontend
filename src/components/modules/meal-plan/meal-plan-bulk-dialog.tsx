@@ -29,10 +29,6 @@ import MealCounts from "./meal-counts";
 
 const OFF: Counts = { lunch: 0, dinner: 0 };
 
-/**
- * A run of open days at once. "Away" sets them all to nothing; "several days"
- * sets them all to the chosen counts.
- */
 export default function MealPlanBulkDialog({
   cycleId,
   days,
@@ -40,7 +36,6 @@ export default function MealPlanBulkDialog({
   away = false,
 }: {
   cycleId: string;
-  /** The month's days; only the open ones can be picked. */
   days: MyCalendarDay[];
   defaults: Counts;
   away?: boolean;

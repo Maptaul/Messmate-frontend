@@ -16,7 +16,6 @@ import {
   toNumber,
 } from "@/utils";
 
-/** The month's four headline numbers: running while open, final once closed. */
 export default function CycleSummary({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();
@@ -76,7 +75,6 @@ export default function CycleSummary({ cycleId }: { cycleId: string }) {
   );
 }
 
-/** Days of the month that have happened (all of them for a past month). */
 function daysSoFar(year: number, month: number) {
   const today = todayInDhaka();
   const prefix = `${year}-${String(month).padStart(2, "0")}`;

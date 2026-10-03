@@ -5,7 +5,6 @@ import ExportCsvButton from "@/components/ui/export-csv-button";
 import { useT } from "@/i18n/i18n-provider";
 import type { GroceryDuty } from "@/types";
 
-/** Every bazar turn of the month. */
 export default function DutyExport({ cycleId }: { cycleId: string }) {
   const t = useT();
 

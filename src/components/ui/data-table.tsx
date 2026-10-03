@@ -30,7 +30,6 @@ interface Props<T> {
     action?: ReactNode;
   };
   caption?: string;
-  /** Totals row. */
   footer?: ReactNode;
   /** Inside a Panel that already draws the card. */
   bare?: boolean;
@@ -41,7 +40,7 @@ const CELL = "px-3 py-2.5 first:pl-4 last:pr-4";
 
 /**
  * A table with a micro-label header on a muted band, tabular numbers and
- * hover rows. Below `md` every row becomes a card — the first column is the
+ * hover rows. Below `md` every row becomes a card - the first column is the
  * title, labelled columns become label/value pairs and the unlabelled last
  * column (row actions) sits at the bottom.
  */

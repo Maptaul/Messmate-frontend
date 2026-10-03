@@ -145,7 +145,7 @@ export function cyclesParams(get: Get): CycleListParams {
 
 export const MY_MESSES_PARAMS = { page: 1, limit: 50 };
 
-/** The mess's one open month — the overview and its server prefetch share this key. */
+/** The mess's one open month - the overview and its server prefetch share this key. */
 export const OPEN_CYCLE_PARAMS = { status: "OPEN" as const, limit: 1 };
 
 const BILL_STATUSES: readonly BillStatus[] = ["UNPAID", "PARTIAL", "PAID"];
@@ -176,7 +176,6 @@ export function ledgerTab(get: Get): LedgerTab {
   return oneOf(LEDGER_TABS, get("tab")) ?? "meals";
 }
 
-/** Every meal entry of the month, a page at a time (the ledger's meals tab). */
 export function ledgerMealsParams(get: Get): MealListParams {
   return { page: pageOf(get), limit: PAGE_SIZE };
 }
@@ -198,7 +197,6 @@ export function billsParams(get: Get): BillListParams {
   };
 }
 
-/** Every active member, for pickers (deposit, expense payer, register). */
 /** Everyone who ever lived in the mess, left ones included. */
 export const ALL_MEMBERS_PARAMS = { page: 1, limit: 100 };
 
@@ -256,7 +254,6 @@ export function paymentsParams(get: Get): PaymentListParams {
   };
 }
 
-/** The newest bill only — what the Today page shows. */
 export const LATEST_BILL_PARAMS = { page: 1, limit: 1 };
 
 export const FINANCE_PERIODS = [
@@ -274,7 +271,6 @@ const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
 const isoDay = (value: string | undefined) =>
   value && ISO_DAY.test(value) ? value : undefined;
 
-/** The summary's window: a period, anchored on `date` (default today). */
 export function financeSummaryParams(get: Get) {
   return { period: financePeriod(get), date: isoDay(get("date")) };
 }

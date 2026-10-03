@@ -17,7 +17,6 @@ import usePlanCutoff from "@/hooks/plan-cutoff.hook";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { dayInDhaka, formatLongDate, getErrorMessage } from "@/utils";
 
-/** Tomorrow's lunch and dinner, editable until 11 PM tonight. */
 export default function TomorrowMeals({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();

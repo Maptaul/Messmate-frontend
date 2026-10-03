@@ -22,14 +22,9 @@ export interface SettlementRow {
   due: number;
   /** Its balance opened the next month's bill. */
   carried?: boolean;
-  /** Shown when the row is opened. */
   detail?: ReactNode;
 }
 
-/**
- * The month's bills as one wide table with a totals row. Rows with a
- * `detail` open to show it.
- */
 export default function SettlementTable({
   title,
   caption,

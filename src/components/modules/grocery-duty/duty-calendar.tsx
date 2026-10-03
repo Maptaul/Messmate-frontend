@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { formatNumber, todayInDhaka, weekdayNames } from "@/utils";
 import { dutyColors } from "./duty-colors";
 
-/** The month as a grid: who shops each day, and the days nobody has. */
 export default function DutyCalendar({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();

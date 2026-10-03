@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { MealEntry } from "@/types";
 import { EXPORT_PAGE_SIZE } from "@/utils";
 
-/** The month's register, narrowed by the "All entries" member and day filters. */
 export default function MealExport({ cycleId }: { cycleId: string }) {
   const t = useT();
   const { get } = useQueryParams();

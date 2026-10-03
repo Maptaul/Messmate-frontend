@@ -1,7 +1,6 @@
 import PageSkeleton from "@/components/ui/page-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-/** While the dashboard shell loads: its sidebar, its header and a page. */
 export default function loading() {
   return (
     <div aria-busy="true" className="flex min-h-svh w-full">

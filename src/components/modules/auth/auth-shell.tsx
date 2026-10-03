@@ -8,7 +8,6 @@ import { localePath } from "@/i18n/locale-path";
 import { cn } from "@/lib/utils";
 import AuthAside from "./auth-aside";
 
-/** Logo and switchers on top, the form centred, the brand panel beside it. */
 export default async function AuthShell({
   children,
   wide = false,

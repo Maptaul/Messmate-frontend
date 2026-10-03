@@ -5,7 +5,6 @@ import EmptyState from "@/components/ui/empty-state";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 
-/** What a manager sees on any mess page before they have created a mess. */
 export default async function NoMess() {
   const [t, locale] = await Promise.all([getT(), getLocale()]);
 

@@ -6,7 +6,6 @@ import { useSuspenseCycleTrends, useSuspenseSettlementPreview } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import { cumulative, formatBDT, formatNumber, lastPoints } from "@/utils";
 
-/** The month so far for this member: meals, rate, running bill, deposits. */
 export default function TodayStats({
   cycleId,
   memberId,

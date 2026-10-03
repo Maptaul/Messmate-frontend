@@ -25,7 +25,6 @@ export const EXPENSE_TYPE_ICON: Record<Type, LucideIcon> = {
   OTHER: CircleEllipsisIcon,
 };
 
-/** The type's icon and name, as the expense tables show it. */
 export default function ExpenseType({ type }: { type: Type }) {
   const t = useT();
   const Icon = EXPENSE_TYPE_ICON[type];

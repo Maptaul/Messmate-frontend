@@ -17,7 +17,6 @@ import { cn } from "@/lib/utils";
 import type { Payment } from "@/types";
 import { formatBDT, formatDateTime, formatMonth } from "@/utils";
 
-/** One payment in full, read fresh from the API when the sheet opens. */
 export default function PaymentDetailSheet({ payment }: { payment: Payment }) {
   const t = useT();
   const locale = useLocale();
@@ -51,7 +50,7 @@ export default function PaymentDetailSheet({ payment }: { payment: Payment }) {
       : []),
     [
       t("resident.payments.paidAt"),
-      detail.paidAt ? formatDateTime(detail.paidAt, locale) : "—",
+      detail.paidAt ? formatDateTime(detail.paidAt, locale) : "-",
     ],
     [t("resident.payments.billAfter"), t(`status.${detail.bill.status}`)],
     [

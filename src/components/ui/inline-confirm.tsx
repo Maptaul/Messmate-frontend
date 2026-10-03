@@ -5,10 +5,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { useT } from "@/i18n/i18n-provider";
 import { cn } from "@/lib/utils";
 
-/**
- * An in-row confirm: the row's action cell turns into
- * "Cancel · <Action>" in place, no modal. Destructive actions are solid red.
- */
 export default function InlineConfirm({
   confirmLabel,
   onConfirm,

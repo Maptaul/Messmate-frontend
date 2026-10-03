@@ -10,7 +10,6 @@ import { useRegenerateJoinCode, useSuspenseMyMesses } from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import { getErrorMessage, MY_MESSES_PARAMS } from "@/utils";
 
-/** The code the manager shares; whoever enters it still needs approval. */
 export default function JoinCodeCard({ messId }: { messId: string }) {
   const t = useT();
   const [confirming, setConfirming] = useState(false);

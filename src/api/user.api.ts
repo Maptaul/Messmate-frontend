@@ -2,7 +2,7 @@ import apiClient from "@/lib/apiClient";
 import type { ApiResponse, UpdateProfilePayload, User } from "@/types";
 import { uploadWithProgress } from "@/utils/upload.util";
 
-/** Changing the name kills the current access token — refresh afterwards. */
+/** Changing the name kills the current access token - refresh afterwards. */
 export function updateProfile(payload: UpdateProfilePayload) {
   return apiClient<ApiResponse<User>>("/user/update-profile", {
     method: "PATCH",

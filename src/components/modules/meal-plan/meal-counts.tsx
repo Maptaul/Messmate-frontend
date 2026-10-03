@@ -4,7 +4,6 @@ import MealStepper from "@/components/ui/meal-stepper";
 import { useT } from "@/i18n/i18n-provider";
 import type { MealCounts as Counts } from "@/types";
 
-/** Lunch and dinner steppers side by side, as every meal-plan dialog shows them. */
 export default function MealCounts({
   value,
   onChange,

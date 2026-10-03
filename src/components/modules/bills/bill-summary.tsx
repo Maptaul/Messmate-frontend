@@ -6,7 +6,6 @@ import { useSuspenseCycleBills } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { ALL_BILLS_PARAMS, formatBDT, formatNumber, toNumber } from "@/utils";
 
-/** Billed, collected, still owed, and how many bills are fully paid. */
 export default function BillSummary({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();

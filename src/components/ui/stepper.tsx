@@ -1,10 +1,6 @@
 import { CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/**
- * Numbered progress for a multi-step form: every step up to `current` is
- * filled, finished ones show a tick. Phones get "Step n of N" and a bar.
- */
 export default function Stepper({
   steps,
   current,

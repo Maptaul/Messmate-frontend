@@ -18,7 +18,6 @@ import { formatBDT, formatDate, formatMonthName, formatNumber } from "@/utils";
 const INCOME = "var(--chart-1)";
 const EXPENSE = "var(--chart-5)";
 
-/** The window's totals, income against expense over it, and by category. */
 export default function FinanceSummary({
   period,
   date,

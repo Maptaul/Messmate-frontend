@@ -18,7 +18,6 @@ import { formatDate, getErrorMessage } from "@/utils";
 
 const PENDING = { status: "PENDING", limit: 50 } as const;
 
-/** Who is waiting: requests the manager answers, invitations they can withdraw. */
 export default function MembershipRequests({ messId }: { messId: string }) {
   const t = useT();
   const locale = useLocale();

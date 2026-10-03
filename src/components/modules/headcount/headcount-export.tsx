@@ -9,7 +9,6 @@ import { registerDate, todayInDhaka } from "@/utils";
 
 type Row = CycleCalendarDay["members"][number];
 
-/** The chosen day's headcount, one row per member. */
 export default function HeadcountExport({
   cycleId,
   year,

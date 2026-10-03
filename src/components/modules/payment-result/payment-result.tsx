@@ -24,7 +24,6 @@ const LOOK: Record<PaymentOutcome, { tone: string; icon: LucideIcon }> = {
   pending: { tone: "tone-n", icon: ClockIcon },
 };
 
-/** The centred card every payment outcome is shown in. */
 export function ResultCard({
   tone,
   icon: Icon,
@@ -70,7 +69,6 @@ export default async function PaymentResult({
 }: {
   outcome: PaymentOutcome;
   errorKey?: string;
-  /** The confirmed payment, read back from the API, when there is one. */
   payment?: Payment | null;
 }) {
   const [t, locale] = await Promise.all([getT(), getLocale()]);
@@ -117,7 +115,7 @@ export default async function PaymentResult({
         ],
         [
           t("resident.paymentResult.paidAt"),
-          payment.paidAt ? formatDateTime(payment.paidAt, locale) : "—",
+          payment.paidAt ? formatDateTime(payment.paidAt, locale) : "-",
         ],
         [
           t("resident.paymentResult.billStatus"),

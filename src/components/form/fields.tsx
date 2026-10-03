@@ -54,14 +54,12 @@ function TranslatedErrors({ errors }: { errors: unknown[] }) {
 interface FieldShellProps {
   label: string;
   description?: ReactNode;
-  /** Sits at the end of the label row, e.g. a "Forgot password?" link. */
   action?: ReactNode;
   /** Shown under the control instead of errors: it already says what is wrong. */
   checklist?: ReactNode;
   children: (props: { id: string; invalid: boolean }) => ReactNode;
 }
 
-/** Label, control, then the first error — once the field has been touched. */
 function FieldShell({
   label,
   description,
@@ -161,7 +159,6 @@ export function MoneyField({
   );
 }
 
-/** The new-password rules, each ticked off as the typed value meets it. */
 const PASSWORD_RULES = [
   ["min", (value: string) => value.length >= 8],
   ["lower", (value: string) => /[a-z]/.test(value)],
@@ -211,7 +208,6 @@ export function PasswordField({
   label: string;
   description?: ReactNode;
   action?: ReactNode;
-  /** Show the new-password rules under the input, ticking as they are met. */
   rules?: boolean;
   autoComplete?: string;
 }) {
@@ -339,7 +335,6 @@ export interface RadioCardOption {
   icon?: ReactNode;
 }
 
-/** A radio group drawn as selectable cards, for small either/or choices. */
 export function RadioCardsField({
   label,
   options,

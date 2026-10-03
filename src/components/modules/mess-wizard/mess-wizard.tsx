@@ -12,7 +12,6 @@ import { formatNumber } from "@/utils";
 import MessCreated, { type CreatedMess } from "./mess-created";
 import MessReview from "./mess-review";
 
-/** Details → Money → Members → Review; the draft survives a reload. */
 export default function MessWizard({
   prefill,
 }: {

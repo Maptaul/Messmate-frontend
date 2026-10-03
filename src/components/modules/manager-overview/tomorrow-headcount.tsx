@@ -94,7 +94,7 @@ function Headcount({ cycleId, date }: { cycleId: string; date: string }) {
           changed.map((member) => (
             <p key={member.memberId} className="flex items-center gap-2">
               <UserAvatar name={member.name} className="size-6" />
-              {member.name} —{" "}
+              {member.name}:{" "}
               {member.lunch + member.dinner === 0
                 ? t("manager.overview.off")
                 : t("manager.overview.mealsOf", {

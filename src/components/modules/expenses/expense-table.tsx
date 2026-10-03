@@ -54,7 +54,7 @@ export default function ExpenseTable({
       header: t("manager.expenses.description_col"),
       className: "max-w-64",
       cell: (expense) => (
-        <span className="line-clamp-2">{expense.description || "—"}</span>
+        <span className="line-clamp-2">{expense.description || "-"}</span>
       ),
     },
     {
@@ -108,7 +108,7 @@ export default function ExpenseTable({
             )}
           </Button>
         ) : (
-          <span className="text-muted-foreground">—</span>
+          <span className="text-muted-foreground">-</span>
         ),
     },
     {

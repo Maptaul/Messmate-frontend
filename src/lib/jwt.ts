@@ -18,7 +18,7 @@ const secret = new TextEncoder().encode(secretValue);
 
 /**
  * Verifies the backend's access token and returns who it belongs to, or null.
- * This decides navigation only — the API re-checks role and ban status on
+ * This decides navigation only - the API re-checks role and ban status on
  * every request, so a stale role here can show a page but never its data.
  */
 export async function verifyAccessToken(

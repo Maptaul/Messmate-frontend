@@ -7,7 +7,6 @@ import type { ActiveCycle } from "@/lib/activeCycle";
 import type { UserRole } from "@/types";
 import { formatBDT, formatShortMonth } from "@/utils";
 
-/** "Sep 2026 · ৳62.24 / meal" — the open month and its running meal rate. */
 export default function CyclePill({
   role,
   cycle,

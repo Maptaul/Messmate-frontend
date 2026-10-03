@@ -1,7 +1,7 @@
 {
   "meta": {
-    "siteTitle": "MessMate — shared mess accounts, settled",
-    "siteDescription": "Meal plans, groceries, deposits and the month-end bill for shared messes in Bangladesh — every member sees the same ledger."
+    "siteTitle": "MessMate: shared mess accounts, settled",
+    "siteDescription": "Meal plans, groceries, deposits and the month-end bill for shared messes in Bangladesh. Every member sees the same ledger."
   },
   "common": {
     "loading": "Loading",
@@ -122,7 +122,7 @@
       "ledgerTitle": "One ledger, no arguments",
       "ledgerBody": "Groceries, gas, rent and deposits are recorded once and visible to all.",
       "billTitle": "Month-end bill in one click",
-      "billBody": "Close the cycle, every member gets their share — pay by card or bKash."
+      "billBody": "Close the cycle and every member gets their share. Pay by card or bKash."
     },
     "login": {
       "metaTitle": "Log in",
@@ -186,7 +186,7 @@
       "expired": "Code expired?",
       "registerAgain": "Register again",
       "toGetNew": "to get a new one.",
-      "welcome": "Email confirmed — welcome to MessMate!",
+      "welcome": "Email confirmed. Welcome to MessMate!",
       "welcomePending": "Account created. Your request to run a mess is with the admin."
     },
     "forgot": {
@@ -276,8 +276,8 @@
       "userBlocked": "Your account is blocked. Contact the admin.",
       "userDeleted": "This account has been deleted.",
       "otpMismatch": "That code doesn't match. Check the email and try again.",
-      "emailAlreadyVerified": "This email is already verified — log in instead.",
-      "tooManyRequests": "Too many attempts — try again in 15 minutes.",
+      "emailAlreadyVerified": "This email is already verified. Log in instead.",
+      "tooManyRequests": "Too many attempts. Try again in 15 minutes.",
       "sessionExpired": "Your session has ended. Please log in again.",
       "requestPending": "You already have a request waiting for review.",
       "requestReviewed": "This request has already been reviewed.",
@@ -371,7 +371,7 @@
       "cancel": "Cancel",
       "confirm": "Confirm",
       "empty": "No users match",
-      "emptyHint": "No users match — try another name or clear the filters.",
+      "emptyHint": "No users match. Try another name or clear the filters.",
       "phone": "Phone",
       "verified": "Verified",
       "notVerified": "Not verified",
@@ -383,12 +383,12 @@
       "changeRoleMenu": "Change role…",
       "saveRole": "Save role",
       "roleHints": {
-        "ADMIN": "Runs the platform — users, messes, audit log",
+        "ADMIN": "Runs the platform: users, messes, audit log",
         "MESS_MANAGER": "Can create and run messes",
-        "MEMBER": "Lives in a mess — meal plan and bills"
+        "MEMBER": "Lives in a mess: meal plan and bills"
       },
-      "roleBlocked": "{name} still manages {mess} — a manager can’t be demoted while they own a mess.",
-      "roleBlockedMany": "{name} still manages {count} messes — a manager can’t be demoted while they own a mess."
+      "roleBlocked": "{name} still manages {mess}. A manager can’t be demoted while they own a mess.",
+      "roleBlockedMany": "{name} still manages {count} messes. A manager can’t be demoted while they own a mess."
     },
     "messes": {
       "metaTitle": "Messes",
@@ -554,13 +554,13 @@
     "messUpdated": "Mess details saved",
     "memberRemoved": "{name} was removed from the mess",
     "cycleOpened": "{month} is open",
-    "cycleClosed": "{month} closed — {count} bills emailed",
+    "cycleClosed": "{month} closed, {count} bills emailed",
     "cycleReopened": "{month} reopened; its bills were withdrawn",
     "mealsSaved": "Meals saved for {date}",
     "planSaved": "Meal plan saved",
     "defaultsSaved": "Default meals updated",
     "planApplied": "Added {created} entries to the register ({fromDefaults} from defaults)",
-    "expenseAdded": "Expense added — {amount}",
+    "expenseAdded": "Expense added: {amount}",
     "expenseUpdated": "Expense updated",
     "depositAdded": "Deposit of {amount} added for {name}",
     "dutyAssigned": "Bazar duty assigned to {name}",
@@ -693,7 +693,7 @@
       "off": "Off",
       "mealsOf": "Lunch {lunch}, Dinner {dinner}",
       "fullHeadcount": "Full headcount",
-      "nextMonth": "Tomorrow is in the next month — open it to plan meals.",
+      "nextMonth": "Tomorrow is in the next month. Open it to plan meals.",
       "byTypeSub": "{month} so far",
       "daily": "Meals per day",
       "dailySub": "From the meal register · {range}",
@@ -705,7 +705,7 @@
       "noDuty": "No bazar duty assigned yet",
       "recent": "Recent activity",
       "noActivity": "Nothing logged yet",
-      "noCycle": "No open billing cycle — open {month} to start recording"
+      "noCycle": "No open billing cycle. Open {month} to start recording"
     },
     "messes": {
       "metaTitle": "My messes",
@@ -755,7 +755,7 @@
       "noneYet": "No one to invite yet.",
       "reviewTitle": "Review and create",
       "reviewMembers": "{count} people to invite",
-      "reviewNoMembers": "No members yet — you can add them after creating the mess.",
+      "reviewNoMembers": "No members yet. You can add them after creating the mess.",
       "back": "Back",
       "next": "Next",
       "create": "Create mess",
@@ -765,7 +765,7 @@
       "draftSaved": "Draft saved",
       "detailsTitle": "Mess details",
       "moneyTitle": "Rent and advance",
-      "addressHint": "House, road, area — members see this on their bills.",
+      "addressHint": "House, road and area. Members see this on their bills.",
       "optional": "optional",
       "members": "Members",
       "createdTitle": "{name} is created",
@@ -859,11 +859,11 @@
       "view": "View",
       "empty": "No billing months yet",
       "emptyHint": "Open the first month to start recording meals and expenses.",
-      "oneOpen": "{month} is still open. Close it before opening another month — a mess can only have one open cycle.",
+      "oneOpen": "{month} is still open. Close it before opening another month, since a mess can only have one open cycle.",
       "yearFilter": "Filter by year",
       "allYears": "All years",
       "closedBy": "Closed {date} by {name}",
-      "running": "Running totals — not closed yet",
+      "running": "Running totals, not closed yet",
       "closedAt": "Closed at",
       "closedByCol": "Closed by"
     },
@@ -936,10 +936,10 @@
       "showBreakdown": "Show {name}’s breakdown",
       "closeList1": "A bill is created for every member ({count} bills)",
       "closeList2": "Each member gets an itemised PDF bill by email",
-      "closeList3": "The month becomes read-only — meals, plans, expenses and deposits are locked",
+      "closeList3": "The month becomes read-only: meals, plans, expenses and deposits are locked",
       "closeList4": "Only an admin can reopen it, and only before anyone pays",
       "closing": "Closing…",
-      "closedOk": "{month} is closed — {count} bills created and emailed.",
+      "closedOk": "{month} is closed. {count} bills created and emailed.",
       "goBills": "Go to bills"
     },
     "cyclePicker": {
@@ -948,7 +948,7 @@
     },
     "noCycleHint": {
       "title": "No month to work on",
-      "body": "Open a billing month first — meals, expenses and deposits belong to a month.",
+      "body": "Open a billing month first. Meals, expenses and deposits belong to a month.",
       "cta": "Go to billing months"
     },
     "closedNote": "This month is closed, so its records can no longer be changed.",
@@ -1049,13 +1049,13 @@
       "kSharedHint": "gas, electricity, water, internet, maid",
       "byType": "By type",
       "paidByMembers": "Paid by members",
-      "paidByMembersSub": "Out of their own pocket — credited on their bill",
+      "paidByMembersSub": "Out of their own pocket, credited on their bill",
       "paidByNone": "Nobody has paid out of pocket this month.",
       "searchPlaceholder": "Search description",
       "searchLabel": "Search expenses by description",
       "payerFilter": "Filter by who paid",
       "allPayers": "Anyone paid",
-      "noMatch": "No expenses match — try another type or clear the filters.",
+      "noMatch": "No expenses match. Try another type or clear the filters.",
       "recordedBy": "Recorded by",
       "receiptPdf": "PDF",
       "receiptImage": "Photo",
@@ -1132,7 +1132,7 @@
       "outstanding": "Outstanding",
       "fullyPaid": "Fully paid",
       "inCredit": "In credit {amount}",
-      "noMatch": "No bills match — try another name or status.",
+      "noMatch": "No bills match. Try another name or status.",
       "email": "Email",
       "meals": "Meals",
       "mealCost": "Meal cost",
@@ -1142,7 +1142,7 @@
     "headcount": {
       "metaTitle": "Headcount",
       "title": "Headcount",
-      "description": "Who is eating on a day — for the cook and for the register.",
+      "description": "Who is eating on a day, for the cook and for the register.",
       "date": "Day",
       "lunch": "Lunch",
       "dinner": "Dinner",
@@ -1152,7 +1152,7 @@
       "planned": "Planned",
       "fromDefault": "Default",
       "open": "Open for changes until {time}",
-      "locked": "Locked — plans can no longer change",
+      "locked": "Locked: plans can no longer change",
       "caption": "Planned meals",
       "empty": "Nobody has planned this day",
       "emptyHint": "Members who haven't planned fall back to their default meals once the day locks.",
@@ -1170,9 +1170,9 @@
       "applyTitle": "Apply the plan for {date} to the register?",
       "applyBody": "Creates a meal-register entry for every active member from their plan, or their default when they didn’t plan. Existing entries are kept.",
       "applyDone": "Created {created} entries ({defaults} from defaults), skipped {skipped}",
-      "applied": "Plan applied — {created} entries created",
+      "applied": "Plan applied: {created} entries created",
       "strip": "{month} at a glance",
-      "stripSub": "Planned lunch and dinner per day — tap a day",
+      "stripSub": "Planned lunch and dinner per day. Tap a day",
       "email": "At 11:05 PM MessMate also emails you tomorrow’s headcount for the cook.",
       "cancel": "Cancel"
     },
@@ -1270,7 +1270,7 @@
       "fromDefault": "From your default",
       "locked": "Locked",
       "changeUntil": "Change until {time}",
-      "lockedNote": "The deadline has passed — ask your manager to change it.",
+      "lockedNote": "The deadline has passed. Ask your manager to change it.",
       "planLink": "Open meal plan",
       "plannedThisMonth": "Meals planned this month",
       "dutyTitle": "Bazar duty",
@@ -1278,7 +1278,7 @@
       "dutyTurn": "{start} – {end} · {days} days",
       "dutyDays": "{count} duty days",
       "billTitle": "Latest bill",
-      "billNone": "No bill yet — bills arrive when the month closes.",
+      "billNone": "No bill yet. Bills arrive when the month closes.",
       "billDue": "Due {amount}",
       "billSettled": "All settled",
       "payNow": "Pay now",
@@ -1294,7 +1294,7 @@
       "saving": "Saving…",
       "savedToast": "Tomorrow’s plan is saved",
       "tomorrowLocked": "Tomorrow’s plan is locked.",
-      "lockedHelp": "It locked at 11:00 PM — ask your manager to change it.",
+      "lockedHelp": "It locked at 11:00 PM. Ask your manager to change it.",
       "nextMonth": "Tomorrow falls in next month. You can plan it once your manager opens the new month.",
       "less": "Less {meal}",
       "more": "More {meal}",
@@ -1353,7 +1353,7 @@
       "lgPlanned": "You set this day",
       "lgDefault": "Your default counts",
       "lgLocked": "Locked at 11:00 PM the night before",
-      "dayLocked": "This day is locked — ask your manager to change it.",
+      "dayLocked": "This day is locked. Ask your manager to change it.",
       "backDefault": "Back to my default",
       "savePlan": "Save plan",
       "planSaved": "Plan saved",
@@ -1449,7 +1449,7 @@
       "cancelMeta": "Payment cancelled",
       "confirming": "Confirming your payment…",
       "successTitle": "Payment received",
-      "successBody": "Thank you — your bill has been updated.",
+      "successBody": "Thank you, your bill has been updated.",
       "pendingTitle": "We're still confirming",
       "pendingBody": "The payment provider hasn’t confirmed yet. Check your payments in a minute.",
       "failedTitle": "Payment not completed",
@@ -1474,10 +1474,10 @@
     "ledger": {
       "metaTitle": "Mess ledger",
       "title": "Mess ledger",
-      "description": "What the mess has spent and collected this month — the same records your manager sees.",
+      "description": "What the mess has spent and collected this month: the same records your manager sees.",
       "expensesTitle": "Expenses",
       "depositsTitle": "Deposits",
-      "readOnly": "Read-only — only your manager can change the ledger.",
+      "readOnly": "Read-only. Only your manager can change the ledger.",
       "tabsLabel": "Ledger sections",
       "tabs": {
         "meals": "Meals",
@@ -1562,7 +1562,7 @@
   "finance": {
     "metaTitle": "Personal finance",
     "title": "Personal finance",
-    "description": "Private — only you can see this.",
+    "description": "Private: only you can see this.",
     "periods": {
       "daily": "Daily",
       "weekly": "Weekly",
@@ -1643,7 +1643,7 @@
     "toDate": "To",
     "searchPlaceholder": "Search note",
     "searchLabel": "Search entries by note",
-    "noMatch": "No entries match — try another filter or clear them."
+    "noMatch": "No entries match. Try another filter or clear them."
   },
   "marketing": {
     "nav": {
@@ -1667,10 +1667,10 @@
     },
     "home": {
       "metaTitle": "Shared mess accounts, settled",
-      "metaDescription": "Meal plans, groceries, deposits and the month-end bill for shared messes in Bangladesh — every member sees the same ledger.",
+      "metaDescription": "Meal plans, groceries, deposits and the month-end bill for shared messes in Bangladesh. Every member sees the same ledger.",
       "eyebrow": "For shared messes in Bangladesh",
       "title": "The whole month's khata, settled without a notebook.",
-      "body": "MessMate keeps every meal, grocery run and deposit in one ledger the whole mess can see — then works out each member's bill when the month closes.",
+      "body": "MessMate keeps every meal, grocery run and deposit in one ledger the whole mess can see, then works out each member's bill when the month closes.",
       "ctaPrimary": "Create your mess",
       "ctaSecondary": "Try a demo",
       "ctaDemoNote": "One-click demo accounts for a manager, a member and an admin.",
@@ -1782,7 +1782,7 @@
       "metaTitle": "About",
       "metaDescription": "Why MessMate exists and how it keeps a shared mess fair.",
       "title": "Why MessMate",
-      "lead": "A shared mess runs on trust — and on somebody's notebook.",
+      "lead": "A shared mess runs on trust, and on somebody's notebook.",
       "p1": "Every month, one person in the flat keeps track of who ate what, who bought the bazar and who paid the gas bill. At the end they add it up, and everyone has to take their word for it.",
       "p2": "MessMate puts that record where the whole mess can see it. Meals, expenses and deposits go in as they happen, and the bill is worked out the same way for everyone.",
       "principlesTitle": "How we keep it fair",
@@ -1872,7 +1872,7 @@
         "q": "Is my data private?",
         "a": "Your mess sees the mess ledger. Your personal finance entries are visible only to you."
       },
-      "search": "Search questions — e.g. 11 PM, bKash, half meal",
+      "search": "Search questions, e.g. 11 PM, bKash, half meal",
       "clear": "Clear search",
       "none": "No questions match that. Ask us directly.",
       "matches": "{count} questions match",
@@ -1882,7 +1882,7 @@
       "metaTitle": "Contact",
       "metaDescription": "Get in touch with the MessMate team.",
       "title": "Contact us",
-      "lead": "Setting up a mess, a billing question or a bug — write to us and we reply within 2 working days.",
+      "lead": "Setting up a mess, a billing question or a bug? Write to us and we reply within 2 working days.",
       "name": "Your name",
       "email": "Your email",
       "subject": "Subject",

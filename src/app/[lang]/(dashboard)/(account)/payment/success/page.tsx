@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * Where Stripe (?session_id=) and bKash (?status=) send the browser back to.
- * Stripe's result is confirmed with the API — the URL alone never marks
+ * Stripe's result is confirmed with the API - the URL alone never marks
  * anything paid. bKash reports its own outcome; anything but "success" goes
  * to the cancel page.
  */

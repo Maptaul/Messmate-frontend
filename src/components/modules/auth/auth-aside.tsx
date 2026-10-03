@@ -5,7 +5,6 @@ import {
 } from "lucide-react";
 import { getT } from "@/i18n/get-dictionary";
 
-/** The dark brand panel beside every auth form (hidden on small screens). */
 export default async function AuthAside() {
   const t = await getT();
 

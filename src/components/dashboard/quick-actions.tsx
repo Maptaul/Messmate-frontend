@@ -91,7 +91,6 @@ const isTyping = (target: EventTarget | null) =>
   (target.isContentEditable ||
     ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 
-/** "New" (N): the common jobs, one tap from any page. */
 export default function QuickActions({ role }: { role: UserRole }) {
   const t = useT();
   const href = useLocalePath();

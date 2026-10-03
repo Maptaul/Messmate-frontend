@@ -35,7 +35,6 @@ import TomorrowHeadcount from "./tomorrow-headcount";
 
 const OWED = { limit: 100 };
 
-/** The manager's month at a glance: rate, money, tomorrow, who's shopping. */
 export default function ManagerOverview({
   messId,
   cycleId,
@@ -194,7 +193,7 @@ export default function ManagerOverview({
                 label: member.name.split(" ")[0],
                 value: member.totalMeals,
                 display: n(member.totalMeals),
-                tip: `${member.name} — ${t("manager.overview.mealsOf", {
+                tip: `${member.name}: ${t("manager.overview.mealsOf", {
                   lunch: n(member.lunch),
                   dinner: n(member.dinner),
                 })}`,
@@ -271,7 +270,7 @@ export default function ManagerOverview({
                     <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
                     <span className="flex-1 leading-snug">
                       {log.actor.name} · {t(`audit.actions.${log.action}`)}
-                      {log.subjectMember && ` — ${log.subjectMember.user.name}`}
+                      {log.subjectMember && ` - ${log.subjectMember.user.name}`}
                     </span>
                     <span className="text-xs whitespace-nowrap text-muted-foreground">
                       {formatRelative(log.createdAt, locale)}

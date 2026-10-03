@@ -43,7 +43,7 @@ export default function TodayActivity({ messId }: { messId: string }) {
               <div className="flex-1">
                 <p className="leading-snug">
                   {log.actor.name} · {t(`audit.actions.${log.action}`)}
-                  {log.subjectMember && ` — ${log.subjectMember.user.name}`}
+                  {log.subjectMember && ` - ${log.subjectMember.user.name}`}
                 </p>
                 <p className="font-mono text-xs text-muted-foreground">
                   {formatRelative(log.createdAt, locale)}

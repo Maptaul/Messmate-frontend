@@ -2,7 +2,6 @@ import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** Dashed card: an icon tile, what's missing, and the one action that fills it. */
 export default function EmptyState({
   icon: Icon,
   title,

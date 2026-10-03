@@ -8,10 +8,6 @@ import { formatNumber } from "@/utils/format.util";
 const STEP = 0.5;
 const MAX = 10;
 
-/**
- * − 1.5 + for a meal count: halves allowed, 0 to 10. One bordered group;
- * "lg" (40px) is for dialogs and phones, "sm" (32px) for register rows.
- */
 export default function MealStepper({
   value,
   onChange,

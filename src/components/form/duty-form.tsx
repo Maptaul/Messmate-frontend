@@ -11,7 +11,6 @@ import { getErrorMessage } from "@/utils";
 import { dutySchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-/** Assign a member to shop on a run of days, or (with `duty`) change that turn. */
 export default function DutyForm({
   cycleId,
   messId,

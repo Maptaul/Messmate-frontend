@@ -17,7 +17,6 @@ export async function alternates(
   };
 }
 
-/** Title, description, canonical + language links and Open Graph for a public page. */
 export async function pageMetadata({
   title,
   description,

@@ -20,7 +20,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { MealCounts, MealEntry } from "@/types";
 import { formatDate, getErrorMessage } from "@/utils";
 
-/** One member's saved entry for the day: change its counts, or take it out of the register. */
 export default function MealEntryActions({
   entry,
   name,

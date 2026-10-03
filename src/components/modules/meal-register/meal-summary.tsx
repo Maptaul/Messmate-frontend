@@ -5,7 +5,6 @@ import { useSuspenseMealSummary } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatMonth, formatNumber } from "@/utils";
 
-/** The month so far, member by member: lunch / dinner and a bar for the total. */
 export default function MealSummary({
   cycleId,
   year,

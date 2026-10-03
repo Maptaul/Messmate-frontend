@@ -9,7 +9,6 @@ export const MANAGER_REQUEST_STATUSES = [
 
 export type ManagerRequestStatus = (typeof MANAGER_REQUEST_STATUSES)[number];
 
-/** A member's own request, as /auth/me returns it. */
 export interface MyManagerRequest {
   id: string;
   messName: string;
@@ -20,7 +19,6 @@ export interface MyManagerRequest {
   createdAt: string;
 }
 
-/** A request on the admin's list, with who sent it. */
 export interface ManagerRequest extends MyManagerRequest {
   user: {
     id: string;

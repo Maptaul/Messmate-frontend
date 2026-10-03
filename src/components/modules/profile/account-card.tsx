@@ -13,7 +13,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { Me } from "@/types";
 import { formatDate } from "@/utils";
 
-/** Role, how they sign in, whether the email is verified, and since when. */
 export default function AccountCard({ me }: { me: Me }) {
   const t = useT();
   const locale = useLocale();

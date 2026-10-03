@@ -25,10 +25,6 @@ import type { User } from "@/types";
 import { getErrorMessage } from "@/utils";
 import ChangeRoleDialog from "./change-role-dialog";
 
-/**
- * Row menu: view, change role, block. Blocking asks in the row itself
- * (Cancel · Block user); unblocking needs no second look.
- */
 export default function UserActions({ user }: { user: User }) {
   const t = useT();
   const href = useLocalePath();

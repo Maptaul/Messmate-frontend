@@ -86,7 +86,7 @@ export default function UserDetail({ userId }: { userId: string }) {
             </span>
             <span className="flex items-center gap-1.5">
               <PhoneIcon className="size-4" />
-              {user.phone ?? "—"}
+              {user.phone ?? "-"}
             </span>
             <span className="flex items-center gap-1.5">
               <CalendarIcon className="size-4" />

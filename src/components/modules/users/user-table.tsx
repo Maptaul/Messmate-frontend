@@ -55,7 +55,7 @@ export default function UserTable({
       key: "phone",
       header: t("admin.users.phone"),
       className: "text-muted-foreground tabular-nums",
-      cell: (user) => user.phone ?? "—",
+      cell: (user) => user.phone ?? "-",
     },
     {
       key: "role",

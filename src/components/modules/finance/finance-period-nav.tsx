@@ -13,7 +13,6 @@ import {
   shiftPeriod,
 } from "@/utils";
 
-/** ‹ September 2026 › — steps the summary one period back or forward. */
 export default function FinancePeriodNav({
   period,
   date,

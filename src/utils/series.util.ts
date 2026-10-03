@@ -7,5 +7,4 @@ export const cumulative = (values: number[]) => {
   });
 };
 
-/** The last few points of a series — what a KPI sparkline draws. */
 export const lastPoints = (values: number[], count = 7) => values.slice(-count);

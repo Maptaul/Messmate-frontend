@@ -14,7 +14,6 @@ export function toCsv(rows: Cell[][]): string {
     .join("\r\n");
 }
 
-/** Saves a file the browser already holds, under the given name. */
 export function downloadFile(blob: Blob, fileName: string) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");

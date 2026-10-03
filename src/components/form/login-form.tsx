@@ -38,7 +38,6 @@ const DEMO_ACCOUNTS: {
   password: string;
   blurbKey: MessageKey;
   icon: typeof UserIcon;
-  /** The role's tile colours on its demo card. */
   tile: string;
 }[] = [
   {

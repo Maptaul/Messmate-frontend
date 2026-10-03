@@ -31,7 +31,6 @@ export const getMeOnServer = cache(
   },
 );
 
-/** A manager works in the messes they own; a member in the ones they live in. */
 export function messChoicesFor(me: Me | null, role: UserRole): MessChoice[] {
   if (!me) return [];
   if (role === "MESS_MANAGER") {
@@ -51,7 +50,7 @@ export function messChoicesFor(me: Me | null, role: UserRole): MessChoice[] {
 
 /**
  * The mess the dashboard is showing: the one picked in the switcher if it's
- * still theirs, otherwise the first. The cookie is only a preference — it is
+ * still theirs, otherwise the first. The cookie is only a preference - it is
  * checked against the user's own messes every time.
  */
 export const getActiveMess = cache(async () => {

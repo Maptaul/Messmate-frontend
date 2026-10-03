@@ -68,14 +68,12 @@ export function useDownloadBillPdf() {
   });
 }
 
-/** Card: returns Stripe's hosted checkout URL. */
 export function useStripeCheckout() {
   return useMutation({
     mutationFn: startStripeCheckout,
   });
 }
 
-/** bKash: returns bKash's hosted payment URL. */
 export function useBkashPayment() {
   return useMutation({
     mutationFn: startBkashPayment,

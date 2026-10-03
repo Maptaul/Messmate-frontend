@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useT } from "@/i18n/i18n-provider";
 
-/** The step's card: a title over its fields. */
 export function StepCard({
   title,
   children,

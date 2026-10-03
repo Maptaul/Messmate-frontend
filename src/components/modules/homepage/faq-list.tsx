@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatNumber } from "@/utils";
 
-/** The questions with a search box that narrows them as you type. */
 export default function FaqList({
   questions,
   contactHref,

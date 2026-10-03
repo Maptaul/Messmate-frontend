@@ -16,7 +16,6 @@ interface Props extends BillListParams {
   handlePageChange: (page: number) => void;
 }
 
-/** One card per bill: what it's made of, what's left, and how to pay it. */
 export default function MyBillTable({ handlePageChange, ...params }: Props) {
   const t = useT();
   const { data } = useSuspenseMyBills(params);

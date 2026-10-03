@@ -18,7 +18,7 @@ export interface BillMoney {
   totalPayable: Money;
   creditAmount: Money;
   paidAmount: Money;
-  /** ≤ 0 means settled or in credit — never offer "Pay". */
+  /** ≤ 0 means settled or in credit - never offer "Pay". */
   dueAmount: Money;
   status: BillStatus;
 }

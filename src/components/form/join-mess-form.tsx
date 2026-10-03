@@ -47,7 +47,6 @@ function JoinCodePreview({ code }: { code: string }) {
   );
 }
 
-/** Asks to join a mess with its code; the manager approves the request. */
 export default function JoinMessForm({ onDone }: { onDone?: () => void }) {
   const t = useT();
 

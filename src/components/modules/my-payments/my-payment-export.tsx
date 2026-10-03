@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { Payment } from "@/types";
 import { EXPORT_PAGE_SIZE, paymentsParams } from "@/utils";
 
-/** Every payment matching the status filter. */
 export default function MyPaymentExport() {
   const t = useT();
   const { get } = useQueryParams();

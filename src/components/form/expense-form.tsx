@@ -17,7 +17,6 @@ import { applyServerErrors, useAppForm } from ".";
 
 const FUND = "fund";
 
-/** Add an expense, or edit one; the optional receipt uploads with a progress bar. */
 export default function ExpenseForm({
   cycleId,
   messId,

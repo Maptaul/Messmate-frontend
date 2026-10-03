@@ -241,7 +241,7 @@ export default function HeadcountTable({
             }}
           >
             {strip.map((cell) => {
-              const tip = `${formatDate(cell.key, locale)} — ${t("manager.headcount.lunch")} ${n(cell.lunch)}, ${t("manager.headcount.dinner")} ${n(cell.dinner)}`;
+              const tip = `${formatDate(cell.key, locale)}: ${t("manager.headcount.lunch")} ${n(cell.lunch)}, ${t("manager.headcount.dinner")} ${n(cell.dinner)}`;
               return (
                 <button
                   key={cell.key}

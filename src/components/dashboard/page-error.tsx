@@ -9,7 +9,6 @@ import { useGetMe } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage, ROLE_HOME } from "@/utils";
 
-/** The shell's error panel: what happened, a reference to quote, Try again. */
 export default function PageError({
   error,
   retry,

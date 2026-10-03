@@ -25,7 +25,6 @@ function runs(days: number[]) {
   return out;
 }
 
-/** Every turn of the month, then the days nobody covers. */
 export default function DutyTable({
   cycleId,
   messId,

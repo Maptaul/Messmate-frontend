@@ -37,7 +37,7 @@ export interface OpenCyclePayload {
   month: number;
 }
 
-/** One member's line of the settlement — every amount is a number here. */
+/** One member's line of the settlement - every amount is a number here. */
 export interface SettlementBill {
   memberId: string;
   name?: string;

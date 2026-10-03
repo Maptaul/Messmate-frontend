@@ -67,7 +67,7 @@ export async function proxy(request: NextRequest) {
   const savedLocale = request.cookies.get(LOCALE_COOKIE)?.value;
   const at = (target: string) => new URL(target, request.url);
 
-  // 1. `/en/...` isn't canonical — remember English and drop the prefix.
+  // 1. `/en/...` isn't canonical - remember English and drop the prefix.
   if (explicit && locale === DEFAULT_LOCALE) {
     const response = NextResponse.redirect(at(path + search));
     response.cookies.set(LOCALE_COOKIE, locale, LOCALE_COOKIE_OPTIONS);

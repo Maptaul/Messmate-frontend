@@ -2,7 +2,6 @@ const WIDTH = 84;
 const HEIGHT = 26;
 const PAD = 2;
 
-/** A smooth line through the points, and the area under it (baseline at 0). */
 export function sparkPaths(values: number[], width = WIDTH, height = HEIGHT) {
   const max = Math.max(...values);
   const min = Math.min(...values, 0);
@@ -20,7 +19,6 @@ export function sparkPaths(values: number[], width = WIDTH, height = HEIGHT) {
   return { line, area };
 }
 
-/** The KPI trend: last few points, drawn in one colour, no axes. */
 export default function Sparkline({
   values,
   color = "var(--chart-1)",

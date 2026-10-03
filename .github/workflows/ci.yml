@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # The build reads these at compile time (next.config.ts rewrites, proxy.ts
-    # token check). Throwaway CI values — the build never calls the API.
+    # token check). Throwaway CI values - the build never calls the API.
     env:
       JWT_ACCESS_SECRET: ci-access-secret
       NEXT_PUBLIC_APP_URL: http://localhost:3000

@@ -5,7 +5,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import { ALL_BILLS_PARAMS, formatDate, toNumber } from "@/utils";
 import SettlementTable from "./settlement-table";
 
-/** A closed month's stored bills, read-only. */
 export default function FinalBills({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();
@@ -18,8 +17,8 @@ export default function FinalBills({ cycleId }: { cycleId: string }) {
     <SettlementTable
       title={t("manager.cycle.finalTitle")}
       caption={t("manager.cycle.finalCaption", {
-        date: closedAt ? formatDate(closedAt, locale) : "—",
-        name: closedBy?.name ?? "—",
+        date: closedAt ? formatDate(closedAt, locale) : "-",
+        name: closedBy?.name ?? "-",
       })}
       rows={[...data.data]
         .sort((a, b) => toNumber(b.dueAmount) - toNumber(a.dueAmount))

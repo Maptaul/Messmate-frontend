@@ -28,7 +28,6 @@ import {
   LedgerSummary,
 } from "./ledger-tables";
 
-/** The mess's books for a member: the same records, nothing to change. */
 export default function Ledger({
   messId,
   cycle,

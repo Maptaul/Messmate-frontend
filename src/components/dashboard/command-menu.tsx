@@ -16,7 +16,6 @@ import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { ROLE_ROUTES } from "@/routes";
 import type { UserRole } from "@/types";
 
-/** ⌘K / Ctrl+K: jump to any page of this role. */
 export default function CommandMenu({ role }: { role: UserRole }) {
   const t = useT();
   const href = useLocalePath();

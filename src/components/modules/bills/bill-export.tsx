@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { CycleBill } from "@/types";
 import { billsParams, EXPORT_PAGE_SIZE } from "@/utils";
 
-/** Every bill of the month matching the search and status filters. */
 export default function BillExport({ cycleId }: { cycleId: string }) {
   const t = useT();
   const { get } = useQueryParams();

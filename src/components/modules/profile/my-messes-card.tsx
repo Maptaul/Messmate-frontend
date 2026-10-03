@@ -22,7 +22,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { MyMembership } from "@/types";
 import { formatDate, getErrorMessage } from "@/utils";
 
-/** Every mess this person belongs to, or used to; a member can join or leave. */
 export default function MyMessesCard({ isMember }: { isMember: boolean }) {
   const t = useT();
   const locale = useLocale();

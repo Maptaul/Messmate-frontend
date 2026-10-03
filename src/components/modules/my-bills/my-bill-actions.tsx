@@ -10,7 +10,7 @@ import { formatBDT, getErrorMessage } from "@/utils";
 
 /**
  * Card (Stripe) and bKash both hand back a hosted page; we send the browser
- * there. The amount is the bill's full due, decided by the API — not by us.
+ * there. The amount is the bill's full due, decided by the API - not by us.
  */
 export default function MyBillActions({
   billId,

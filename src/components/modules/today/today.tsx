@@ -31,7 +31,6 @@ import TodayActivity from "./today-activity";
 import TodayStats from "./today-stats";
 import TomorrowMeals from "./tomorrow-meals";
 
-/** Morning before noon, afternoon until five, evening after, in Dhaka. */
 function greetingKey() {
   const hour = Number(
     new Intl.DateTimeFormat("en-GB", {
@@ -45,7 +44,6 @@ function greetingKey() {
   return "resident.today.greetEvening" as const;
 }
 
-/** A member's day: tomorrow to plan, today as it stands, money and duty. */
 export default function Today({
   cycleId,
   messId,

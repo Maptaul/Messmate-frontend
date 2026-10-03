@@ -49,7 +49,6 @@ const ASKING_TO_JOIN = {
   limit: 1,
 } as const;
 
-/** Numbers beside a nav item: bills still owed, activity not yet seen, users, requests waiting. */
 function useNavCounts(role: UserRole, messId: string | null) {
   const isAdmin = role === "ADMIN";
   const isManager = role === "MESS_MANAGER";

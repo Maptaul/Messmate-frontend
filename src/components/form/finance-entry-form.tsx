@@ -20,7 +20,6 @@ import { getErrorMessage, todayInDhaka } from "@/utils";
 import { financeEntrySchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-/** Add or edit one entry; the category list follows the chosen type. */
 export default function FinanceEntryForm({
   entry,
   handleClose,

@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { User } from "@/types";
 import { EXPORT_PAGE_SIZE, usersParams } from "@/utils";
 
-/** Every user matching the current search and filters. */
 export default function UserExport() {
   const t = useT();
   const { get } = useQueryParams();

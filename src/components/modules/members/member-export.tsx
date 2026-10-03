@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { MessMember } from "@/types";
 import { EXPORT_PAGE_SIZE, membersParams } from "@/utils";
 
-/** Every member matching the current search and status. */
 export default function MemberExport({ messId }: { messId: string }) {
   const t = useT();
   const { get } = useQueryParams();

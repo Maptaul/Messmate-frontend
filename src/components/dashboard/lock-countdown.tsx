@@ -5,10 +5,8 @@ import usePlanCutoff from "@/hooks/plan-cutoff.hook";
 import { useT } from "@/i18n/i18n-provider";
 import { cn } from "@/lib/utils";
 
-/** Amber for the last 90 minutes before tomorrow's plan locks. */
 const WARN_MINUTES = 90;
 
-/** "Tomorrow locks in 2h 14m" until 11 PM Dhaka time, then "locked". */
 export default function LockCountdown() {
   const t = useT();
   const cutoff = usePlanCutoff();

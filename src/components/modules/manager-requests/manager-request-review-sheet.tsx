@@ -21,7 +21,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { ManagerRequest } from "@/types";
 import { formatDate, formatDateTime, getErrorMessage } from "@/utils";
 
-/** One request in full; a pending one can be approved or rejected here. */
 export default function ManagerRequestReviewSheet({
   request,
 }: {
@@ -55,7 +54,7 @@ export default function ManagerRequestReviewSheet({
     );
 
   const rows: [string, string][] = [
-    [t("admin.managerRequests.phone"), user.phone ?? "—"],
+    [t("admin.managerRequests.phone"), user.phone ?? "-"],
     [
       t("admin.managerRequests.account"),
       t("admin.managerRequests.joined", {

@@ -93,7 +93,7 @@ export default function MessDetail({ messId }: { messId: string }) {
       className: "text-right tabular-nums",
       cell: (cycle) =>
         cycle.totalMeals === null
-          ? "—"
+          ? "-"
           : formatNumber(cycle.totalMeals, locale),
     },
     {
@@ -102,7 +102,7 @@ export default function MessDetail({ messId }: { messId: string }) {
       className: "text-right tabular-nums",
       cell: (cycle) =>
         cycle.totalGrocery === null
-          ? "—"
+          ? "-"
           : formatBDT(cycle.totalGrocery, locale),
     },
     {
@@ -110,7 +110,7 @@ export default function MessDetail({ messId }: { messId: string }) {
       header: t("admin.messDetail.rate"),
       className: "text-right tabular-nums",
       cell: (cycle) =>
-        cycle.mealRate === null ? "—" : formatBDT(cycle.mealRate, locale),
+        cycle.mealRate === null ? "-" : formatBDT(cycle.mealRate, locale),
     },
     {
       key: "closed",
@@ -120,9 +120,9 @@ export default function MessDetail({ messId }: { messId: string }) {
         cycle.closedAt
           ? t("admin.messDetail.closedBy", {
               date: formatDate(cycle.closedAt, locale),
-              name: cycle.closedBy?.name ?? "—",
+              name: cycle.closedBy?.name ?? "-",
             })
-          : "—",
+          : "-",
     },
     {
       key: "actions",

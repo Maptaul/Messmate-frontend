@@ -20,7 +20,6 @@ import { useCloseCycle, useSettlementPreview } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatNumber, getErrorMessage } from "@/utils";
 
-/** "Close this month", with what closing does spelled out before it happens. */
 export default function CloseCycleDialog({
   cycleId,
   month,

@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { FinanceEntry } from "@/types";
 import { EXPORT_PAGE_SIZE, financeEntriesParams } from "@/utils";
 
-/** Every entry matching the type, category, date and note filters. */
 export default function FinanceExport() {
   const t = useT();
   const { get } = useQueryParams();

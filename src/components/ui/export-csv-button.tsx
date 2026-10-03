@@ -16,7 +16,6 @@ import {
 
 type Cell = string | number | null | undefined;
 
-/** One CSV column: its header and how a row fills it. */
 export type CsvColumn<T> = [header: string, cell: (row: T) => Cell];
 
 /**

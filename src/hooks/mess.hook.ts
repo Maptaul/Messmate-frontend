@@ -15,7 +15,6 @@ import {
 } from "@/api";
 import type { MemberListParams, MessListParams } from "@/types";
 
-/** Everyone currently in the mess — options for a deposit, an expense payer, the register. */
 export function useActiveMembers(messId: string) {
   return useQuery({
     queryKey: ["members", messId, { status: "ACTIVE", limit: 100 }],

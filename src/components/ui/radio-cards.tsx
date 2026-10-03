@@ -11,7 +11,6 @@ export interface RadioCardOption<T extends string> {
   icon?: ReactNode;
 }
 
-/** A radio group drawn as cards: label, a hint line, the chosen one tinted. */
 export default function RadioCards<T extends string>({
   value,
   onChange,

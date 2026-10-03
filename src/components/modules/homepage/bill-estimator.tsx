@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatBDT } from "@/utils";
 
-/** A worked month to start from; every number can be changed. */
 const START = {
   bazar: "19450",
   meals: "312.5",
@@ -112,7 +111,7 @@ export default function BillEstimator() {
       </div>
       <dl className="overflow-hidden rounded-xl border text-[13px]">
         {[
-          [t("marketing.home.calc.rate"), rate ? money(rate) : "—"],
+          [t("marketing.home.calc.rate"), rate ? money(rate) : "-"],
           [t("marketing.home.calc.mealCost"), money(mealCost)],
           [t("marketing.home.calc.share"), money(share)],
         ].map(([label, value]) => (

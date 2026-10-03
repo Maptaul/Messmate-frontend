@@ -18,7 +18,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { MessMember } from "@/types";
 import { getErrorMessage } from "@/utils";
 
-/** The meals a member gets on any day they don't plan. */
 export default function MemberDefaultsDialog({
   member,
   messId,

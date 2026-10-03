@@ -10,7 +10,6 @@ import { getErrorMessage } from "@/utils";
 import { inviteMemberSchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-/** Invites someone by the email they registered with; they accept or decline. */
 export default function InviteMemberForm({
   messId,
   handleClose,

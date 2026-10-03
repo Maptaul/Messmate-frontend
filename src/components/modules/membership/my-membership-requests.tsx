@@ -15,7 +15,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { MyMembershipRequest } from "@/types";
 import { formatDate, getErrorMessage } from "@/utils";
 
-/** A member's open invitations (accept or decline) and requests (withdraw). */
 export default function MyMembershipRequests() {
   const t = useT();
   const locale = useLocale();

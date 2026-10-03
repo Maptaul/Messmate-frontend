@@ -7,7 +7,6 @@ import { useT } from "@/i18n/i18n-provider";
 import type { Deposit } from "@/types";
 import { depositsParams, EXPORT_PAGE_SIZE } from "@/utils";
 
-/** Every deposit of the month, narrowed by the member filter. */
 export default function DepositExport({ cycleId }: { cycleId: string }) {
   const t = useT();
   const { get } = useQueryParams();

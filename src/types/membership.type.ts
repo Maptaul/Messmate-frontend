@@ -8,7 +8,6 @@ export type MembershipRequestStatus =
   | "DECLINED"
   | "CANCELLED";
 
-/** What a join code shows before anyone asks to join. */
 export interface MessPreview {
   id: string;
   name: string;
@@ -17,7 +16,6 @@ export interface MessPreview {
   _count?: { members: number };
 }
 
-/** A member's own open invitation or request. */
 export interface MyMembershipRequest {
   id: string;
   kind: MembershipRequestKind;

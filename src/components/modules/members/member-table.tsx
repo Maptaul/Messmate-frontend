@@ -60,7 +60,7 @@ export default function MemberTable({
       key: "phone",
       header: t("manager.members.phone"),
       className: "text-muted-foreground tabular-nums",
-      cell: (member) => member.user.phone ?? "—",
+      cell: (member) => member.user.phone ?? "-",
     },
     {
       key: "status",
@@ -78,7 +78,7 @@ export default function MemberTable({
       header: t("manager.members.left"),
       className: "text-muted-foreground",
       cell: (member) =>
-        member.leftAt ? formatDate(member.leftAt, locale) : "—",
+        member.leftAt ? formatDate(member.leftAt, locale) : "-",
     },
     {
       key: "defaults",
@@ -90,7 +90,7 @@ export default function MemberTable({
               lunch: formatNumber(member.defaultLunch, locale),
               dinner: formatNumber(member.defaultDinner, locale),
             })
-          : "—",
+          : "-",
     },
     {
       key: "actions",

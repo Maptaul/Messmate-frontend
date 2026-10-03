@@ -28,11 +28,6 @@ import type { BillMoney } from "@/types";
 import { downloadFile, getErrorMessage } from "@/utils";
 import BillInvoice from "./bill-invoice";
 
-/**
- * One member's bill, itemised. "PDF" opens it with a download button; "Breakdown"
- * slides it in from the side to read. The file comes from the API, the same
- * document the month's email attaches.
- */
 export default function BillInvoiceDialog({
   bill,
   messName,
@@ -50,7 +45,6 @@ export default function BillInvoiceDialog({
   /** The downloaded file's name, without the extension. */
   fileName: string;
   variant?: "pdf" | "breakdown";
-  /** The trigger's text, when the default ("PDF", "Breakdown") is too short. */
   label?: string;
   className?: string;
 }) {

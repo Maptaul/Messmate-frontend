@@ -30,7 +30,6 @@ const shift = (date: string, days: number) =>
 const lockMoment = (date: string) =>
   new Date(`${shift(date, -1)}T23:00:00+06:00`);
 
-/** How many plates a day needs: everyone's planned lunch and dinner, added up. */
 export default function HeadcountList({
   cycleId,
   year,

@@ -28,7 +28,6 @@ export default function FileUpload({
   disabled,
 }: {
   label: string;
-  /** The line inside the empty drop zone. */
   prompt?: string;
   hint?: string;
   file: File | null;

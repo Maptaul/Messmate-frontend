@@ -18,7 +18,6 @@ interface Props extends MessAuditParams {
   handlePageChange: (page: number) => void;
 }
 
-/** A member's feed: the changes that involve them, new ones marked. */
 export default function ActivityFeed({
   messId,
   seenBefore,
@@ -62,7 +61,7 @@ export default function ActivityFeed({
               <div className="min-w-0 flex-1">
                 <p className={cn("leading-snug", isNew && "font-semibold")}>
                   {log.actor.name} · {t(`audit.actions.${log.action}`)}
-                  {log.subjectMember && ` — ${log.subjectMember.user.name}`}
+                  {log.subjectMember && ` - ${log.subjectMember.user.name}`}
                 </p>
                 <p className="font-mono text-xs text-muted-foreground">
                   {formatDateTime(log.createdAt, locale)}

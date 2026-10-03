@@ -18,7 +18,6 @@ import DefaultMealsCard from "./default-meals-card";
 import MealPlanBulkDialog from "./meal-plan-bulk-dialog";
 import MealPlanDayDialog from "./meal-plan-day-dialog";
 
-/** The month as a calendar; a day opens to change it until its cutoff. */
 export default function MealPlan({
   cycleId,
   messId,

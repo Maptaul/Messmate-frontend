@@ -9,7 +9,6 @@ import { getErrorMessage } from "@/utils";
 import { managerRequestSchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-/** A member asks to run a mess; an admin approves or rejects it. */
 export default function ManagerRequestForm() {
   const t = useT();
 

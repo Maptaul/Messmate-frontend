@@ -11,7 +11,6 @@ export interface CreatedMess {
   results: { email: string; error?: string }[];
 }
 
-/** The wizard's last screen: the mess exists, and how each member add went. */
 export default function MessCreated({ name, results }: CreatedMess) {
   const t = useT();
   const locale = useLocale();

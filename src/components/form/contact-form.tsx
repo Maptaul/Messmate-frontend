@@ -22,7 +22,7 @@ export default function ContactForm({ to }: { to: string }) {
     validators: { onChange: contactSchema },
     onSubmit: ({ value }) => {
       const { name, email, subject, message } = contactSchema.parse(value);
-      const body = `${message}\n\n— ${name} (${email})`;
+      const body = `${message}\n\n${name} (${email})`;
       window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       toast.success(t("marketing.contact.sent", { email: to }));
     },

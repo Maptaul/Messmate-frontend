@@ -19,7 +19,6 @@ import { useCrumbStore } from "@/stores/crumb.store";
 import type { UserRole } from "@/types";
 import { ROLE_HOME, ROLE_LABEL_KEY } from "@/utils";
 
-/** Pages below a sidebar item that have a fixed name. */
 const FIXED_CRUMBS: Record<string, MessageKey> = {
   "/manager/messes/new": "messSwitcher.create",
 };
@@ -29,7 +28,6 @@ interface Crumb {
   href?: string;
 }
 
-/** "Mess Manager / Billing cycles / September 2026"; only the last on a phone. */
 export default function HeaderBreadcrumb({ role }: { role: UserRole }) {
   const t = useT();
   const href = useLocalePath();

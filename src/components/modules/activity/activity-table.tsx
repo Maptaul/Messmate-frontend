@@ -15,7 +15,6 @@ interface Props extends MessAuditParams {
   handlePageChange: (page: number) => void;
 }
 
-/** The feed as a timeline: one card per change, newest first. */
 export default function ActivityTable({
   messId,
   handlePageChange,

@@ -18,7 +18,6 @@ import type { MealCounts as Counts, MyCalendarDay } from "@/types";
 import { formatDeadline, formatLongDate, getErrorMessage } from "@/utils";
 import MealCounts from "./meal-counts";
 
-/** One day: change its counts until the cutoff, or put it back to the default. */
 export default function MealPlanDayDialog({
   cycleId,
   day,

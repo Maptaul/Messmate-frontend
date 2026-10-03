@@ -10,7 +10,6 @@ import {
   toNumber,
 } from "@/utils";
 
-/** What came in this month, and who still hasn't put anything in. */
 export default function DepositSummary({
   cycleId,
   messId,

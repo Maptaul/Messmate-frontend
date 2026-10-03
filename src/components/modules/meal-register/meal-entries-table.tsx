@@ -14,7 +14,6 @@ import { formatDate, formatNumber, PAGE_SIZE } from "@/utils";
 import MealEntryActions from "./meal-entry-actions";
 import MealRegisterLoading from "./meal-register-loading";
 
-/** "All entries": the whole month's register, filtered by member or day. */
 export default function MealEntriesTable({
   cycleId,
   year,

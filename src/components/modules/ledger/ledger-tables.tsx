@@ -21,7 +21,6 @@ import {
   ledgerMealsParams,
 } from "@/utils";
 
-/** Every meal entry of the month, newest first. */
 export function LedgerMeals({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();
@@ -74,7 +73,6 @@ export function LedgerMeals({ cycleId }: { cycleId: string }) {
   );
 }
 
-/** Who is in the mess, and since when. */
 export function LedgerMembers({ messId }: { messId: string }) {
   const t = useT();
   const locale = useLocale();
@@ -115,7 +113,6 @@ export function LedgerMembers({ messId }: { messId: string }) {
   );
 }
 
-/** Every month of the mess, with its final (or running) figures. */
 export function LedgerCycles({ messId }: { messId: string }) {
   const t = useT();
   const locale = useLocale();
@@ -148,7 +145,7 @@ export function LedgerCycles({ messId }: { messId: string }) {
           className: "text-right tabular-nums",
           cell: (cycle) =>
             cycle.totalMeals === null
-              ? "—"
+              ? "-"
               : formatNumber(cycle.totalMeals, locale),
         },
         {
@@ -156,14 +153,13 @@ export function LedgerCycles({ messId }: { messId: string }) {
           header: t("resident.ledger.rate"),
           className: "text-right tabular-nums",
           cell: (cycle) =>
-            cycle.mealRate === null ? "—" : formatBDT(cycle.mealRate, locale),
+            cycle.mealRate === null ? "-" : formatBDT(cycle.mealRate, locale),
         },
       ]}
     />
   );
 }
 
-/** Each member's lunches, dinners and total for the month. */
 export function LedgerSummary({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();

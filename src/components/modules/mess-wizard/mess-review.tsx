@@ -70,9 +70,9 @@ export default function MessReview({
     [t("manager.wizard.rent"), formatBDT(money.monthlyRent, locale)],
     [
       t("manager.wizard.deposit"),
-      deposit > 0 ? formatBDT(deposit, locale) : "—",
+      deposit > 0 ? formatBDT(deposit, locale) : "-",
     ],
-    [t("manager.wizard.members"), memberEmails.join(", ") || "—"],
+    [t("manager.wizard.members"), memberEmails.join(", ") || "-"],
   ];
 
   return (

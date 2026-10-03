@@ -27,7 +27,6 @@ const LINKS = [
   { href: "/contact", key: "contact" },
 ] as const;
 
-/** The public site's top bar; `dashboardHref` is set when the visitor is signed in. */
 export default function Header({
   dashboardHref,
 }: {

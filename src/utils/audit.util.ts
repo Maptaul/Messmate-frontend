@@ -1,6 +1,5 @@
 import type { AuditAction } from "@/types";
 
-/** An audit action is coloured by its verb: closes are blue, removals red… */
 export function auditTone(action: AuditAction) {
   if (/CLOSED|REOPENED/.test(action)) return "tone-b";
   if (/UNBLOCKED/.test(action)) return "tone-g";

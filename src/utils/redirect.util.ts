@@ -4,7 +4,7 @@ import { localePath } from "@/i18n/locale-path";
 import type { UserRole } from "@/types";
 import { ROLE_HOME } from "./role.util";
 
-/** Only ever follow a path on this site — never `//evil.com` or a full URL. */
+/** Only ever follow a path on this site - never `//evil.com` or a full URL. */
 export function safeRedirect(value: string | null | undefined): string | null {
   if (!value?.startsWith("/") || value.startsWith("//")) return null;
   return value;
@@ -26,7 +26,6 @@ export function homeAfterLogin(
   );
 }
 
-/** The display name the backend put in the access token. */
 export function nameFromToken(accessToken: string) {
   const { name } = decodeJwt(accessToken) as { name?: string };
   return name ?? "";

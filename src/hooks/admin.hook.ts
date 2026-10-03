@@ -45,7 +45,6 @@ export function useSuspenseDashboardStats() {
   });
 }
 
-/** Every mess manager, for the messes page's manager filter. */
 export function useManagers() {
   const params = { role: "MESS_MANAGER" as const, limit: 100 };
   return useQuery({

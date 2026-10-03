@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Page-shaped loading state: title bars, then four stat tiles and five table
- * rows — or, when given, the page's own section skeleton in place of the rows.
- */
 export default function PageSkeleton({
   stats = true,
   children,

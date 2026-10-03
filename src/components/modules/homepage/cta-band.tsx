@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 
-/** The dark band that closes the home and about pages. */
 export default async function CtaBand() {
   const [t, locale] = await Promise.all([getT(), getLocale()]);
 

@@ -12,7 +12,6 @@ import { INTL_LOCALE } from "@/i18n/config";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatMonthName, formatNumber } from "@/utils";
 
-/** One line, one colour: meals recorded each day of the month so far. */
 export default function MealsPerDayChart({
   days,
   meals,

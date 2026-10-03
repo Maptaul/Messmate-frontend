@@ -6,7 +6,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatBDT, formatDateTime } from "@/utils";
 import SettlementTable from "./settlement-table";
 
-/** What closing the month would produce, with anything worth checking first. */
 export default function SettlementPreview({ cycleId }: { cycleId: string }) {
   const t = useT();
   const locale = useLocale();

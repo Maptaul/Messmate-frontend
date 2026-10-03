@@ -16,7 +16,6 @@ interface I18nValue {
 
 const I18nContext = createContext<I18nValue | null>(null);
 
-/** Gives client components the current locale and its dictionary. */
 export function I18nProvider({
   locale,
   dictionary,

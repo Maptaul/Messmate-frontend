@@ -3,10 +3,6 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import Sparkline from "./sparkline";
 
-/**
- * One cell of a StatStrip: label, a big tabular value, a hint and an optional
- * trend. With `href` the whole cell is a link to the page behind the number.
- */
 export default function StatCard({
   label,
   value,
@@ -26,7 +22,6 @@ export default function StatCard({
   href?: string;
   trend?: number[];
   trendColor?: string;
-  /** Extra content under the value, e.g. a progress meter. */
   children?: ReactNode;
 }) {
   const body = (

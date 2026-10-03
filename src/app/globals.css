@@ -195,7 +195,7 @@
   --tone-v-fg: #c4b5fd;
 }
 
-/* tone-g/a/r/b/v/n — green, amber, red, blue, violet, neutral. Always paired
+/* tone-g/a/r/b/v/n - green, amber, red, blue, violet, neutral. Always paired
    with a text label: colour alone never carries the status. */
 @utility tone-g {
   background-color: var(--tone-g-bg);

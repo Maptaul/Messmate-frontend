@@ -7,7 +7,6 @@ import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { Me } from "@/types";
 import { formatDate } from "@/utils";
 
-/** A member's way to run a mess: ask, wait for the admin, or try again. */
 export default function ManagerRequestCard({ me }: { me: Me }) {
   const t = useT();
   const locale = useLocale();
