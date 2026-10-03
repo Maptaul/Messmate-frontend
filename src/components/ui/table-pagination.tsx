@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import { formatNumber } from "@/utils/format.util";
 import {
@@ -57,6 +58,11 @@ export default function TablePagination({
 }: Props) {
   const t = useT();
   const locale = useLocale();
+
+  // A page past the end (an old bookmark, a list that shrank) moves to the last one.
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages) handlePageChange(totalPages);
+  }, [page, totalPages, handlePageChange]);
 
   const goToPage = (page: number) => {
     handlePageChange(page);

@@ -22,28 +22,27 @@ export const getActiveCycle = cache(
     cycleId?: string,
     prefer: CycleStatus = "OPEN",
   ): Promise<ActiveCycle | null> => {
-    try {
-      const client = await serverApi();
+    const client = await serverApi();
 
-      if (cycleId) {
-        const { data } = await getCycle(cycleId, client);
-        return data.mess.id === messId ? data : null;
-      }
-
-      const { data } = await getMessCycles(
-        messId,
-        { status: prefer, limit: 1 },
-        client,
-      );
-      if (data[0] || prefer === "OPEN") return data[0] ?? null;
-
-      const open = await getMessCycles(messId, OPEN_CYCLE_PARAMS, client);
-      return open.data[0] ?? null;
-    } catch (error) {
-      // A `?cycle=` that is malformed, missing or another mess's.
-      const status = getErrorStatus(error);
-      if (status === 400 || status === 403 || status === 404) return null;
-      throw error;
+    if (cycleId) {
+      // A `?cycle=` that is malformed, missing or another mess's falls back
+      // to the default month below.
+      const named = await getCycle(cycleId, client).catch((error) => {
+        const status = getErrorStatus(error);
+        if (status === 400 || status === 403 || status === 404) return null;
+        throw error;
+      });
+      if (named?.data.mess.id === messId) return named.data;
     }
+
+    const { data } = await getMessCycles(
+      messId,
+      { status: prefer, limit: 1 },
+      client,
+    );
+    if (data[0] || prefer === "OPEN") return data[0] ?? null;
+
+    const open = await getMessCycles(messId, OPEN_CYCLE_PARAMS, client);
+    return open.data[0] ?? null;
   },
 );
