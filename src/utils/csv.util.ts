@@ -14,15 +14,22 @@ export function toCsv(rows: Cell[][]): string {
     .join("\r\n");
 }
 
-/** Saves text as a file. The BOM makes Excel read Bangla as UTF-8. */
-export function downloadCsv(csv: string, fileName: string) {
-  const blob = new Blob([`﻿${csv}`], { type: "text/csv;charset=utf-8" });
+/** Saves a file the browser already holds, under the given name. */
+export function downloadFile(blob: Blob, fileName: string) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
   link.download = fileName;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+/** Saves text as a file. The BOM makes Excel read Bangla as UTF-8. */
+export function downloadCsv(csv: string, fileName: string) {
+  downloadFile(
+    new Blob([`﻿${csv}`], { type: "text/csv;charset=utf-8" }),
+    fileName,
+  );
 }
 
 /** The API caps a page at 100 rows; an export wants every row that matches. */

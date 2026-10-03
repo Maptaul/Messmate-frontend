@@ -5,6 +5,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import {
+  downloadBillPdf,
   getCycleBills,
   getMyBills,
   getMyPayments,
@@ -58,6 +59,12 @@ export function usePayment(paymentId: string) {
     queryKey: ["payment", paymentId],
     queryFn: () => getPayment(paymentId),
     enabled: Boolean(paymentId),
+  });
+}
+
+export function useDownloadBillPdf() {
+  return useMutation({
+    mutationFn: downloadBillPdf,
   });
 }
 

@@ -97,8 +97,9 @@ menu (⌘K), the open month and its meal rate, the 11 PM countdown and quick act
 - **Bilingual.** Every route sits under `app/[lang]`. English has no prefix, Bangla is
   `/bn/...`; a `NEXT_LOCALE` cookie remembers the choice. Strings live in
   `src/i18n/dictionaries/en.json` and `bn.json`.
-- **Exports.** A bill's PDF is the browser's own "Save as PDF" of a print-only invoice,
-  so Bangla keeps its conjuncts. Every table has an Export CSV button that fetches every
+- **Exports.** **Download PDF** saves the bill as a file from the API — the same PDF the
+  month's email attaches, in English, since a server PDF cannot shape Bangla. Every table
+  has an Export CSV button that fetches every
   page matching the current filters, with a BOM so Excel opens Bangla correctly.
 - **Payments.** Card payments open Stripe Checkout; `/payment/success` confirms the
   session with the API on the server before showing a result. bKash returns to the same

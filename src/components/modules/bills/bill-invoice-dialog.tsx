@@ -1,6 +1,7 @@
 "use client";
 
 import { FileDownIcon } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,13 +21,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Spinner } from "@/components/ui/spinner";
+import { useDownloadBillPdf } from "@/hooks";
 import { useT } from "@/i18n/i18n-provider";
 import type { BillMoney } from "@/types";
+import { downloadFile, getErrorMessage } from "@/utils";
 import BillInvoice from "./bill-invoice";
 
 /**
- * One member's bill, itemised. "PDF" opens it ready to print; "Breakdown"
- * slides it in from the side to read.
+ * One member's bill, itemised. "PDF" opens it with a download button; "Breakdown"
+ * slides it in from the side to read. The file comes from the API, the same
+ * document the month's email attaches.
  */
 export default function BillInvoiceDialog({
   bill,
@@ -42,7 +47,7 @@ export default function BillInvoiceDialog({
   messName: string;
   memberName: string;
   period: string;
-  /** Becomes the suggested PDF file name in the print window. */
+  /** The downloaded file's name, without the extension. */
   fileName: string;
   variant?: "pdf" | "breakdown";
   /** The trigger's text, when the default ("PDF", "Breakdown") is too short. */
@@ -50,12 +55,13 @@ export default function BillInvoiceDialog({
   className?: string;
 }) {
   const t = useT();
+  const { mutate: downloadPdf, isPending } = useDownloadBillPdf();
 
   const handleDownload = () => {
-    const title = document.title;
-    document.title = fileName;
-    window.print();
-    document.title = title;
+    downloadPdf(bill.id, {
+      onSuccess: (file) => downloadFile(file, `${fileName}.pdf`),
+      onError: (err) => toast.error(t.dynamic(getErrorMessage(err))),
+    });
   };
 
   const invoice = (
@@ -67,9 +73,9 @@ export default function BillInvoiceDialog({
     />
   );
   const download = (
-    <Button onClick={handleDownload}>
-      <FileDownIcon />
-      {t("invoice.download")}
+    <Button onClick={handleDownload} disabled={isPending}>
+      {isPending ? <Spinner /> : <FileDownIcon />}
+      {isPending ? t("invoice.downloading") : t("invoice.download")}
     </Button>
   );
 

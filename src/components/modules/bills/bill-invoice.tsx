@@ -72,7 +72,7 @@ export default function BillInvoice({
   ];
 
   return (
-    <div data-print-area className="space-y-6 text-sm">
+    <div className="space-y-6 text-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-2 font-semibold">
           <Logo />
