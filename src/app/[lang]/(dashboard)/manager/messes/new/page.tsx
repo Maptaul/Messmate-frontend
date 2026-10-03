@@ -1,7 +1,7 @@
-import { CloudCheckIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import MessWizard from "@/components/modules/mess-wizard/mess-wizard";
+import WizardDraftStatus from "@/components/modules/mess-wizard/wizard-draft-status";
 import { getLocale, getT } from "@/i18n/get-dictionary";
 import { localePath } from "@/i18n/locale-path";
 import { alternates } from "@/i18n/metadata";
@@ -42,10 +42,7 @@ export default async function page() {
             {t("manager.wizard.description")}
           </p>
         </div>
-        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <CloudCheckIcon className="size-3.5" />
-          {t("manager.wizard.draftSaved")}
-        </span>
+        <WizardDraftStatus prefill={prefill} />
       </div>
       <MessWizard prefill={prefill} />
     </section>
