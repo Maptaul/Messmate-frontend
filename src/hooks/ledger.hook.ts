@@ -204,16 +204,11 @@ export function useSuspenseMessAudit(messId: string, params: MessAuditParams) {
   });
 }
 
-/** The bell's short feed; fetched only while the panel is open. */
-export function useMessAudit(
-  messId: string,
-  params: MessAuditParams,
-  enabled: boolean,
-) {
+/** The bell's short feed; the bell mounts it only while its panel is open. */
+export function useMessAudit(messId: string, params: MessAuditParams) {
   return useQuery({
     queryKey: ["mess-audit", messId, params],
     queryFn: () => getMessAuditLogs(messId, params),
-    enabled,
   });
 }
 

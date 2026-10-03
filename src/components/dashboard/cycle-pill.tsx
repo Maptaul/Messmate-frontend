@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useSyncExternalStore } from "react";
 import { useSettlementPreview } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { ActiveCycle } from "@/lib/activeCycle";
 import type { UserRole } from "@/types";
 import { formatBDT, formatShortMonth } from "@/utils";
+
+const subscribe = () => () => {};
 
 export default function CyclePill({
   role,
@@ -14,12 +17,17 @@ export default function CyclePill({
   role: UserRole;
   cycle: ActiveCycle;
 }) {
-  const t = useT();
   const locale = useLocale();
   const href = useLocalePath();
-  const { data } = useSettlementPreview(cycle.id);
+  // Pages prefetch this month's settlement too. If the pill created that query
+  // during the server render, the page's server data would only arrive in an
+  // effect, so the rate joins once the page has hydrated.
+  const hydrated = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
 
-  const rate = data?.data.mealRate;
   const target =
     role === "MESS_MANAGER" ? `/manager/cycles/${cycle.id}` : "/dashboard/mess";
 
@@ -33,8 +41,18 @@ export default function CyclePill({
         <span className="absolute inset-0 animate-ping rounded-full bg-current opacity-75 [animation-duration:1.4s]" />
       </span>
       {formatShortMonth(cycle.year, cycle.month, locale)}
-      {rate !== undefined &&
-        ` · ${t("shell.perMeal", { rate: formatBDT(rate, locale) })}`}
+      {hydrated && <MealRate cycleId={cycle.id} />}
     </Link>
   );
+}
+
+function MealRate({ cycleId }: { cycleId: string }) {
+  const t = useT();
+  const locale = useLocale();
+  const { data } = useSettlementPreview(cycleId);
+  const rate = data?.data.mealRate;
+
+  if (rate === undefined) return null;
+
+  return ` · ${t("shell.perMeal", { rate: formatBDT(rate, locale) })}`;
 }

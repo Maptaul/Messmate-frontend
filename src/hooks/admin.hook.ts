@@ -23,10 +23,16 @@ import type {
   UserListParams,
 } from "@/types";
 
-export function useDashboardStats(enabled = true) {
+/**
+ * Every account, for the sidebar badge. Not the overview's stats query: a
+ * query the shell creates first only takes the page's server data in an
+ * effect, after the server render already needed it.
+ */
+export function useUserCount(enabled = true) {
+  const params = { limit: 1 };
   return useQuery({
-    queryKey: ["admin-stats"],
-    queryFn: () => getDashboardStats(),
+    queryKey: ["users", params],
+    queryFn: () => getUsers(params),
     enabled,
   });
 }

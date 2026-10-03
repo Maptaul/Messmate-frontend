@@ -28,13 +28,11 @@ export default function ActivityBell({
   const [open, setOpen] = useState(false);
 
   const { data } = useActivityUnread(messId);
-  const { data: feed } = useMessAudit(messId, RECENT_ACTIVITY_PARAMS, open);
 
   const unread = data?.data.unread ?? 0;
   const unreadLabel = t("shell.unread", {
     count: formatNumber(unread, locale),
   });
-  const logs = feed?.data ?? [];
   const path =
     role === "MESS_MANAGER" ? "/manager/activity" : "/dashboard/activity";
 
@@ -71,34 +69,7 @@ export default function ActivityBell({
           </span>
           <span className="text-xs text-muted-foreground">{unreadLabel}</span>
         </div>
-        {logs.length === 0 && (
-          <p className="px-4 py-6 text-center text-muted-foreground">
-            {t("shell.noActivity")}
-          </p>
-        )}
-        {logs.map((log, index) => (
-          <div
-            key={log.id}
-            className="flex items-start gap-2.5 border-b px-4 py-2.5"
-          >
-            <span className="grid size-6.5 shrink-0 place-items-center rounded-full bg-accent text-[10px] font-semibold text-foreground-2">
-              {initialsOf(log.actor.name)}
-            </span>
-            <span className="grid flex-1 gap-0.5">
-              <span className="text-[13px] leading-snug">
-                <span className="font-medium">{log.actor.name}</span> ·{" "}
-                {t(`audit.actions.${log.action}`)}
-                {log.subjectMember && ` - ${log.subjectMember.user.name}`}
-              </span>
-              <span className="font-mono text-[11px] text-muted-foreground">
-                {formatRelative(log.createdAt, locale)}
-              </span>
-            </span>
-            {index < unread && (
-              <span className="mt-1.5 size-1.75 shrink-0 rounded-full bg-primary" />
-            )}
-          </div>
-        ))}
+        <BellFeed messId={messId} unread={unread} />
         <Link
           href={href(path)}
           onClick={() => setOpen(false)}
@@ -109,4 +80,42 @@ export default function ActivityBell({
       </PopoverContent>
     </Popover>
   );
+}
+
+// Only mounted while the panel is open, so the server render never creates
+// the overview's recent-activity query before the page hydrates it.
+function BellFeed({ messId, unread }: { messId: string; unread: number }) {
+  const t = useT();
+  const locale = useLocale();
+  const { data } = useMessAudit(messId, RECENT_ACTIVITY_PARAMS);
+  const logs = data?.data ?? [];
+
+  if (logs.length === 0) {
+    return (
+      <p className="px-4 py-6 text-center text-muted-foreground">
+        {t("shell.noActivity")}
+      </p>
+    );
+  }
+
+  return logs.map((log, index) => (
+    <div key={log.id} className="flex items-start gap-2.5 border-b px-4 py-2.5">
+      <span className="grid size-6.5 shrink-0 place-items-center rounded-full bg-accent text-[10px] font-semibold text-foreground-2">
+        {initialsOf(log.actor.name)}
+      </span>
+      <span className="grid flex-1 gap-0.5">
+        <span className="text-[13px] leading-snug">
+          <span className="font-medium">{log.actor.name}</span> ·{" "}
+          {t(`audit.actions.${log.action}`)}
+          {log.subjectMember && ` - ${log.subjectMember.user.name}`}
+        </span>
+        <span className="font-mono text-[11px] text-muted-foreground">
+          {formatRelative(log.createdAt, locale)}
+        </span>
+      </span>
+      {index < unread && (
+        <span className="mt-1.5 size-1.75 shrink-0 rounded-full bg-primary" />
+      )}
+    </div>
+  ));
 }

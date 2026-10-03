@@ -21,11 +21,11 @@ import {
 import {
   useActivityUnread,
   useCycleBills,
-  useDashboardStats,
   useManagerRequests,
   useMessCycles,
   useMessMembershipRequests,
   useMyBills,
+  useUserCount,
 } from "@/hooks";
 import { useLocale, useLocalePath, useT } from "@/i18n/i18n-provider";
 import type { MessChoice } from "@/lib/activeMess";
@@ -60,7 +60,7 @@ function useNavCounts(role: UserRole, messId: string | null) {
     limit: 1,
   });
   const cycleBills = useCycleBills(lastClosed.data?.data[0]?.id ?? "", OWED);
-  const stats = useDashboardStats(isAdmin);
+  const users = useUserCount(isAdmin);
   const pendingRequests = useManagerRequests(PENDING_REQUESTS_PARAMS, isAdmin);
   const askingToJoin = useMessMembershipRequests(
     isManager && messId ? messId : "",
@@ -72,7 +72,7 @@ function useNavCounts(role: UserRole, messId: string | null) {
 
   const counts: Record<string, number> = {};
   if (isAdmin) {
-    counts["/admin/users"] = stats.data?.data.users.total ?? 0;
+    counts["/admin/users"] = users.data?.meta?.total ?? 0;
     counts["/admin/manager-requests"] = pendingRequests.data?.meta?.total ?? 0;
     return counts;
   }
