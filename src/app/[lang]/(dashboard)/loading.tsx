@@ -21,6 +21,7 @@ export default function loading() {
           <div className="flex-1" />
           <Skeleton className="h-8 w-20 rounded-lg" />
           <Skeleton className="size-8 rounded-lg" />
+          <Skeleton className="size-8 rounded-full" />
         </header>
         <PageSkeleton />
       </div>

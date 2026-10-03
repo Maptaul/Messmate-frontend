@@ -1,15 +1,11 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  ChevronsUpDownIcon,
-  CircleUserRoundIcon,
-  LogOutIcon,
-  WalletIcon,
-} from "lucide-react";
+import { CircleUserRoundIcon, LogOutIcon, WalletIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +15,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
 import StatusBadge from "@/components/ui/status-badge";
 import UserAvatar from "@/components/ui/user-avatar";
 import { useGetMe, useLogout } from "@/hooks";
 import { useLocalePath, useT } from "@/i18n/i18n-provider";
 import { getErrorMessage, ROLE_LABEL_KEY } from "@/utils";
 
-/** The signed-in person, at the foot of the sidebar. */
+/** The signed-in person, at the right end of the header: one tap away on a phone. */
 export default function UserMenu() {
   const t = useT();
   const href = useLocalePath();
@@ -60,10 +55,11 @@ export default function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <SidebarMenuButton
-            size="lg"
-            className="h-auto gap-2.5 p-1.5"
-            aria-label={user.name}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="shrink-0 rounded-full"
+            aria-label={t("userMenu.open", { name: user.name })}
           />
         }
       >
@@ -73,15 +69,8 @@ export default function UserMenu() {
           variant="ink"
           className="size-[30px]"
         />
-        <span className="grid min-w-0 flex-1 leading-tight">
-          <span className="truncate text-[13px] font-medium">{user.name}</span>
-          <span className="truncate text-[11px] text-muted-foreground">
-            {t(ROLE_LABEL_KEY[user.role])}
-          </span>
-        </span>
-        <ChevronsUpDownIcon className="size-3.5 text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" align="start" className="w-61">
+      <DropdownMenuContent side="bottom" align="end" className="w-61">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="px-2.5 pt-2 pb-2.5 font-normal">
             <p className="text-[13px] font-medium text-foreground">

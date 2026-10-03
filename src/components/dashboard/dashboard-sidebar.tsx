@@ -6,7 +6,6 @@ import Logo from "@/assets/svg/Logo";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -39,7 +38,6 @@ import {
   toNumber,
 } from "@/utils";
 import MessSwitcher from "./mess-switcher";
-import UserMenu from "./user-menu";
 
 const OWED = { limit: 100 };
 /** Requests to join waiting for this manager; their own invitations don't count. */
@@ -161,13 +159,6 @@ export function DashboardSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter className="border-t px-2.5 py-2">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <UserMenu />
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

@@ -18,6 +18,7 @@ import { DashboardSidebar } from "./dashboard-sidebar";
 import HeaderBreadcrumb from "./header-breadcrumb";
 import LockCountdown from "./lock-countdown";
 import QuickActions from "./quick-actions";
+import UserMenu from "./user-menu";
 
 export default async function DashboardShell({
   children,
@@ -59,6 +60,7 @@ export default async function DashboardShell({
           )}
           <LanguageSwitcher />
           <ThemeToggle />
+          <UserMenu />
         </header>
         {children}
       </SidebarInset>

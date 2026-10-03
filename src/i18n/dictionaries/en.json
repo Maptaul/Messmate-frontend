@@ -108,6 +108,7 @@
     }
   },
   "userMenu": {
+    "open": "Account menu for {name}",
     "profile": "Profile",
     "finance": "Personal finance",
     "logout": "Log out"
