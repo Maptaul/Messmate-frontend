@@ -40,7 +40,7 @@ const HEAD = "micro h-auto bg-muted px-3 py-2.5 first:pl-4 last:pr-4";
 const CELL = "px-3 py-2.5 first:pl-4 last:pr-4";
 
 /**
- * The design's table: micro-label header on a muted band, tabular numbers,
+ * A table with a micro-label header on a muted band, tabular numbers and
  * hover rows. Below `md` every row becomes a card — the first column is the
  * title, labelled columns become label/value pairs and the unlabelled last
  * column (row actions) sits at the bottom.

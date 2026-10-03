@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * The design's titled card. `flush` gives the header a bottom rule and lets
+ * A titled card. `flush` gives the header a bottom rule and lets
  * the content run edge to edge (lists, tables).
  */
 export default function Panel({

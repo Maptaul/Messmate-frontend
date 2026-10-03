@@ -3,10 +3,9 @@ import { usePathname, useSearchParams } from "next/navigation";
 type ParamValue = string | number | null | undefined;
 
 /**
- * B7A7: filters, search and page live in the URL (bookmarkable). Same job as
- * the reference's `useState` for tab/search/page, but read from and written
- * to the query string. history.replaceState keeps useSearchParams in sync
- * without a server round-trip.
+ * Filters, search and page live in the URL, so any view can be bookmarked.
+ * history.replaceState keeps useSearchParams in sync without a server
+ * round-trip.
  */
 export default function useQueryParams() {
   const searchParams = useSearchParams();
@@ -25,7 +24,7 @@ export default function useQueryParams() {
       }
     }
 
-    // A new filter starts from page 1, like the reference's setPage(1).
+    // A new filter starts from page 1.
     if (!("page" in updates)) next.delete("page");
 
     const query = next.toString();

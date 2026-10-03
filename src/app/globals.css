@@ -88,7 +88,7 @@
   }
 }
 
-/* Values from the design handoff (tokens.css): paper and ink, one emerald. */
+/* Paper and ink, one emerald. */
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;

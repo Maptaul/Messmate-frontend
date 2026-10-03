@@ -30,8 +30,8 @@ import {
 import { loginSchema } from "@/validation";
 import { applyServerErrors, useAppForm } from ".";
 
-// Seeded demo accounts for evaluators. Public on purpose: B7A7 asks for
-// one-click demo login, and these hold no real data.
+// Seeded demo accounts for one-click login. Public on purpose: they hold no
+// real data.
 const DEMO_ACCOUNTS: {
   role: UserRole;
   email: string;

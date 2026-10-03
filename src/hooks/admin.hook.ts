@@ -92,7 +92,7 @@ export function useSuspenseAllMesses(params: MessListParams) {
 }
 
 /**
- * Optimistic (B7A7): the status badge flips at once and flips back if the
+ * Optimistic: the status badge flips at once and flips back if the
  * API refuses (e.g. blocking a manager with an open month).
  */
 export function useUpdateUserStatus() {

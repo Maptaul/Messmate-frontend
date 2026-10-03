@@ -10,7 +10,7 @@ import CycleTable from "./cycle-table";
 import CycleTableLoading from "./cycle-table-loading";
 
 const statuses: CycleStatus[] = ["OPEN", "CLOSED"];
-// ponytail: the last three years; widen when a mess has older months.
+// The last three years; widen when a mess has older months.
 const YEARS_BACK = 3;
 
 export default function CycleList({ messId }: { messId: string }) {

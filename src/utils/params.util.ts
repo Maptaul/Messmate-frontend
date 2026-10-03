@@ -206,7 +206,7 @@ export const ALL_MEMBERS_PARAMS = { page: 1, limit: 100 };
 export const ALL_BILLS_PARAMS = { page: 1, limit: 100 };
 
 /** Every deposit of a month, for its totals. */
-// ponytail: one page of 100; a mess of ~10 members deposits far fewer.
+// One page of 100; a mess of ~10 members deposits far fewer.
 export const ALL_DEPOSITS_PARAMS = { page: 1, limit: 100 };
 
 /** The latest changes in one mess (admin mess detail). */

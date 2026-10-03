@@ -97,7 +97,7 @@ export function useSuspenseCycleCalendar(cycleId: string, date?: string) {
 }
 
 /**
- * Optimistic (B7A7): the calendar shows the new plan at once. A day that
+ * Optimistic: the calendar shows the new plan at once. A day that
  * locked meanwhile comes back as a 409 and the calendar is put back.
  */
 export function useSetMealPlan() {

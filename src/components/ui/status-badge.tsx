@@ -7,8 +7,7 @@ import { humanize } from "@/utils/format.util";
 
 type Tone = "tone-g" | "tone-a" | "tone-r" | "tone-b" | "tone-v" | "tone-n";
 
-// Status → tone, from the design's badge catalogue. The label always goes
-// with the colour.
+// Status → tone. The label always goes with the colour.
 const STATUS_TONE: Record<string, Tone> = {
   // users & memberships
   ACTIVE: "tone-g",

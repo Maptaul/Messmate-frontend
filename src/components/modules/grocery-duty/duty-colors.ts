@@ -1,6 +1,6 @@
 import type { GroceryDuty } from "@/types";
 
-// ponytail: five chart hues repeat past five shoppers; the name always sits
+// Five chart hues repeat past five shoppers; the name always sits
 // beside the dot, so colour is never the only thing that tells them apart.
 const COLORS = [
   "var(--chart-1)",

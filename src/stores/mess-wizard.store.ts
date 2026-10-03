@@ -25,8 +25,7 @@ const INITIAL = {
 };
 
 /**
- * The create-mess wizard's draft (B7A7: multi-step form data persistence).
- * Kept in localStorage so a reload, a closed tab or a wrong turn doesn't lose
+ * The create-mess wizard's draft, kept in localStorage so a reload, a closed tab or a wrong turn doesn't lose
  * four steps of typing; it holds no secrets and is cleared once the mess is
  * created. Hydration is manual (`skipHydration`) because the server render
  * has no storage — the wizard calls `persist.rehydrate()` once mounted.

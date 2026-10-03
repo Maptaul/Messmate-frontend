@@ -22,8 +22,8 @@ export interface BarItem {
 const MAX_WIDTH = 80;
 
 /**
- * Horizontal bars with direct labels — the design's chart for any "by type" or
- * "by member" breakdown. Bars scale to the largest value; the figure sits at
+ * Horizontal bars with direct labels, for any "by type" or "by member"
+ * breakdown. Bars scale to the largest value; the figure sits at
  * the bar's end, so there is no axis to read.
  */
 export default function BarList({
