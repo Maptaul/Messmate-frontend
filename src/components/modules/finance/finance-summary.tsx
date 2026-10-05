@@ -1,19 +1,21 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import dynamic from "next/dynamic";
 import BarList from "@/components/ui/bar-list";
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import type { ChartConfig } from "@/components/ui/chart";
 import Panel from "@/components/ui/panel";
+import { Skeleton } from "@/components/ui/skeleton";
 import StatCard from "@/components/ui/stat-card";
 import { useSuspenseFinanceSummary } from "@/hooks";
 import { useLocale, useT } from "@/i18n/i18n-provider";
 import type { SummaryPeriod } from "@/types";
-import { formatBDT, formatDate, formatMonthName, formatNumber } from "@/utils";
+import { formatBDT, formatDate } from "@/utils";
+
+// Recharts is the heaviest part of the page; it loads after the totals.
+const FinanceTrendChart = dynamic(() => import("./finance-trend-chart"), {
+  ssr: false,
+  loading: () => <Skeleton className="aspect-[2/1] max-h-72 w-full" />,
+});
 
 const INCOME = "var(--chart-1)";
 const EXPENSE = "var(--chart-5)";
@@ -39,17 +41,6 @@ export default function FinanceSummary({
     income: { label: t("finance.income"), color: INCOME },
     expense: { label: t("finance.expense"), color: EXPENSE },
   } satisfies ChartConfig;
-
-  // "2026-09-14" → "14", "2026-09" → "Sep": the axis only needs the step.
-  const tick = (label: string) =>
-    /^\d{4}-\d{2}-\d{2}$/.test(label)
-      ? formatNumber(Number(label.slice(8)), locale)
-      : /^\d{4}-\d{2}$/.test(label)
-        ? formatMonthName(Number(label.slice(5)), locale).slice(
-            0,
-            locale === "en" ? 3 : undefined,
-          )
-        : label;
 
   const bars = (rows: { category: string; total: number }[], color: string) =>
     [...rows]
@@ -112,40 +103,7 @@ export default function FinanceSummary({
             </div>
           }
         >
-          <ChartContainer
-            config={trendConfig}
-            className="aspect-[2/1] max-h-72 w-full"
-          >
-            <BarChart data={summary.breakdown} margin={{ top: 8 }}>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="label"
-                tickLine={false}
-                axisLine={false}
-                interval="preserveStartEnd"
-                tickFormatter={tick}
-              />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    formatter={(value, name) => (
-                      <span className="flex w-full justify-between gap-4">
-                        <span className="text-muted-foreground">
-                          {trendConfig[name as keyof typeof trendConfig]
-                            ?.label ?? name}
-                        </span>
-                        <span className="font-medium tabular-nums">
-                          {formatBDT(Number(value), locale)}
-                        </span>
-                      </span>
-                    )}
-                  />
-                }
-              />
-              <Bar dataKey="income" fill="var(--color-income)" radius={4} />
-              <Bar dataKey="expense" fill="var(--color-expense)" radius={4} />
-            </BarChart>
-          </ChartContainer>
+          <FinanceTrendChart data={summary.breakdown} config={trendConfig} />
         </Panel>
 
         <div className="flex flex-col gap-4">

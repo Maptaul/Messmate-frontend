@@ -1,9 +1,11 @@
 "use client";
 
 import { ShoppingCartIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import BarList from "@/components/ui/bar-list";
 import Panel from "@/components/ui/panel";
+import { Skeleton } from "@/components/ui/skeleton";
 import StatCard from "@/components/ui/stat-card";
 import StatStrip from "@/components/ui/stat-strip";
 import StatusBadge from "@/components/ui/status-badge";
@@ -30,8 +32,13 @@ import {
   todayInDhaka,
   toNumber,
 } from "@/utils";
-import MealsPerDayChart from "./meals-per-day-chart";
 import TomorrowHeadcount from "./tomorrow-headcount";
+
+// Recharts is the heaviest part of the page; it loads after the rest.
+const MealsPerDayChart = dynamic(() => import("./meals-per-day-chart"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-65 rounded-xl" />,
+});
 
 const OWED = { limit: 100 };
 
