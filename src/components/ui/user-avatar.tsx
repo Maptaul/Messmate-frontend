@@ -1,4 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 export const initialsOf = (name: string) =>
@@ -23,7 +24,6 @@ export default function UserAvatar({
 }) {
   return (
     <Avatar className={cn("size-8", className)}>
-      {src && <AvatarImage src={src} alt="" />}
       <AvatarFallback
         className={cn(
           "text-[11px] font-semibold",
@@ -34,6 +34,16 @@ export default function UserAvatar({
       >
         {initialsOf(name)}
       </AvatarFallback>
+      {/* Over the initials, so they show while the photo loads or if it fails. */}
+      {src && (
+        <Image
+          src={src}
+          alt=""
+          fill
+          sizes="80px"
+          className="rounded-full object-cover"
+        />
+      )}
     </Avatar>
   );
 }
