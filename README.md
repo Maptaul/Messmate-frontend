@@ -7,8 +7,24 @@ English by default, Bangla at `/bn`, light and dark.
 
 **Live app:** <https://meassmate.vercel.app> ·
 **Live API:** <https://messmatebackend.vercel.app> ·
-**Backend repo:** <https://github.com/Maptaul/Messmate-Backend> ·
-**API reference:** [docs/API.md](https://github.com/Maptaul/Messmate-Backend/blob/main/docs/API.md)
+**Video walkthrough:** [Loom](https://www.loom.com/share/e36fa18e452f43ac84cd7d802f9706f9) ·
+**Backend repo:** <https://github.com/Maptaul/Messmate-Backend>
+
+---
+
+## Submission
+
+```text
+Project Name        : MessMate - Smart Mess & Shared Housing Management Platform
+Backend Repo        : https://github.com/Maptaul/Messmate-Backend
+Frontend Repo       : https://github.com/Maptaul/Messmate-frontend
+Live Backend URL    : https://messmatebackend.vercel.app
+Live Frontend URL   : https://meassmate.vercel.app
+API Documentation   : https://github.com/Maptaul/Messmate-Backend/blob/main/docs/API.md
+Demo Video          : https://www.loom.com/share/e36fa18e452f43ac84cd7d802f9706f9
+Demo Admin Email    : admin@messmate.app
+Demo Admin Password : Admin@messmate12345
+```
 
 ---
 
@@ -39,6 +55,55 @@ Both are also printed under the pay buttons.
 
 ---
 
+## Requirement checklist (B7A7)
+
+The three roles map onto the brief's example roles as **Admin**, **Mess Manager**
+(the provider) and **Member** (the user).
+
+| # | Requirement | How MessMate meets it |
+| - | ----------- | --------------------- |
+| 1 | App Router, Server and Client Components | Every `page.tsx` is a Server Component that prefetches its data on the server; `"use client"` sits only on the interactive parts (forms, filtered tables, dialogs, charts). One `layout.tsx` per role, 34 `loading.tsx`, 5 `error.tsx`, `not-found.tsx`, `global-error.tsx` |
+| 2 | Modern, responsive UI | Tailwind CSS v4 + shadcn/ui (base-nova), mobile first; below 768 px tables turn into cards and stat rows into a 2 × 2 grid. Light and dark, English and Bangla |
+| 3 | Authentication and authorization | The API sets httpOnly JWT cookies; [`src/proxy.ts`](src/proxy.ts) guards `/admin`, `/manager` and `/dashboard`, sends a wrong role to its own home and renews an expired token. The sidebar ([`src/routes`](src/routes)), header actions and row buttons render by role |
+| 4 | One-click role login | `/login` shows three Demo Login cards (Admin, Mess Manager, Member); each signs in and opens that role's dashboard |
+| 5 | API integration and state | TanStack Query with server prefetch + `HydrationBoundary`, caching and optimistic updates (meal plan, block/unblock); Zustand stores in [`src/stores`](src/stores) (create-mess wizard draft, breadcrumb, pending registration); a skeleton per page and error boundaries per area |
+| 6 | Forms and validation | `@tanstack/react-form` + Zod on every form, validated as you type; the schemas in [`src/validation`](src/validation) mirror the API's rules |
+| 7 | Payment | Stripe Checkout in test mode (and bKash sandbox): started from **My bills**, `/payment/success` confirms the session on the server, `/payment/cancel` handles a cancelled or failed payment |
+| 8 | Meaningful commits | 90+ commits with conventional messages (`feat:`, `fix:`, `refactor:`, `perf:`, `ci:`) |
+| 9 | Demo credentials | [Demo accounts](#demo-accounts) above |
+| 10 | Deployment | Vercel at <https://meassmate.vercel.app>; GitHub Actions CI runs typecheck, lint, tests and a build on every push |
+| 11 | Video explanation | [Loom walkthrough](https://www.loom.com/share/e36fa18e452f43ac84cd7d802f9706f9) |
+
+| Project rule | Where |
+| ------------ | ----- |
+| Real API only, no mock data | Every call goes through one function in [`src/api`](src/api) to the live API; every string comes from `en.json` / `bn.json` |
+| URL state with `useSearchParams` | Search, filters, sort, dates, tabs, month and page live in the query string ([`useQueryParams`](src/hooks/query-params.hook.ts)); a new filter returns to page 1 |
+| `next/image` | Profile photos and avatars ([`user-avatar.tsx`](src/components/ui/user-avatar.tsx)); only the local preview before an upload uses a plain `<img>` (a `blob:` URL) |
+| Skeletons, empty and error states | A `loading.tsx` on every data page, an `EmptyState` on every list, Sonner toasts with the API's message, `error.tsx` with **Try again** |
+| Multi-step form | **Create a mess**: a four-step wizard whose draft survives a reload |
+| File uploads | Expense receipts and profile photos go to Cloudinary through the API, with a preview and a progress bar |
+| Reusable components | `DataTable`, `StatCard`, `StatStrip`, `StatusBadge`, `SearchInput`, `FilterSelect`, `TablePagination`, `EmptyState`, `InlineConfirm`, `ExportCsvButton` in [`src/components/ui`](src/components/ui) |
+| Custom hooks | `useDebounce`, `useQueryParams`, `usePlanCutoff`, `useCreateDialog`, `useExportRows`, plus a `useX` / `useSuspenseX` pair per endpoint in [`src/hooks`](src/hooks) |
+| Charts | Recharts on the admin overview, the manager overview and personal finance |
+| Performance | Charts lazy-loaded with `next/dynamic`, React Compiler, route-level code splitting, server prefetch so pages arrive with data |
+| SEO and metadata | Title, description, Open Graph image and language alternates on every public page; `robots.txt` and `sitemap.xml` |
+| TypeScript | `strict`, no `any`; typed API responses in [`src/types`](src/types) |
+
+### Pages (42)
+
+| Area | Pages | Count |
+| ---- | ----- | :---: |
+| Public | Home (with a bill estimator), Features, About us, FAQ, Contact | 5 |
+| Authentication | Login (with demo login), Register, Verify account (OTP), Forgot password | 4 |
+| Admin | Overview (charts), Users, User detail, Messes, Mess detail, Manager requests, Audit log | 7 |
+| Mess Manager | Overview, Headcount, Meal register, Expenses, Deposits, Bazar duty, Billing cycles, Month detail, Bills, Members, Activity log, Mess settings, My messes, Create a mess (wizard) | 14 |
+| Member | Today, Meal plan, Mess ledger, My bills, Payments, Activity | 6 |
+| Every signed-in user | Profile, Personal finance | 2 |
+| Payment | Success redirect, Cancel redirect | 2 |
+| Utility | Custom 404 (`not-found.tsx`), error boundaries (`error.tsx`, `global-error.tsx`) | 2 |
+
+---
+
 ## Tech Stack
 
 | Tech                                          | Purpose                                              |
@@ -51,9 +116,10 @@ Both are also printed under the pay buttons.
 | TanStack Form v1 + Zod v4                     | Forms with real-time validation                      |
 | ofetch                                        | API client                                           |
 | jose                                          | Verifies the access token in `proxy.ts`              |
-| Zustand                                       | Client state (create-mess wizard draft)              |
+| Zustand                                       | Client state (wizard draft, breadcrumb, sign-up)     |
 | Recharts (shadcn charts)                      | Dashboard charts                                     |
 | sonner                                        | Toasts                                               |
+| lucide-react                                  | Icons                                                |
 | next-themes                                   | Light / dark mode                                    |
 | `@react-oauth/google`                         | Google sign-in                                       |
 | Roboto + Anek Bangla (`next/font`)            | English and Bangla type                              |
