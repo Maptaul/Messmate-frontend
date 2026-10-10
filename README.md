@@ -55,7 +55,7 @@ Both are also printed under the pay buttons.
 
 ---
 
-## Requirement checklist (B7A7)
+## Requirement checklist
 
 The three roles map onto the brief's example roles as **Admin**, **Mess Manager**
 (the provider) and **Member** (the user).
